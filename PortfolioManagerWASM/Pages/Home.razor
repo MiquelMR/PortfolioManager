@@ -1,0 +1,37 @@
+﻿@page "/"
+@using PortfolioManagerWASM.Models
+@using PortfolioManagerWASM.Services.IService
+@inject IUserService userService
+@inject IAssetService assetService
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world!</h1>
+@foreach (User user in Users)
+{
+    <p>@user.Name</p>
+    <p>@user.RegistrationDate</p>
+    <p>@user.Email</p>
+}
+
+@foreach(Asset asset in Assets)
+{
+    <p>@asset.Name</p>
+    <p>@asset.ImagePath</p>
+}
+
+
+
+
+Welcome to your new app.
+
+@code {
+    public IEnumerable<User> Users { get; set; } = new List<User>();
+    public IEnumerable<Asset> Assets { get; set; } = new List<Asset>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Users = await userService.GetUsers();
+        Assets = await assetService.GetAssets();
+    }
+}

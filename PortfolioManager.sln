@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35919.96
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortfolioManagerAPI", "PortfolioManagerAPI\PortfolioManagerAPI.csproj", "{CE94A2B8-03D8-F18E-B568-AA45441F0FC5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortfolioManagerWASM", "PortfolioManagerWASM\PortfolioManagerWASM.csproj", "{4223A09C-3E67-DD3C-DC66-BECEC87A8407}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CE94A2B8-03D8-F18E-B568-AA45441F0FC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE94A2B8-03D8-F18E-B568-AA45441F0FC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE94A2B8-03D8-F18E-B568-AA45441F0FC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE94A2B8-03D8-F18E-B568-AA45441F0FC5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4223A09C-3E67-DD3C-DC66-BECEC87A8407}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4223A09C-3E67-DD3C-DC66-BECEC87A8407}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4223A09C-3E67-DD3C-DC66-BECEC87A8407}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4223A09C-3E67-DD3C-DC66-BECEC87A8407}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {13C49857-8E1E-48FB-8FCA-28B123A71D2B}
+	EndGlobalSection
+EndGlobal
