@@ -14,6 +14,10 @@ namespace PortfolioManagerAPI.Models
         [MaxLength(48)]
         public string Name { get; set; }
         [Required]
+        public string Password { get; set; }
+        [Required]
+        public string Salt { get; set; }
+        [Required]
         public DateTime RegistrationDate { get; set; }
         [Required]
         [EmailAddress]

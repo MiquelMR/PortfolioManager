@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PortfolioManagerAPI.Models;
 using PortfolioManagerAPI.Models.DTOs;
@@ -6,6 +7,7 @@ using PortfolioManagerAPI.Repository.IRepository;
 
 namespace PortfolioManagerAPI.Controllers
 {
+    [Authorize]
     [Route("api/assets")]
     [ApiController]
     public class AssetController : ControllerBase
@@ -76,7 +78,7 @@ namespace PortfolioManagerAPI.Controllers
             return CreatedAtRoute("GetAsset", new { AssetId = asset.AssetId }, asset);
         }
 
-        [HttpPatch("{UserId:int}", Name = "UpdatePatchAsset")]
+        [HttpPatch("{AssetId:int}", Name = "UpdatePatchAsset")]
         [ProducesResponseType(201, Type = typeof(AssetDto))]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

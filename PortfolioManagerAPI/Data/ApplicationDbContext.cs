@@ -19,7 +19,5 @@ namespace PortfolioManagerAPI.Data
             modelBuilder.Ignore<AssetDto>(); // Le indica a EF Core que ignore esta clase por completo
             base.OnModelCreating(modelBuilder);
         }
-
-
     }
 }
