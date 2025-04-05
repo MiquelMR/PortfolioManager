@@ -1,54 +1,92 @@
-﻿using PortfolioManagerAPI.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using PortfolioManagerAPI.Data;
+using PortfolioManagerAPI.Helpers;
 using PortfolioManagerAPI.Models;
+using PortfolioManagerAPI.Models.DTOs;
 using PortfolioManagerAPI.Repository.IRepository;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using XSystem.Security.Cryptography;
 
 namespace PortfolioManagerAPI.Repository
 {
     public class UserRepository : IUserRepository
     {
         private readonly ApplicationDbContext _db;
+        private readonly string secretKey;
 
-        public UserRepository(ApplicationDbContext db)
+        public UserRepository(ApplicationDbContext db, IConfiguration config)
         {
             _db = db;
-        }
-        public bool CreateUser(User user)
-        {
-            user.RegistrationDate = DateTime.Now;
-            _db.Users.Add(user);
-            return Save();
-        }
-
-        public bool DeleteUser(User user)
-        {
-            _db.Users.Remove(user);
-            return Save();
-        }
-
-        public bool ExistsById(int UserId)
-        {
-            bool result = _db.Users.Any(user => user.UserId == UserId);
-            return result;
+            secretKey = config.GetValue<string>("ApiSettings:Secret");
         }
 
         public User GetUserById(int UserId)
         {
             return _db.Users.FirstOrDefault(user => user.UserId == UserId);
         }
-        public ICollection<User> GetUsers()
+
+        public bool UserAlreadyExistsByEmail(string Email)
         {
-            return _db.Users.OrderBy(user => user.UserId).ToList();
+            var user = _db.Users.FirstOrDefault(user => user.Email == Email);
+            return user != null;
         }
 
-        public bool Save()
+        public async Task<UserLoginResponseDto> Login(UserLoginDto userLoginDto)
         {
-            return _db.SaveChanges() > 0;
+            var user = await _db.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == userLoginDto.Email.ToLower());
+
+            if (user == null || !PasswordHelper.VerifyPassword(userLoginDto.Password, user.Salt, user.Password))
+            {
+                return new UserLoginResponseDto()
+                {
+                    Token = "",
+                    User = null
+                };
+            }
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(secretKey);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(
+                [
+                    new(ClaimTypes.Name, user.Email.ToString()),
+                ]),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = new(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+
+            UserLoginResponseDto userLoginResponseDto = new UserLoginResponseDto()
+            {
+                Token = tokenHandler.WriteToken(token),
+                User = user
+            };
+
+            return userLoginResponseDto;
         }
 
-        public bool UpdateUser(User user)
+        public async Task<User> Register(UserRegisterDto userRegisterDto)
         {
-            _db.Users.Update(user);
-            return Save();
+            var (hashedPassword, salt) = PasswordHelper.HashPassword(userRegisterDto.Password);
+
+            User user = new()
+            {
+                Name = userRegisterDto.Name,
+                Email = userRegisterDto.Email,
+                Password = hashedPassword,
+                Salt = salt,
+                RegistrationDate = DateTime.Now
+            };
+
+            _db.Users.Add(user);
+            await _db.SaveChangesAsync();
+            return user;
         }
     }
 }

@@ -9,6 +9,7 @@ namespace PortfolioManagerAPI.Mappers
         public PortfolioManagerMapper()
         {
             CreateMap<User, UserDto>().ReverseMap();
+            CreateMap<User, UserLoginDto>().ReverseMap();
             CreateMap<Asset, AssetDto>().ReverseMap();
         }
     }

@@ -1,16 +1,13 @@
 ﻿using PortfolioManagerAPI.Models;
+using PortfolioManagerAPI.Models.DTOs;
 
 namespace PortfolioManagerAPI.Repository.IRepository
 {
     public interface IUserRepository
     {
-        ICollection<User> GetUsers();
         User GetUserById(int UserId);
-        bool ExistsById(int UserId);
-
-        bool CreateUser(User user);
-        bool UpdateUser(User user);
-        bool DeleteUser(User user);
-        bool Save();
+        bool UserAlreadyExistsByEmail(string Email);
+        Task<UserLoginResponseDto> Login(UserLoginDto userLoginDto);
+        Task<User> Register(UserRegisterDto userRegisterDto);
     }
 }

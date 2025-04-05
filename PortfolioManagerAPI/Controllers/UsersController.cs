@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PortfolioManagerAPI.Models;
 using PortfolioManagerAPI.Models.DTOs;
 using PortfolioManagerAPI.Repository.IRepository;
+using System.Net;
+using XAct;
 
 namespace PortfolioManagerAPI.Controllers
 {
@@ -11,28 +14,68 @@ namespace PortfolioManagerAPI.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
+        protected ResponseAPI _responseApi;
         private readonly IMapper _mapper;
 
         public UsersController(IUserRepository userRepository, IMapper mapper)
         {
             _userRepository = userRepository;
             _mapper = mapper;
+            this._responseApi = new();
         }
 
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult GetUsers()
+        [AllowAnonymous]
+        [HttpPost("register")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Register([FromBody] UserRegisterDto userRegisterDto)
         {
-            var userList = _userRepository.GetUsers();
-            var userDtoList = new List<UserDto>();
-            foreach (var user in userList)
+            bool alreadyExists = _userRepository.UserAlreadyExistsByEmail(userRegisterDto.Email);
+            if (alreadyExists)
             {
-                userDtoList.Add(_mapper.Map<UserDto>(user));
+                _responseApi.StatusCode = HttpStatusCode.BadRequest;
+                _responseApi.IsSuccess = false;
+                _responseApi.ErrorMessages.Add("Email already exists");
+                return BadRequest(_responseApi);
             }
-            return Ok(userDtoList);
+
+            var user = await _userRepository.Register(userRegisterDto);
+            if (user == null)
+            {
+                _responseApi.StatusCode = HttpStatusCode.InternalServerError;
+                _responseApi.IsSuccess = false;
+                _responseApi.ErrorMessages.Add("Error during register");
+                return StatusCode((int)HttpStatusCode.InternalServerError, _responseApi);
+            }
+
+            _responseApi.StatusCode = HttpStatusCode.OK;
+            _responseApi.IsSuccess = true;
+            return Ok(_responseApi);
         }
 
+        [AllowAnonymous]
+        [HttpPost("login")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Login([FromBody] UserLoginDto userLoginDto)
+        {
+            var responseLogin = await _userRepository.Login(userLoginDto);
+            if (responseLogin == null || string.IsNullOrEmpty(responseLogin.Token)) {
+                _responseApi.StatusCode = HttpStatusCode.BadRequest;
+                _responseApi.IsSuccess = false;
+                _responseApi.ErrorMessages.Add("The email or password is incorrect");
+                return BadRequest(_responseApi);
+            }
+
+            _responseApi.StatusCode = HttpStatusCode.OK;
+            _responseApi.IsSuccess = true;
+            _responseApi.Result = responseLogin;
+            return Ok(_responseApi);
+        }
+
+        [Authorize]
         [HttpGet("{UserId:int}", Name = "GetUser")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -45,85 +88,6 @@ namespace PortfolioManagerAPI.Controllers
 
             var userDto = _mapper.Map<UserDto>(user);
             return Ok(userDto);
-        }
-
-        [HttpPost]
-        [ProducesResponseType(201, Type = typeof(UserDto))]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult CreateUser([FromBody] UserDto userDto)
-        {
-            if (userDto == null)
-            {
-                return BadRequest("User data is null");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("User data is invalid");
-            }
-
-            var user = _mapper.Map<User>(userDto);
-
-            if (_userRepository.ExistsById(user.UserId))
-            {
-                ModelState.AddModelError("", "User already exists");
-                return StatusCode(409, ModelState);
-            }
-
-            _userRepository.CreateUser(user);
-            return CreatedAtRoute("GetUser", new { UserId = user.UserId }, user);
-        }
-
-        [HttpPatch("{UserId:int}", Name = "UpdatePatchUser")]
-        [ProducesResponseType(201, Type = typeof(UserDto))]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult UpdateUser(int UserId, [FromBody] UserDto userDto)
-        {
-            if (userDto == null)
-            {
-                return BadRequest("User data is null");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("User data is invalid");
-            }
-
-            var user = _mapper.Map<User>(userDto);
-
-            if (!_userRepository.ExistsById(UserId))
-            {
-                ModelState.AddModelError("", "User not found");
-                return StatusCode(404, ModelState);
-            }
-
-            _userRepository.UpdateUser(user);
-            return NoContent();
-        }
-
-        [HttpDelete("{UserId:int}", Name = "DeleteUser")]
-        [ProducesResponseType(201, Type = typeof(UserDto))]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult DeleteUser(int UserId)
-        {
-            if (!_userRepository.ExistsById(UserId))
-            {
-                ModelState.AddModelError("", "User not found");
-                return StatusCode(404, ModelState);
-            }
-
-            var user = _userRepository.GetUserById(UserId);
-            _userRepository.DeleteUser(user);
-            return NoContent();
-        }
+        }        
     }
 }
