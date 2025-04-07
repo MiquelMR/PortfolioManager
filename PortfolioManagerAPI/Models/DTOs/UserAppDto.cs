@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PortfolioManagerWASM.Models
+namespace PortfolioManagerAPI.Models
 {
-    [Table("users")]
-    public class User
+    public class UserAppDto
     {
         [Required]
         [MaxLength(48)]

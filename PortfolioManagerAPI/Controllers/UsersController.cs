@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using PortfolioManagerAPI.Models;
 using PortfolioManagerAPI.Models.DTOs;
 using PortfolioManagerAPI.Repository.IRepository;
+using PortfolioManagerAPI.Service.IService;
 using System.Net;
 using XAct;
 
@@ -13,15 +14,13 @@ namespace PortfolioManagerAPI.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IUserService _userService;
         protected ResponseAPI _responseApi;
-        private readonly IMapper _mapper;
 
-        public UsersController(IUserRepository userRepository, IMapper mapper)
+        public UsersController(IUserService userService, IMapper mapper)
         {
-            _userRepository = userRepository;
-            _mapper = mapper;
-            this._responseApi = new();
+            _userService = userService;
+            _responseApi = new();
         }
 
         [AllowAnonymous]
@@ -31,7 +30,7 @@ namespace PortfolioManagerAPI.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Register([FromBody] UserRegisterDto userRegisterDto)
         {
-            bool alreadyExists = _userRepository.UserAlreadyExistsByEmail(userRegisterDto.Email);
+            bool alreadyExists = await _userService.UserExistsByEmailAsync(userRegisterDto.Email);
             if (alreadyExists)
             {
                 _responseApi.StatusCode = HttpStatusCode.BadRequest;
@@ -40,8 +39,8 @@ namespace PortfolioManagerAPI.Controllers
                 return BadRequest(_responseApi);
             }
 
-            var user = await _userRepository.Register(userRegisterDto);
-            if (user == null)
+            var success = await _userService.CreateUserAsync(userRegisterDto);
+            if (!success)
             {
                 _responseApi.StatusCode = HttpStatusCode.InternalServerError;
                 _responseApi.IsSuccess = false;
@@ -61,8 +60,9 @@ namespace PortfolioManagerAPI.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Login([FromBody] UserLoginDto userLoginDto)
         {
-            var responseLogin = await _userRepository.Login(userLoginDto);
-            if (responseLogin == null || string.IsNullOrEmpty(responseLogin.Token)) {
+            var responseLogin = await _userService.Login(userLoginDto);
+            if (responseLogin == null || string.IsNullOrEmpty(responseLogin.Token))
+            {
                 _responseApi.StatusCode = HttpStatusCode.BadRequest;
                 _responseApi.IsSuccess = false;
                 _responseApi.ErrorMessages.Add("The email or password is incorrect");
@@ -83,11 +83,37 @@ namespace PortfolioManagerAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetUser(int UserId)
         {
-            var user = _userRepository.GetUserById(UserId);
-            if (user == null) { return NotFound(); }
+            var userDTO = _userService.GetUserByIdAsync(UserId);
+            if (userDTO == null) { return NotFound(); }
+            return Ok(userDTO);
+        }
 
-            var userDto = _mapper.Map<UserDto>(user);
-            return Ok(userDto);
-        }        
+        [Authorize]
+        [HttpDelete("{email}")]
+        public async Task<IActionResult> DeleteByEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                return BadRequest(new { message = "Email cannot be null or empty." });
+            }
+            if (!await _userService.UserExistsByEmailAsync(email))
+            {
+                _responseApi.StatusCode = HttpStatusCode.NotFound;
+                _responseApi.IsSuccess = false;
+                _responseApi.ErrorMessages.Add("User not found with the given email");
+                return BadRequest(_responseApi);
+            }
+
+            var success = await _userService.DeleteUserByEmailAsync(email);
+            if (!success)
+            {
+                _responseApi.StatusCode = HttpStatusCode.InternalServerError;
+                _responseApi.IsSuccess = false;
+                _responseApi.ErrorMessages.Add("Server error");
+                return BadRequest(_responseApi);
+            }
+
+            return NoContent();
+        }
     }
 }

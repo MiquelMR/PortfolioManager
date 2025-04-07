@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using PortfolioManagerWASM.Helpers;
 using PortfolioManagerWASM.Models;
+using PortfolioManagerWASM.Models.DTOs;
 using PortfolioManagerWASM.Services.IService;
 using System.Text;
 
@@ -13,11 +14,11 @@ namespace PortfolioManagerWASM.Services
         {
             _httpClient = httpClient;
         }
-        public async Task<User> CreateUser(User user)
+        public async Task<User> RegisterUser(UserRegisterDTO userRegisterDto)
         {
-            var content = JsonConvert.SerializeObject(user);
+            var content = JsonConvert.SerializeObject(userRegisterDto);
             var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync($"{Initialize.UrlBaseApi}api/users", bodyContent);
+            var response = await _httpClient.PostAsync($"{Initialize.UrlBaseApi}api/users/register", bodyContent);
             if (response.IsSuccessStatusCode)
             {
 
@@ -33,9 +34,9 @@ namespace PortfolioManagerWASM.Services
             }
         }
 
-        public async Task<bool> DeleteUser(int UserId)
+        public async Task<bool> DeleteUser(string Email)
         {
-            var response = await _httpClient.DeleteAsync($"{Initialize.UrlBaseApi}api/users/{UserId}");
+            var response = await _httpClient.DeleteAsync($"{Initialize.UrlBaseApi}api/users/{Email}");
             if (response.IsSuccessStatusCode)
             {
                 return true;
@@ -92,6 +93,11 @@ namespace PortfolioManagerWASM.Services
                 var errorModel = JsonConvert.DeserializeObject<ErrorModel>(contentTemp);
                 throw new Exception(errorModel.ErrorMessage);
             }
+        }
+
+        public Task<User> Login(UserLoginDTO userLoginDto)
+        {
+            throw new NotImplementedException();
         }
     }
 }
