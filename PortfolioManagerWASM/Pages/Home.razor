@@ -1,37 +1,31 @@
-﻿@page "/"
+﻿@using Microsoft.AspNetCore.Authorization
 @using PortfolioManagerWASM.Models
 @using PortfolioManagerWASM.Services.IService
 @inject IUserService userService
 @inject IAssetService assetService
+@attribute [Authorize]
 
+@page "/"
+@page "/home"
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
-@foreach (User user in Users)
-{
-    <p>@user.Name</p>
-    <p>@user.RegistrationDate</p>
-    <p>@user.Email</p>
-}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Registration Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>@User.Name</td>
+            <td>@User.Email</td>
+            <td>@User.RegistrationDate</td>
+        </tr>
+    </tbody>
+</table>
 
-@foreach(Asset asset in Assets)
-{
-    <p>@asset.Name<img src="~/icons/{@asset.ImagePath}" /></p>
-}
-    <img src="~/icons/gold.jpg" alt="Description of the image">
-
-
-
-
-Welcome to your new app.
-
-@code {
-    public IEnumerable<User> Users { get; set; } = new List<User>();
-    public IEnumerable<Asset> Assets { get; set; } = new List<Asset>();
-
-    protected override async Task OnInitializedAsync()
-    {
-        Users = await userService.GetUsers();
-        Assets = await assetService.GetAssets();
-    }
-}
+<button type="button" class="btn btn-danger" onclick="@Logout">
+    Logout
+</button>

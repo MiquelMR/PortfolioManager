@@ -8,6 +8,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using Microsoft.Extensions.FileProviders;
+using PortfolioManagerAPI.Service;
+using PortfolioManagerAPI.Service.IService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +22,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Add services to the container.
 builder.Services.AddScoped<IAssetRepository, AssetRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddAutoMapper(typeof(PortfolioManagerMapper));
 
 var key = builder.Configuration.GetValue<string>("ApiSettings:Secret");
@@ -78,12 +81,11 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-var app = builder.Build();
 
 // Esto es importante cambiarlo en prod
 builder.Services.AddCors(p =>
 {
-    p.AddPolicy("DevelopmentPolicy", build =>
+    p.AddPolicy("Development", build =>
     {
         build.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
     });
@@ -94,7 +96,10 @@ builder.Services.AddCors(p =>
         build.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
     });
 });
-app.UseCors("DevelopmentPolicy");
+
+var app = builder.Build();
+
+app.UseCors("Development");
 
 if (app.Environment.IsDevelopment())
 {
