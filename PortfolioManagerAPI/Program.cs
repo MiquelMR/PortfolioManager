@@ -85,7 +85,7 @@ builder.Services.AddSwaggerGen(options =>
 // Esto es importante cambiarlo en prod
 builder.Services.AddCors(p =>
 {
-    p.AddPolicy("DevelopmentPolicy", build =>
+    p.AddPolicy("Development", build =>
     {
         build.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
     });
@@ -99,7 +99,7 @@ builder.Services.AddCors(p =>
 
 var app = builder.Build();
 
-app.UseCors("DevelopmentPolicy");
+app.UseCors("Development");
 
 if (app.Environment.IsDevelopment())
 {

@@ -45,29 +45,29 @@ namespace PortfolioManagerAPI.Service
             return await _userRepository.DeleteUserByIdAsync(userId);
         }
 
-        public async Task<UserAppDto> GetUserByEmailAsync(string email)
+        public async Task<UserDto> GetUserByEmailAsync(string email)
         {
-            var user = await _userRepository.GetUserByEmailAsync(email);
-            var userAppDto = _mapper.Map<UserAppDto>(user);
-            return userAppDto;
+            var user =  _userRepository.GetUserByEmailAsync(email);
+            var userDto = _mapper.Map<UserDto>(user);
+            return userDto;
         }
 
-        public async Task<UserAppDto> GetUserByIdAsync(int userId)
+        public async Task<UserDto> GetUserByIdAsync(int userId)
         {
             var user = await _userRepository.GetUserByIdAsync(userId);
-            var userAppDto = _mapper.Map<UserAppDto>(user);
+            var userAppDto = _mapper.Map<UserDto>(user);
             return userAppDto;
         }
 
         public async Task<UserLoginResponseDto> Login(UserLoginDto userLoginDto)
         {
-            var user = await _userRepository.GetUserByEmailAsync(userLoginDto.Email);
+            var user = _userRepository.GetUserByEmailAsync(userLoginDto.Email);
             if (user == null || !PasswordHelper.VerifyPassword(userLoginDto.Password, user.Salt, user.Password))
             {
                 return new UserLoginResponseDto()
                 {
                     Token = "",
-                    User = null
+                    UserLoginDto = null
                 };
             }
 
@@ -88,7 +88,7 @@ namespace PortfolioManagerAPI.Service
             UserLoginResponseDto userLoginResponseDto = new UserLoginResponseDto()
             {
                 Token = tokenHandler.WriteToken(token),
-                User = user
+                UserLoginDto = _mapper.Map<UserLoginDto>(user)
             };
 
             return userLoginResponseDto;
@@ -96,7 +96,7 @@ namespace PortfolioManagerAPI.Service
 
         public async Task<bool> UpdateUserAsync(UserRegisterDto userRegisterDto)
         {
-            var user = await _userRepository.GetUserByEmailAsync(userRegisterDto.Email);
+            var user =  _userRepository.GetUserByEmailAsync(userRegisterDto.Email);
             var updatedUser = _mapper.Map<User>(user);
             return await _userRepository.UpdateUserAsync(updatedUser);
         }

@@ -2,7 +2,7 @@
 
 namespace PortfolioManagerWASM.Models.DTOs
 {
-    public class UserLoginDTO
+    public class UserLoginDto
     {
         [Required(ErrorMessage ="User name is required")]
         public string Password { get; set; }     

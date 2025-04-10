@@ -6,11 +6,13 @@ namespace PortfolioManagerWASM.Services
     {
         public IUserService UserService { get; }
         public IAssetService AssetService { get; }
+        public IAuthService AuthService { get; }
 
-        public AppService(IUserService userService, IAssetService assetService)
+        public AppService(IUserService userService, IAssetService assetService, IAuthService authService)
         {
             UserService = userService;
             AssetService = assetService;
+            AuthService = authService;
         }
     }
 }

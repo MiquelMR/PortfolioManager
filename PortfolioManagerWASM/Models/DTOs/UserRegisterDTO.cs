@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PortfolioManagerWASM.Models.DTOs
 {
-    public class UserRegisterDTO
+    public class UserRegisterDto
     {
         [Required(ErrorMessage = "User name is required")]
         [MaxLength(48)]

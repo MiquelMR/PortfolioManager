@@ -2,7 +2,7 @@
 
 namespace PortfolioManagerWASM.Models.DTOs
 {
-    public class UserDeleteDTO
+    public class UserDeleteDto
     { 
         [Required(ErrorMessage ="User password is required")]
         [EmailAddress]

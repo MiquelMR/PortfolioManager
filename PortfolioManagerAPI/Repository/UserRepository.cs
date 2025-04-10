@@ -16,7 +16,7 @@ namespace PortfolioManagerAPI.Repository
     {
         private readonly ApplicationDbContext _db;
 
-        public UserRepository(ApplicationDbContext db, IConfiguration config)
+        public UserRepository(ApplicationDbContext db)
         {
             _db = db;
         }
@@ -41,9 +41,9 @@ namespace PortfolioManagerAPI.Repository
             return await _db.SaveChangesAsync() > 0;
         }
 
-        public async Task<User> GetUserByEmailAsync(string email)
+        public  User GetUserByEmailAsync(string email)
         {
-            return await _db.Users.FirstOrDefaultAsync(x => x.Email == email);
+            return _db.Users.FirstOrDefault(x => x.Email == email);
         }
 
         public async Task<User> GetUserByIdAsync(int userId)

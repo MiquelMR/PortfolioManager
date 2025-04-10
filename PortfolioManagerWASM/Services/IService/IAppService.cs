@@ -4,5 +4,6 @@
     {
         IUserService UserService { get; }
         IAssetService AssetService { get; }
+        IAuthService AuthService { get; }
     }
 }

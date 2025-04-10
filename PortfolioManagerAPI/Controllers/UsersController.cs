@@ -3,10 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PortfolioManagerAPI.Models;
 using PortfolioManagerAPI.Models.DTOs;
-using PortfolioManagerAPI.Repository.IRepository;
 using PortfolioManagerAPI.Service.IService;
 using System.Net;
-using XAct;
 
 namespace PortfolioManagerAPI.Controllers
 {
@@ -75,20 +73,30 @@ namespace PortfolioManagerAPI.Controllers
             return Ok(_responseApi);
         }
 
-        [Authorize]
-        [HttpGet("{UserId:int}", Name = "GetUser")]
+        [HttpGet("by-id/{UserId}", Name = "GetUserById")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetUser(int UserId)
+        public IActionResult GetUserById(int UserId)
         {
             var userDTO = _userService.GetUserByIdAsync(UserId);
             if (userDTO == null) { return NotFound(); }
             return Ok(userDTO);
         }
 
-        [Authorize]
+        [HttpGet("by-email/{Email}", Name = "GetUserByEmail")]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetUserByEmail(string Email)
+        {
+            var userDTO = await _userService.GetUserByEmailAsync(Email);
+            if (userDTO == null) { return NotFound(); }
+            return Ok(userDTO);
+        }
+
         [HttpDelete("{email}")]
         public async Task<IActionResult> DeleteByEmail(string email)
         {

@@ -16,7 +16,8 @@ namespace PortfolioManagerAPI.Data
         {
             modelBuilder.Entity<PortfolioAsset>()
                 .HasKey(pa => new { pa.PortfolioId, pa.AssetId });
-            modelBuilder.Ignore<AssetDto>(); // Le indica a EF Core que ignore esta clase por completo
+            modelBuilder.Ignore<AssetDto>();
+            modelBuilder.Ignore<ResponseAPI>();
             base.OnModelCreating(modelBuilder);
         }
     }

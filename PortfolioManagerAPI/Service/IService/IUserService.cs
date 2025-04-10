@@ -5,8 +5,8 @@ namespace PortfolioManagerAPI.Service.IService
 {
     public interface IUserService
     {
-        Task<UserAppDto> GetUserByIdAsync(int userId);
-        Task<UserAppDto> GetUserByEmailAsync(string email);
+        Task<UserDto> GetUserByIdAsync(int userId);
+        Task<UserDto> GetUserByEmailAsync(string email);
         Task<bool> CreateUserAsync(UserRegisterDto userRegisterDto);
         Task<bool> UpdateUserAsync(UserRegisterDto userRegisterDto);
         Task<bool> DeleteUserByUserIdAsync(int userId);
