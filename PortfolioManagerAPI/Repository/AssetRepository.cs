@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PortfolioManagerAPI.Data;
 using PortfolioManagerAPI.Models;
-using PortfolioManagerAPI.Models.DTOs;
 using PortfolioManagerAPI.Repository.IRepository;
 
 namespace PortfolioManagerAPI.Repository
@@ -9,52 +8,96 @@ namespace PortfolioManagerAPI.Repository
     public class AssetRepository : IAssetRepository
     {
         private readonly ApplicationDbContext _db;
+        private readonly ILogger<AssetRepository> _logger;
 
-        public AssetRepository(ApplicationDbContext db)
+        public AssetRepository(ApplicationDbContext db, ILogger<AssetRepository> logger)
         {
             _db = db;
-        }
-        public async Task<bool> CreateAssetAsync(Asset asset)
-        {
-            _db.Assets.Add(asset);
-            return await _db.SaveChangesAsync() > 0;
-        }
-        public async Task<bool> UpdateAssetAsync(Asset asset)
-        {
-            _db.Assets.Update(asset);
-            return await _db.SaveChangesAsync() > 0;
+            _logger = logger;
         }
 
-        public async Task<bool> DeleteAssetAsync(Asset asset)
+        public async Task<bool> CreateAsync(Asset asset)
         {
-            _db.Assets.Remove(asset);
-            return await _db.SaveChangesAsync() > 0;
+            try
+            {
+                _db.Assets.Add(asset);
+                return await _db.SaveChangesAsync() > 0;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating asset");
+                return false;
+            }
         }
 
-        public async Task<bool> ExistsByIdAsync(int assetId)
+        public async Task<bool> UpdateAsync(Asset asset)
         {
-            bool result = await _db.Assets.AnyAsync(asset => asset.AssetId == assetId);
-            return result;
+            try
+            {
+                _db.Assets.Update(asset);
+                return await _db.SaveChangesAsync() > 0;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating asset");
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteByNameAsync(string name)
+        {
+            try
+            {
+                var asset = await _db.Assets.FirstOrDefaultAsync(asset => asset.Name == name);
+                if (asset == null) return false;
+
+                _db.Assets.Remove(asset);
+                return await _db.SaveChangesAsync() > 0;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting asset");
+                return false;
+            }
+        }
+
+        public async Task<Asset> GetByNameAsync(string name)
+        {
+            try
+            {
+                return await _db.Assets.FirstOrDefaultAsync(asset => asset.Name == name);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving asset");
+                return null;
+            }
+        }
+
+        public async Task<ICollection<Asset>> GetAllAsync()
+        {
+            try
+            {
+                return await _db.Assets.OrderBy(asset => asset.AssetId).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting assets");
+                return [];
+            }
         }
 
         public async Task<bool> ExistsByNameAsync(string name)
         {
-            bool result = await _db.Assets.AnyAsync(asset => asset.Name == name);
-            return result;
-        }
-
-        public async Task<Asset> GetAssetByIdAsync(int assetId)
-        {
-            return await _db.Assets.FirstOrDefaultAsync(asset => asset.AssetId == assetId);
-        }
-        public async Task<Asset> GetAssetByNameAsync(string name)
-        {
-            return await _db.Assets.FirstOrDefaultAsync(asset => asset.Name == name);
-        }
-
-        public async Task<ICollection<Asset>> GetAssetsAsync()
-        {
-            return await _db.Assets.OrderBy(asset => asset.AssetId).ToListAsync();
+            try
+            {
+                return await _db.Assets.AnyAsync(asset => asset.Name == name);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error checking asset");
+                return false;
+            }
         }
     }
 }

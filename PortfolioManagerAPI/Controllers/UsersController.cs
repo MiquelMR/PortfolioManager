@@ -15,7 +15,7 @@ namespace PortfolioManagerAPI.Controllers
         private readonly IUserService _userService;
         protected ResponseAPI _responseApi;
 
-        public UsersController(IUserService userService, IMapper mapper)
+        public UsersController(IUserService userService)
         {
             _userService = userService;
             _responseApi = new();
@@ -28,7 +28,7 @@ namespace PortfolioManagerAPI.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Register([FromBody] UserRegisterDto userRegisterDto)
         {
-            bool alreadyExists = await _userService.UserExistsByEmailAsync(userRegisterDto.Email);
+            bool alreadyExists = await _userService.ExistsByEmailAsync(userRegisterDto.Email);
             if (alreadyExists)
             {
                 _responseApi.StatusCode = HttpStatusCode.BadRequest;
@@ -37,7 +37,7 @@ namespace PortfolioManagerAPI.Controllers
                 return BadRequest(_responseApi);
             }
 
-            var success = await _userService.CreateUserAsync(userRegisterDto);
+            var success = await _userService.Register(userRegisterDto);
             if (!success)
             {
                 _responseApi.StatusCode = HttpStatusCode.InternalServerError;
@@ -73,18 +73,6 @@ namespace PortfolioManagerAPI.Controllers
             return Ok(_responseApi);
         }
 
-        // [Authorize]
-        [HttpGet("by-id/{userId}", Name = "GetUserById")]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetUserById(int userId)
-        {
-            var userDTO = _userService.GetUserByIdAsync(userId);
-            if (userDTO == null) { return NotFound(); }
-            return Ok(userDTO);
-        }
 
         // [Authorize]
         [HttpGet("by-email/{email}", Name = "GetUserByEmail")]
@@ -94,7 +82,7 @@ namespace PortfolioManagerAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetUserByEmail(string email)
         {
-            var userDTO = await _userService.GetUserByEmailAsync(email);
+            var userDTO = await _userService.GetByEmailAsync(email);
             if (userDTO == null) { return NotFound(); }
             return Ok(userDTO);
         }
@@ -107,7 +95,7 @@ namespace PortfolioManagerAPI.Controllers
             {
                 return BadRequest(new { message = "Email cannot be null or empty." });
             }
-            if (!await _userService.UserExistsByEmailAsync(email))
+            if (!await _userService.ExistsByEmailAsync(email))
             {
                 _responseApi.StatusCode = HttpStatusCode.NotFound;
                 _responseApi.IsSuccess = false;
@@ -115,7 +103,7 @@ namespace PortfolioManagerAPI.Controllers
                 return BadRequest(_responseApi);
             }
 
-            var success = await _userService.DeleteUserByEmailAsync(email);
+            var success = await _userService.DeleteByEmailAsync(email);
             if (!success)
             {
                 _responseApi.StatusCode = HttpStatusCode.InternalServerError;

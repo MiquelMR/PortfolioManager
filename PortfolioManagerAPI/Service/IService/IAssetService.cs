@@ -5,11 +5,11 @@ namespace PortfolioManagerAPI.Service.IService
 {
     public interface IAssetService
     {
-        Task<ICollection<AssetDto>> GetAssetsAsync();
-        Task<AssetDto> GetAssetByNameAsync(string name);
-        Task<bool> CreateAssetAsync(Asset asset);
-        Task<bool> UpdateAssetAsync(Asset asset);
-        Task<bool> DeleteAssetAsync(string name);
+        Task<bool> CreateAsync(AssetDto asset);
+        Task<bool> UpdateAsync(AssetDto asset);
+        Task<bool> DeleteAsync(string name);
+        Task<AssetDto> GetByNameAsync(string name);
+        Task<ICollection<AssetDto>> GetAllAsync();
         Task<bool> ExistsByNameAsync(string name);
     }
 }
