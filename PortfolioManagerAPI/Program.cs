@@ -22,6 +22,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Add services to the container.
 builder.Services.AddScoped<IAssetRepository, AssetRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IAssetService, AssetService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddAutoMapper(typeof(PortfolioManagerMapper));
 
@@ -96,6 +97,9 @@ builder.Services.AddCors(p =>
         build.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
     });
 });
+
+// Logger
+builder.Logging.AddDebug();
 
 var app = builder.Build();
 

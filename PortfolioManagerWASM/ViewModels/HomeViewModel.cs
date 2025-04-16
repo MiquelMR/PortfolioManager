@@ -25,6 +25,7 @@ namespace PortfolioManagerWASM.ViewModels
         public async Task InitAsync()
         {
             User = await GetUserAsync();
+            Assets = (List<Asset>)await _AppService.AssetService.GetAssets();
         }
 
         public void Logout()

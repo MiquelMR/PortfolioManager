@@ -24,7 +24,7 @@ namespace PortfolioManagerAPI.Service
             secretKey = config.GetValue<string>("ApiSettings:Secret");
         }
 
-        public async Task<bool> CreateUserAsync(UserRegisterDto userRegisterDto)
+        public async Task<bool> Register(UserRegisterDto userRegisterDto)
         {
 
             var (hashedPassword, salt) = PasswordHelper.HashPassword(userRegisterDto.Password);
@@ -32,36 +32,11 @@ namespace PortfolioManagerAPI.Service
             user.Password = hashedPassword;
             user.Salt = salt;
 
-            return await _userRepository.CreateUserAsync(user);
+            return await _userRepository.CreateAsync(user);
         }
-
-        public async Task<bool> DeleteUserByEmailAsync(string email)
-        {
-            return await _userRepository.DeleteUserByEmailAsync(email);
-        }
-
-        public async Task<bool> DeleteUserByUserIdAsync(int userId)
-        {
-            return await _userRepository.DeleteUserByIdAsync(userId);
-        }
-
-        public async Task<UserDto> GetUserByEmailAsync(string email)
-        {
-            var user = await _userRepository.GetUserByEmailAsync(email);
-            var userDto = _mapper.Map<UserDto>(user);
-            return userDto;
-        }
-
-        public async Task<UserDto> GetUserByIdAsync(int userId)
-        {
-            var user = await _userRepository.GetUserByIdAsync(userId);
-            var userAppDto = _mapper.Map<UserDto>(user);
-            return userAppDto;
-        }
-
         public async Task<UserLoginResponseDto> Login(UserLoginDto userLoginDto)
         {
-            var user = await _userRepository.GetUserByEmailAsync(userLoginDto.Email);
+            var user = await _userRepository.GetByEmailAsync(userLoginDto.Email);
             if (user == null || !PasswordHelper.VerifyPassword(userLoginDto.Password, user.Salt, user.Password))
             {
                 return new UserLoginResponseDto()
@@ -93,22 +68,28 @@ namespace PortfolioManagerAPI.Service
 
             return userLoginResponseDto;
         }
-
-        public async Task<bool> UpdateUserAsync(UserRegisterDto userRegisterDto)
+        public async Task<bool> UpdateAsync(UserRegisterDto userRegisterDto)
         {
-            var user = _userRepository.GetUserByEmailAsync(userRegisterDto.Email);
+            var user = _userRepository.GetByEmailAsync(userRegisterDto.Email);
             var updatedUser = _mapper.Map<User>(user);
-            return await _userRepository.UpdateUserAsync(updatedUser);
+            return await _userRepository.UpdateAsync(updatedUser);
         }
 
-        public async Task<bool> UserExistsByEmailAsync(string email)
+        public async Task<bool> DeleteByEmailAsync(string email)
         {
-            return await _userRepository.UserExistsByEmailAsync(email);
+            return await _userRepository.DeleteByEmailAsync(email);
         }
 
-        public async Task<bool> UserExistsByIdAsync(int userId)
+        public async Task<UserDto> GetByEmailAsync(string email)
         {
-            return await _userRepository.UserExistsByIdAsync(userId);
+            var user = await _userRepository.GetByEmailAsync(email);
+            var userDto = _mapper.Map<UserDto>(user);
+            return userDto;
+        }
+
+        public async Task<bool> ExistsByEmailAsync(string email)
+        {
+            return await _userRepository.ExistsByEmailAsync(email);
         }
     }
 }

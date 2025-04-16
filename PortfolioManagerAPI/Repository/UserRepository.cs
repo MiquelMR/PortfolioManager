@@ -1,70 +1,92 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using PortfolioManagerAPI.Data;
-using PortfolioManagerAPI.Helpers;
 using PortfolioManagerAPI.Models;
-using PortfolioManagerAPI.Models.DTOs;
 using PortfolioManagerAPI.Repository.IRepository;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using XSystem.Security.Cryptography;
+
 
 namespace PortfolioManagerAPI.Repository
 {
     public class UserRepository : IUserRepository
     {
         private readonly ApplicationDbContext _db;
+        private readonly ILogger<UserRepository> _logger;
 
-        public UserRepository(ApplicationDbContext db)
+        public UserRepository(ApplicationDbContext db, ILogger<UserRepository> logger)
         {
             _db = db;
+            _logger = logger;
         }
 
-        public async Task<bool> CreateUserAsync(User user)
+        public async Task<bool> CreateAsync(User user)
         {
-            _db.Users.Add(user);
-            return await _db.SaveChangesAsync() > 0;
+            try
+            {
+                _db.Add(user);
+                return await _db.SaveChangesAsync() > 0;
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError(ex, "Error creating user");
+                return false;
+            }
         }
 
-        public async Task<bool> DeleteUserByEmailAsync(string email)
+        public async Task<bool> DeleteByEmailAsync(string email)
         {
-            var user = await _db.Users.FirstOrDefaultAsync(x => x.Email == email);
-            _db.Users.Remove(user);
-            return await _db.SaveChangesAsync() > 0;
+            try
+            {
+                var user = await _db.Users.FirstOrDefaultAsync(user => user.Email == email);
+                if (user == null) return false;
+
+                _db.Remove(user);
+                return await _db.SaveChangesAsync() > 0;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting user");
+                return false;
+            }
         }
 
-        public async Task<bool> DeleteUserByIdAsync(int userId)
+        public async Task<User> GetByEmailAsync(string email)
         {
-            var user = await _db.Users.FirstOrDefaultAsync(x => x.UserId == userId);
-            _db.Users.Remove(user);
-            return await _db.SaveChangesAsync() > 0;
+            try
+            {
+                return await _db.Users.FirstOrDefaultAsync(user => user.Email == email);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving user");
+                return null;
+            }
         }
 
-        public async Task<User> GetUserByEmailAsync(string email)
+        public async Task<bool> UpdateAsync(User user)
         {
-            return await _db.Users.FirstOrDefaultAsync(x => x.Email == email);
+            try
+            {
+                _db.Update(user);
+                return await _db.SaveChangesAsync() > 0;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating user");
+                return false;
+            }
         }
 
-        public async Task<User> GetUserByIdAsync(int userId)
+        public async Task<bool> ExistsByEmailAsync(string email)
         {
-            return await _db.Users.FirstOrDefaultAsync(x => x.UserId == userId);
-        }
-
-        public async Task<bool> UpdateUserAsync(User user)
-        {
-            _db.Users.Update(user);
-            return await _db.SaveChangesAsync() > 0;
-        }
-
-        public async Task<bool> UserExistsByEmailAsync(string email)
-        {
-            return await _db.Users.AnyAsync(x => x.Email == email);
-        }
-
-        public async Task<bool> UserExistsByIdAsync(int userId)
-        {
-            return await _db.Users.AnyAsync(x => x.UserId == userId);
+            try
+            {
+                return await _db.Users.AnyAsync(u => u.Email == email);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error checking user");
+                return false;
+            }
         }
     }
 }
