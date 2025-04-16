@@ -7,7 +7,7 @@ using PortfolioManagerAPI.Repository.IRepository;
 
 namespace PortfolioManagerAPI.Controllers
 {
-    [Authorize]
+    // [Authorize]
     [Route("api/assets")]
     [ApiController]
     public class AssetController : ControllerBase
