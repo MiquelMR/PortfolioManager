@@ -41,9 +41,9 @@ namespace PortfolioManagerAPI.Repository
             return await _db.SaveChangesAsync() > 0;
         }
 
-        public  User GetUserByEmailAsync(string email)
+        public async Task<User> GetUserByEmailAsync(string email)
         {
-            return _db.Users.FirstOrDefault(x => x.Email == email);
+            return await _db.Users.FirstOrDefaultAsync(x => x.Email == email);
         }
 
         public async Task<User> GetUserByIdAsync(int userId)

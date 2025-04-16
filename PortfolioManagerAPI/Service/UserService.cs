@@ -47,7 +47,7 @@ namespace PortfolioManagerAPI.Service
 
         public async Task<UserDto> GetUserByEmailAsync(string email)
         {
-            var user =  _userRepository.GetUserByEmailAsync(email);
+            var user = await _userRepository.GetUserByEmailAsync(email);
             var userDto = _mapper.Map<UserDto>(user);
             return userDto;
         }
@@ -61,7 +61,7 @@ namespace PortfolioManagerAPI.Service
 
         public async Task<UserLoginResponseDto> Login(UserLoginDto userLoginDto)
         {
-            var user = _userRepository.GetUserByEmailAsync(userLoginDto.Email);
+            var user = await _userRepository.GetUserByEmailAsync(userLoginDto.Email);
             if (user == null || !PasswordHelper.VerifyPassword(userLoginDto.Password, user.Salt, user.Password))
             {
                 return new UserLoginResponseDto()
@@ -85,7 +85,7 @@ namespace PortfolioManagerAPI.Service
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            UserLoginResponseDto userLoginResponseDto = new UserLoginResponseDto()
+            UserLoginResponseDto userLoginResponseDto = new()
             {
                 Token = tokenHandler.WriteToken(token),
                 UserLoginDto = _mapper.Map<UserLoginDto>(user)
@@ -96,7 +96,7 @@ namespace PortfolioManagerAPI.Service
 
         public async Task<bool> UpdateUserAsync(UserRegisterDto userRegisterDto)
         {
-            var user =  _userRepository.GetUserByEmailAsync(userRegisterDto.Email);
+            var user = _userRepository.GetUserByEmailAsync(userRegisterDto.Email);
             var updatedUser = _mapper.Map<User>(user);
             return await _userRepository.UpdateUserAsync(updatedUser);
         }

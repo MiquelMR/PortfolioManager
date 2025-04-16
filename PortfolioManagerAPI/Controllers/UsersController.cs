@@ -73,6 +73,7 @@ namespace PortfolioManagerAPI.Controllers
             return Ok(_responseApi);
         }
 
+        // [Authorize]
         [HttpGet("by-id/{UserId}", Name = "GetUserById")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -85,6 +86,7 @@ namespace PortfolioManagerAPI.Controllers
             return Ok(userDTO);
         }
 
+        // [Authorize]
         [HttpGet("by-email/{Email}", Name = "GetUserByEmail")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -97,6 +99,7 @@ namespace PortfolioManagerAPI.Controllers
             return Ok(userDTO);
         }
 
+        // [Authorize]
         [HttpDelete("{email}")]
         public async Task<IActionResult> DeleteByEmail(string email)
         {
