@@ -21,7 +21,7 @@ namespace PortfolioManagerAPI.Repository
             _db = db;
         }
 
-        public async Task<bool> AddUserAsync(User user)
+        public async Task<bool> CreateUserAsync(User user)
         {
             _db.Users.Add(user);
             return await _db.SaveChangesAsync() > 0;

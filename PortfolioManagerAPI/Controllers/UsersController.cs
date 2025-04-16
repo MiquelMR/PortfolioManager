@@ -74,27 +74,27 @@ namespace PortfolioManagerAPI.Controllers
         }
 
         // [Authorize]
-        [HttpGet("by-id/{UserId}", Name = "GetUserById")]
+        [HttpGet("by-id/{userId}", Name = "GetUserById")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetUserById(int UserId)
+        public IActionResult GetUserById(int userId)
         {
-            var userDTO = _userService.GetUserByIdAsync(UserId);
+            var userDTO = _userService.GetUserByIdAsync(userId);
             if (userDTO == null) { return NotFound(); }
             return Ok(userDTO);
         }
 
         // [Authorize]
-        [HttpGet("by-email/{Email}", Name = "GetUserByEmail")]
+        [HttpGet("by-email/{email}", Name = "GetUserByEmail")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetUserByEmail(string Email)
+        public async Task<IActionResult> GetUserByEmail(string email)
         {
-            var userDTO = await _userService.GetUserByEmailAsync(Email);
+            var userDTO = await _userService.GetUserByEmailAsync(email);
             if (userDTO == null) { return NotFound(); }
             return Ok(userDTO);
         }

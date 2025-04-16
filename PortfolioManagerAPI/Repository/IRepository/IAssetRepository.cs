@@ -1,17 +1,16 @@
 ﻿using PortfolioManagerAPI.Models;
-using PortfolioManagerAPI.Models.DTOs;
 
 namespace PortfolioManagerAPI.Repository.IRepository
 {
     public interface IAssetRepository
     {
-        ICollection<Asset> GetAsset();
-        Asset GetAssetById(int AssetId);
-        bool ExistsById(int AssetId);
-
-        bool CreateAsset(Asset asset);
-        bool UpdateAsset(Asset asset);
-        bool DeleteAsset(Asset asset);
-        bool Save();
+        Task<ICollection<Asset>> GetAssetsAsync();
+        Task<Asset> GetAssetByIdAsync(int assetId);
+        Task<Asset> GetAssetByNameAsync(string name);
+        Task<bool> ExistsByIdAsync(int assetId);
+        Task<bool> ExistsByNameAsync(string name);
+        Task<bool> CreateAssetAsync(Asset asset);
+        Task<bool> UpdateAssetAsync(Asset asset);
+        Task<bool> DeleteAssetByNameAsync(string name);
     }
 }

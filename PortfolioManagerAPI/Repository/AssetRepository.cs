@@ -1,4 +1,5 @@
-﻿using PortfolioManagerAPI.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using PortfolioManagerAPI.Data;
 using PortfolioManagerAPI.Models;
 using PortfolioManagerAPI.Models.DTOs;
 using PortfolioManagerAPI.Repository.IRepository;
@@ -13,43 +14,47 @@ namespace PortfolioManagerAPI.Repository
         {
             _db = db;
         }
-        public bool CreateAsset(Asset asset)
+        public async Task<bool> CreateAssetAsync(Asset asset)
         {
             _db.Assets.Add(asset);
-            return Save();
+            return await _db.SaveChangesAsync() > 0;
+        }
+        public async Task<bool> UpdateAssetAsync(Asset asset)
+        {
+            _db.Assets.Update(asset);
+            return await _db.SaveChangesAsync() > 0;
         }
 
-        public bool DeleteAsset(Asset asset)
+        public async Task<bool> DeleteAssetAsync(Asset asset)
         {
             _db.Assets.Remove(asset);
-            return Save();
+            return await _db.SaveChangesAsync() > 0;
         }
 
-        public bool ExistsById(int AssetId)
+        public async Task<bool> ExistsByIdAsync(int assetId)
         {
-            bool result = _db.Assets.Any(asset => asset.AssetId == AssetId);
+            bool result = await _db.Assets.AnyAsync(asset => asset.AssetId == assetId);
             return result;
         }
 
-        public Asset GetAssetById(int AssetId)
+        public async Task<bool> ExistsByNameAsync(string name)
         {
-            return _db.Assets.FirstOrDefault(asset => asset.AssetId == AssetId);
+            bool result = await _db.Assets.AnyAsync(asset => asset.Name == name);
+            return result;
         }
 
-        public ICollection<Asset> GetAsset()
+        public async Task<Asset> GetAssetByIdAsync(int assetId)
         {
-            return _db.Assets.OrderBy(asset => asset.AssetId).ToList();
+            return await _db.Assets.FirstOrDefaultAsync(asset => asset.AssetId == assetId);
+        }
+        public async Task<Asset> GetAssetByNameAsync(string name)
+        {
+            return await _db.Assets.FirstOrDefaultAsync(asset => asset.Name == name);
         }
 
-        public bool Save()
+        public async Task<ICollection<Asset>> GetAssetsAsync()
         {
-            return _db.SaveChanges() > 0;
-        }
-
-        public bool UpdateAsset(Asset asset)
-        {
-            _db.Assets.Update(asset);
-            return Save();
+            return await _db.Assets.OrderBy(asset => asset.AssetId).ToListAsync();
         }
     }
 }
