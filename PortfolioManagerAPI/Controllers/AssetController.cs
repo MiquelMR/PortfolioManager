@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using PortfolioManagerAPI.Models;
 using PortfolioManagerAPI.Models.DTOs;
 using PortfolioManagerAPI.Repository.IRepository;
+using System.Security.AccessControl;
+using XAct;
 
 namespace PortfolioManagerAPI.Controllers
 {
@@ -24,27 +26,35 @@ namespace PortfolioManagerAPI.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult GetAssets()
+        public async Task<IActionResult> GetAssets()
         {
-            var assetList = _assetRepository.GetAsset();
-            var assetDtoList = new List<AssetDto>();
-            foreach (var asset in assetList)
-            {
-                assetDtoList.Add(_mapper.Map<AssetDto>(asset));
-            }
+            var assetList = await _assetRepository.GetAssetsAsync();
+            var assetDtoList = _mapper.Map<List<AssetDto>>(assetList);
             return Ok(assetDtoList);
         }
 
-        [HttpGet("{AssetId:int}", Name = "GetAsset")]
+        [HttpGet("/assetById/{AssetId:int}", Name = "GetAssetById")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetAsset(int AssetId)
+        public async Task<IActionResult> GetAssetById(int assetId)
         {
-            var asset = _assetRepository.GetAssetById(AssetId);
+            var asset = await _assetRepository.GetAssetByIdAsync(assetId);
             if (asset == null) { return NotFound(); }
+            var assetDto = _mapper.Map<AssetDto>(asset);
+            return Ok(assetDto);
+        }
 
+        [HttpGet("/assetByName/{Name}", Name = "GetAssetByName")]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetAssetByName(string name)
+        {
+            var asset = await _assetRepository.GetAssetByNameAsync(name);
+            if (asset == null) { return NotFound(); }
             var assetDto = _mapper.Map<AssetDto>(asset);
             return Ok(assetDto);
         }
@@ -55,30 +65,30 @@ namespace PortfolioManagerAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult CreateAsset([FromBody] AssetDto assetDto)
+        public async Task<IActionResult> CreateAsset([FromBody] AssetDto assetDto)
         {
             if (assetDto == null)
             {
-                return BadRequest("User data is null");
+                return BadRequest("Asset data is null");
             }
 
             if (!ModelState.IsValid)
             {
-                return BadRequest("User data is invalid");
+                return BadRequest("Asset data is invalid");
             }
 
             var asset = _mapper.Map<Asset>(assetDto);
 
-            if (_assetRepository.ExistsById(asset.AssetId))
+            if (await _assetRepository.ExistsByIdAsync(asset.AssetId))
             {
                 ModelState.AddModelError("", "User already exists");
                 return StatusCode(409, ModelState);
             }
-            _assetRepository.CreateAsset(asset);
-            return CreatedAtRoute("GetAsset", new { AssetId = asset.AssetId }, asset);
+            await _assetRepository.CreateAssetAsync(asset);
+            return CreatedAtRoute("GetAsset", new { asset.AssetId }, asset);
         }
 
-        [HttpPatch("{AssetId:int}", Name = "UpdatePatchAsset")]
+        [HttpPatch("{Name}", Name = "UpdatePatchAsset")]
         [ProducesResponseType(201, Type = typeof(AssetDto))]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -98,7 +108,7 @@ namespace PortfolioManagerAPI.Controllers
 
             var asset = _mapper.Map<Asset>(assetDto);
 
-            if (!_assetRepository.UpdateAsset(asset))
+            if (!_assetRepository.UpdateAssetAsync(asset))
             {
                 ModelState.AddModelError("", "Asset not found");
                 return StatusCode(404, ModelState);
@@ -114,13 +124,13 @@ namespace PortfolioManagerAPI.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult DeleteAsset(int AssetId)
         {
-            if (!_assetRepository.ExistsById(AssetId))
+            if (!_assetRepository.ExistsByIdAsync(AssetId))
             {
                 ModelState.AddModelError("", "Asset not found");
                 return StatusCode(404, ModelState);
             }
 
-            var user = _assetRepository.GetAssetById(AssetId);
+            var user = _assetRepository.GetAssetByIdAsync(AssetId);
             _assetRepository.DeleteAsset(user);
             return NoContent();
         }

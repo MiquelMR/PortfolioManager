@@ -32,7 +32,7 @@ namespace PortfolioManagerAPI.Service
             user.Password = hashedPassword;
             user.Salt = salt;
 
-            return await _userRepository.AddUserAsync(user);
+            return await _userRepository.CreateUserAsync(user);
         }
 
         public async Task<bool> DeleteUserByEmailAsync(string email)
