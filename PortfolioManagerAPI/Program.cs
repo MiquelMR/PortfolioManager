@@ -19,16 +19,23 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     new MySqlServerVersion(new Version(8, 0, 25)));
 });
 
-// Add services to the container.
+// Repositories
 builder.Services.AddScoped<IAssetRepository, AssetRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IPortfolioRepository, PortfolioRepository>();
+
+// Services
 builder.Services.AddScoped<IAssetService, AssetService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IImageService, ImageService>();
+builder.Services.AddScoped<IPortfolioService, PortfolioService>();
+
+// Auto-Mapper
 builder.Services.AddAutoMapper(typeof(PortfolioManagerMapper));
 
 var key = builder.Configuration.GetValue<string>("ApiSettings:Secret");
 
+// Authentication
 builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -46,6 +53,7 @@ builder.Services.AddAuthentication(x =>
     };
 });
 
+// Controllers
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

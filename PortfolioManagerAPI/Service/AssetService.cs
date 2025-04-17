@@ -76,20 +76,6 @@ namespace PortfolioManagerAPI.Service
             }
         }
 
-        public async Task<ICollection<AssetDto>> GetAllAsync()
-        {
-            try
-            {
-                var assets = await _assetRepository.GetAllAsync();
-                return _mapper.Map<List<AssetDto>>(assets);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error retrieving assets");
-                throw new Exception("An error occurred while retrieving all assets.", ex);
-            }
-        }
-
         public async Task<AssetDto> GetByNameAsync(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -106,6 +92,19 @@ namespace PortfolioManagerAPI.Service
             {
                 _logger.LogError(ex, "Error retrieving asset");
                 throw new Exception($"An error occurred while retrieving the asset with name: {name}.", ex);
+            }
+        }
+        public async Task<ICollection<AssetDto>> GetAllAsync()
+        {
+            try
+            {
+                var assets = await _assetRepository.GetAllAsync();
+                return _mapper.Map<List<AssetDto>>(assets);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving assets");
+                throw new Exception("An error occurred while retrieving all assets.", ex);
             }
         }
 
