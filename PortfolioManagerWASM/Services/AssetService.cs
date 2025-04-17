@@ -33,11 +33,11 @@ namespace PortfolioManagerWASM.Services
                 throw new Exception(errorModel.ErrorMessage);
             }
         }
-        public async Task<Asset> UpdateAsset(int AssetId, Asset asset)
+        public async Task<Asset> UpdateAsset(int assetId, Asset asset)
         {
             var body = JsonConvert.SerializeObject(asset);
             var bodyContent = new StringContent(body, Encoding.UTF8, "application/json");
-            var response = await _httpClient.PatchAsync($"{Initialize.UrlBaseApi}api/assets/{AssetId}", bodyContent);
+            var response = await _httpClient.PatchAsync($"{Initialize.UrlBaseApi}api/assets/{assetId}", bodyContent);
             if (response.IsSuccessStatusCode)
             {
                 var contentTemp = await response.Content.ReadAsStringAsync();
@@ -52,9 +52,9 @@ namespace PortfolioManagerWASM.Services
             }
         }
 
-        public async Task<bool> DeleteAsset(int AssetId)
+        public async Task<bool> DeleteAsset(int assetId)
         {
-            var response = await _httpClient.DeleteAsync($"{Initialize.UrlBaseApi}api/assets/{AssetId}");
+            var response = await _httpClient.DeleteAsync($"{Initialize.UrlBaseApi}api/assets/{assetId}");
             if (response.IsSuccessStatusCode)
             {
                 return true;
@@ -67,9 +67,9 @@ namespace PortfolioManagerWASM.Services
             }
         }
 
-        public async Task<Asset> GetAsset(int AssetId)
+        public async Task<Asset> GetAsset(int assetId)
         {
-            var response = await _httpClient.GetAsync($"{Initialize.UrlBaseApi}api/assets/{AssetId}");
+            var response = await _httpClient.GetAsync($"{Initialize.UrlBaseApi}api/assets/{assetId}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();

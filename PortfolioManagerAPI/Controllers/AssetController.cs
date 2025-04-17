@@ -1,13 +1,6 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using PortfolioManagerAPI.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 using PortfolioManagerAPI.Models.DTOs;
-using PortfolioManagerAPI.Repository.IRepository;
 using PortfolioManagerAPI.Service.IService;
-using System.Security.AccessControl;
-using System.Threading.Tasks;
-using XAct;
 
 namespace PortfolioManagerAPI.Controllers
 {
@@ -99,7 +92,7 @@ namespace PortfolioManagerAPI.Controllers
             return NoContent();
         }
 
-        [HttpGet("/{Name}", Name = "GetAssetByName")]
+        [HttpGet("{Name}", Name = "GetAssetByName")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

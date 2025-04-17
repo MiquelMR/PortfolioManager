@@ -26,21 +26,22 @@
     </tbody>
 </table>
 
-@foreach (Asset asset in Assets)
-{
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Name</th>
-            </tr>
-        </thead>
-        <tbody>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Asset asset in Assets)
+        {
             <tr>
                 <td>@asset.Name</td>
+                <td><img src="@Image" alt="Icon" /></td>
             </tr>
-        </tbody>
-    </table>
-}
+        }
+    </tbody>
+</table>
 
 
 <button type="button" class="btn btn-danger" onclick="@Logout">

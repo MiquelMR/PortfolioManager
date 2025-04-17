@@ -7,12 +7,14 @@ namespace PortfolioManagerWASM.Services
         public IUserService UserService { get; }
         public IAssetService AssetService { get; }
         public IAuthService AuthService { get; }
+        public IImageService ImageService { get; }
 
-        public AppService(IUserService userService, IAssetService assetService, IAuthService authService)
+        public AppService(IUserService userService, IAssetService assetService, IAuthService authService, IImageService imageService)
         {
             UserService = userService;
             AssetService = assetService;
             AuthService = authService;
+            ImageService = imageService;
         }
     }
 }

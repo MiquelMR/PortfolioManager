@@ -20,6 +20,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAssetService, AssetService>();
 builder.Services.AddScoped<IAppService, AppService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<RegisterFormViewModel>();
 builder.Services.AddScoped<LoginFormViewModel>();
 builder.Services.AddScoped<HomeViewModel>();
