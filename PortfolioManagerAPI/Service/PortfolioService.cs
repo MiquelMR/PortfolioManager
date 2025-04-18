@@ -12,13 +12,15 @@ namespace PortfolioManagerAPI.Service
     {
         private readonly IPortfolioRepository _portfolioRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IPortfolioAssetsRepository _portfolioAssetsRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<AssetService> _logger;
 
-        public PortfolioService(IPortfolioRepository portfolioRepository, IUserRepository userRepository, IMapper mapper, ILogger<AssetService> logger)
+        public PortfolioService(IPortfolioRepository portfolioRepository, IUserRepository userRepository, IPortfolioAssetsRepository portfolioAssetsRepository, IMapper mapper, ILogger<AssetService> logger)
         {
             _portfolioRepository = portfolioRepository;
             _userRepository = userRepository;
+            _portfolioAssetsRepository = portfolioAssetsRepository;
             _mapper = mapper;
             _logger = logger;
         }
@@ -121,8 +123,17 @@ namespace PortfolioManagerAPI.Service
 
             try
             {
+                var portfoliosDto = new List<PortfolioDto>();
                 var portfolios = await _portfolioRepository.GetAllByUserAsync(userEmail);
-                return _mapper.Map<List<PortfolioDto>>(portfolios);
+                foreach (var portfolio in portfolios)
+                {
+                    var portfolioAssets = await _portfolioAssetsRepository.GetAllByPortfolioAsync(portfolio.PortfolioId);
+                    var portfolioDto = _mapper.Map<PortfolioDto>(portfolio);
+                    portfolioDto.PortfolioAssets = portfolioAssets;
+
+                    portfoliosDto.Add(portfolioDto);
+                }
+                return portfoliosDto;
             }
             catch (Exception ex)
             {

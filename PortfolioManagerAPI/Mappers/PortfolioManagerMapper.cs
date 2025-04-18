@@ -13,7 +13,15 @@ namespace PortfolioManagerAPI.Mappers
             CreateMap<User, UserRegisterDto>().ReverseMap();
             CreateMap<User, UserDto>().ReverseMap();
             CreateMap<Asset, AssetDto>().ReverseMap();
-            CreateMap<Portfolio, PortfolioDto>().ReverseMap();
+
+            CreateMap<Portfolio, PortfolioDto>()
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
+                .ForMember(dest => dest.Author, opt => opt.MapFrom(src => src.Author))
+                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description));
+
+            CreateMap<PortfolioAsset, PortfolioDto>()
+                .ForMember(dest => dest.PortfolioAssets, opt => opt.MapFrom(src => src));
         }
     }
 }

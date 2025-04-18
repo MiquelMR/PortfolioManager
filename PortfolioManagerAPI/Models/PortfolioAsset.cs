@@ -8,12 +8,8 @@ namespace PortfolioManagerAPI.Models
     {
         public int PortfolioId { get; set; }
         public int AssetId { get; set; }
-
-        // Additional Property
         [Required]
         public float AllocationPercentage { get; set; }
-
-        // Navigation Properties
         [ForeignKey(nameof(PortfolioId))]
         public Portfolio Portfolio { get; set; }
 
