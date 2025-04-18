@@ -1,10 +1,7 @@
 ﻿using Blazored.LocalStorage;
 using PortfolioManagerWASM.Helpers;
 using PortfolioManagerWASM.Models;
-using PortfolioManagerWASM.Models.DTOs;
 using PortfolioManagerWASM.Services.IService;
-using System.Runtime.CompilerServices;
-using System.Text.Json;
 
 namespace PortfolioManagerWASM.ViewModels
 {
@@ -15,6 +12,9 @@ namespace PortfolioManagerWASM.ViewModels
 
         public User User { get; set; }
         public List<Asset> Assets { get; set; }
+        public string Image { get; set; }
+        public List<Portfolio> Portfolios { get; set; }
+
 
         public HomeViewModel(IAppService AppService, ILocalStorageService localStorage)
         {
@@ -26,6 +26,8 @@ namespace PortfolioManagerWASM.ViewModels
         {
             User = await GetUserAsync();
             Assets = (List<Asset>)await _AppService.AssetService.GetAssets();
+            Image = await _AppService.ImageService.GetImageByName("gold.jpg");
+            Portfolios = (await _AppService.PortfolioService.GetAllByUserAsync(User.Email)).ToList();
         }
 
         public void Logout()
