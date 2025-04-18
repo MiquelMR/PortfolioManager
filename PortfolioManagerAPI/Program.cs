@@ -13,6 +13,7 @@ using PortfolioManagerAPI.Service.IService;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Database
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseMySql(builder.Configuration.GetConnectionString("DbConnection"),

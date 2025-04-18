@@ -1,9 +1,8 @@
-﻿using PortfolioManagerAPI.Models.DTOs;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace PortfolioManagerAPI.Models
+namespace PortfolioManagerWASM.Models
 {
-    public class PortfolioDto
+    public class Portfolio
     {
         [Required]
         [MaxLength(48)]

@@ -5,6 +5,7 @@ using PortfolioManagerAPI.Repository;
 using PortfolioManagerAPI.Repository.IRepository;
 using PortfolioManagerAPI.Service.IService;
 using System.Xml.Linq;
+using XAct;
 
 namespace PortfolioManagerAPI.Service
 {
@@ -12,17 +13,19 @@ namespace PortfolioManagerAPI.Service
     {
         private readonly IPortfolioRepository _portfolioRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IAssetRepository _assetRepository;
         private readonly IPortfolioAssetsRepository _portfolioAssetsRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<AssetService> _logger;
 
-        public PortfolioService(IPortfolioRepository portfolioRepository, IUserRepository userRepository, IPortfolioAssetsRepository portfolioAssetsRepository, IMapper mapper, ILogger<AssetService> logger)
+        public PortfolioService(IPortfolioRepository portfolioRepository, IUserRepository userRepository, IPortfolioAssetsRepository portfolioAssetsRepository, IMapper mapper, ILogger<AssetService> logger, IAssetRepository assetRepository)
         {
             _portfolioRepository = portfolioRepository;
             _userRepository = userRepository;
             _portfolioAssetsRepository = portfolioAssetsRepository;
             _mapper = mapper;
             _logger = logger;
+            _assetRepository = assetRepository;
         }
 
         public async Task<bool> CreateAsync(PortfolioDto portfolioDto, string userEmail)
@@ -105,7 +108,7 @@ namespace PortfolioManagerAPI.Service
             try
             {
                 var portfolios = await _portfolioRepository.GetAllAsync();
-                return _mapper.Map<List<PortfolioDto>>(portfolios);
+                return _mapper.Map<ICollection<PortfolioDto>>(portfolios);
             }
             catch (Exception ex)
             {
@@ -123,16 +126,8 @@ namespace PortfolioManagerAPI.Service
 
             try
             {
-                var portfoliosDto = new List<PortfolioDto>();
                 var portfolios = await _portfolioRepository.GetAllByUserAsync(userEmail);
-                foreach (var portfolio in portfolios)
-                {
-                    var portfolioAssets = await _portfolioAssetsRepository.GetAllByPortfolioAsync(portfolio.PortfolioId);
-                    var portfolioDto = _mapper.Map<PortfolioDto>(portfolio);
-                    portfolioDto.PortfolioAssets = portfolioAssets;
-
-                    portfoliosDto.Add(portfolioDto);
-                }
+                var portfoliosDto = _mapper.Map<ICollection<PortfolioDto>>(portfolios);
                 return portfoliosDto;
             }
             catch (Exception ex)

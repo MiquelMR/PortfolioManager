@@ -61,6 +61,18 @@ namespace PortfolioManagerAPI.Repository
             }
         }
 
+        public async Task<Asset> GetByIdAsync(int assetId)
+        {
+            try
+            {
+                return await _db.Assets.FirstOrDefaultAsync(asset => asset.AssetId == assetId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving asset");
+                return null;
+            }
+        }
         public async Task<Asset> GetByNameAsync(string name)
         {
             try

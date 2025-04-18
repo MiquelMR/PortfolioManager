@@ -2,6 +2,7 @@
 using PortfolioManagerAPI.Data;
 using PortfolioManagerAPI.Models;
 using PortfolioManagerAPI.Repository.IRepository;
+using System.Threading;
 using System.Xml.Linq;
 
 namespace PortfolioManagerAPI.Repository
@@ -56,8 +57,10 @@ namespace PortfolioManagerAPI.Repository
             try
             {
                 return await _db.PortfolioAssets
-                    .OrderBy(portfolioAsset => portfolioAsset.PortfolioId)
-                    .Where(portfolioAsset => portfolioAsset.PortfolioId == portfolioId).ToListAsync();
+                    .Include(pa => pa.Portfolio)
+                    .Include(pa => pa.Asset)
+                    .Where(pa => pa.PortfolioId == portfolioId)
+                    .ToListAsync();
             }
             catch (Exception ex)
             {

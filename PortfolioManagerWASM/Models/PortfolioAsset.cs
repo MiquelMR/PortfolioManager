@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace PortfolioManagerAPI.Models
+namespace PortfolioManagerWASM.Models
 {
     public class PortfolioAsset
     {

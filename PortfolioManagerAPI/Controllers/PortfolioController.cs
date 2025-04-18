@@ -108,7 +108,7 @@ namespace PortfolioManagerAPI.Controllers
         [HttpGet("byUserEmail/{userEmail}", Name = "GetPortfoliosByUserEmail")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetPortfoliosByUser(string userEmail)
+        public async Task<IActionResult> GetAllByUser(string userEmail)
         {
             var portfolioDtoList = await _portfolioService.GetAllByUserAsync(userEmail);
             if (portfolioDtoList == null) { return NotFound(); }
@@ -118,7 +118,7 @@ namespace PortfolioManagerAPI.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetPortfolios()
+        public async Task<IActionResult> GetAll()
         {
             var portfolioDtoList = await _portfolioService.GetAllAsync();
             if (portfolioDtoList == null) { return NotFound(); }
