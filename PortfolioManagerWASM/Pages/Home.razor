@@ -6,7 +6,6 @@
 @attribute [Authorize]
 
 @page "/"
-@page "/home"
 <PageTitle>Home</PageTitle>
 
 <table class="table table-striped">
@@ -38,6 +37,7 @@
             <tr>
                 <td>@asset.Name</td>
                 <td><img src="@Image" alt="Icon" /></td>
+                <td><img src="@Image" alt="Icon" /></td>
             </tr>
         }
     </tbody>
@@ -63,14 +63,6 @@
         }
     </tbody>
 </table>
-
-<h3 class="text-primary">Portfolio Assets</h3>
-<ul class="list-group">
-    <li class="list-group-item"></li>
-    <li class="list-group-item"></li>
-    <li class="list-group-item"></li>
-</ul>
-
 
 <button type="button" class="btn btn-danger" onclick="@Logout">
     Logout

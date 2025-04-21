@@ -26,7 +26,7 @@ namespace PortfolioManagerWASM.ViewModels
         {
             User = await GetUserAsync();
             Assets = (List<Asset>)await _AppService.AssetService.GetAssets();
-            Image = await _AppService.ImageService.GetImageByName("gold.jpg");
+            Image = ConvertToBase64(await _AppService.ImageService.GetImageByName("gold.jpg"));
             Portfolios = (await _AppService.PortfolioService.GetAllByUserAsync(User.Email)).ToList();
         }
 
@@ -39,6 +39,12 @@ namespace PortfolioManagerWASM.ViewModels
         {
             var ActiveUserEmail = await _localStorage.GetItemAsync<string>(Initialize.User_Local_Data);
             return await _AppService.UserService.GetUserByEmail(ActiveUserEmail);
+        }
+
+        public string ConvertToBase64(string image)
+        {
+            string base64String = image;
+            return $"data:image/jpeg;base64,{image}";
         }
     }
 }

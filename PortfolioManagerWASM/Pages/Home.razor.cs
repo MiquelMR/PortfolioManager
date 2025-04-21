@@ -7,10 +7,10 @@ namespace PortfolioManagerWASM.Pages
 {
     public partial class Home
     {
-        public User User { get; set; }
-        public new List<Asset> Assets { get; set; }
-        public string Image { get; set; }
-        public List<Portfolio> Portfolios { get; set; }
+        public User User { get; set; } = new User();
+        public List<Asset> Assets { get; set; } = new List<Asset>();
+        public string Image { get; set; } = string.Empty;
+        public List<Portfolio> Portfolios { get; set; } = new List<Portfolio>();
 
         [Inject]
         private HomeViewModel HomeViewModel { get; set; }
