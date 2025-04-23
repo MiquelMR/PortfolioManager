@@ -12,7 +12,6 @@ namespace PortfolioManagerWASM.ViewModels
 
         public User User { get; set; }
         public List<Asset> Assets { get; set; }
-        public string Image { get; set; }
         public List<Portfolio> Portfolios { get; set; }
         public Portfolio ActivePortfolio { get; set; }
 
@@ -27,7 +26,6 @@ namespace PortfolioManagerWASM.ViewModels
         {
             User = await GetUserAsync();
             Assets = (List<Asset>)await _AppService.AssetService.GetAssets();
-            Image = ConvertToBase64(await _AppService.ImageService.GetImageByName("gold.jpg"));
             Portfolios = (await _AppService.PortfolioService.GetAllByUserAsync(User.Email)).ToList();
             ActivePortfolio = Portfolios[0];
         }
@@ -43,10 +41,9 @@ namespace PortfolioManagerWASM.ViewModels
             return await _AppService.UserService.GetUserByEmail(ActiveUserEmail);
         }
 
-        public string ConvertToBase64(string image)
+        public string GetBase64String(byte[] icon)
         {
-            string base64String = image;
-            return $"data:image/jpeg;base64,{base64String}";
+            return $"data:image/svg+xml;base64,{Convert.ToBase64String(icon)}";
         }
 
         public void SelectPortfolio(int index)
