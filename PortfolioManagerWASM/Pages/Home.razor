@@ -6,71 +6,77 @@
 @attribute [Authorize]
 
 @page "/"
-@page "/home"
 <PageTitle>Home</PageTitle>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Registration Date</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>@User.Name</td>
-            <td>@User.Email</td>
-            <td>@User.RegistrationDate</td>
-        </tr>
-    </tbody>
-</table>
+<div class="container">
+    <div class="row">
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Assets</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (Asset asset in Assets)
-        {
-            <tr>
-                <td>@asset.Name</td>
-                <td><img src="@Image" alt="Icon" /></td>
-            </tr>
-        }
-    </tbody>
-</table>
+        <aside class="col-3">
+            <h2>Portfolios</h2>
+            <div class="list-group">
+                @for (int i = 0; i < Portfolios.Count; i++)
+                {
+                    int index = i;
+                    Portfolio portfolio = Portfolios[index];
+                    <button @onclick="()=>SelectPortfolio(index)" type="button" class="list-group-item list-group-item-action d-flex justify-content-between">
+                        <div>
+                            <p class="mb-0">@portfolio.Name</p>
+                            <p class="mb-0"><small>@portfolio.Author</small></p>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-body-secondary">
+                                <img src="globe.png">
+                            </span>
+                        </div>
+                    </button>
+                }
+            </div>
+        </aside>
 
-<h3> User Portfolios</h3>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Author</th>
-            <th>Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (Portfolio portfolio in Portfolios)
-        {
-            <tr>
-                <td>@portfolio.Name</td>
-                <td>@portfolio.Author</td>
-                <td>@portfolio.Description</td>
-            </tr>
-        }
-    </tbody>
-</table>
+        <main class="col-9">
 
-<h3 class="text-primary">Portfolio Assets</h3>
-<ul class="list-group">
-    <li class="list-group-item"></li>
-    <li class="list-group-item"></li>
-    <li class="list-group-item"></li>
-</ul>
+            <h2>@activePortfolio.Name</h2>
+            <p>@activePortfolio.Author</p>
+            <div class="accordion accordion-flush" id="description">
+                <div class="accordion-item" id="header-1">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#element-1"
+                                aria-expanded="true"
+                                aria-controls="element-1">
+                            Description
+                        </button>
+                    </h2>
+                    <div id="element-1"
+                         class="accordion-collapse collapse"
+                         aria-labelledby="encabezado-1"
+                         data-bs-parent="#header-1">
+                        <div class="accordion-body">
+                            <p>@activePortfolio.Description</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
+            <article class="row">
+                <img class="col-4 h-auto" src="" alt="Chart">
+                <ul class="col-8">
+                    @foreach (Asset asset in Assets)
+                    {
+                        <li class="d-flex align-items-center mb-3">
+                            <p class="me-2">@asset.Name</p>
+                            <img src="#" alt="Icon" class="img-fluid">
+                        </li>
+                    }
+                </ul>
+            </article>
+
+        </main>
+
+    </div>
+</div>
 
 <button type="button" class="btn btn-danger" onclick="@Logout">
     Logout
