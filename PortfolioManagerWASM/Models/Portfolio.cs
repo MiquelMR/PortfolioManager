@@ -11,5 +11,6 @@ namespace PortfolioManagerWASM.Models
         public string Author { get; set; }
         [MaxLength(255)]
         public string Description { get; set; }
+        public byte[] Icon { get; set; }
     }
 }

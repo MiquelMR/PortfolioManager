@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
+using PortfolioManagerAPI.Helpers;
 using PortfolioManagerAPI.Models;
-using PortfolioManagerAPI.Models.DTOs;
-using PortfolioManagerAPI.Repository;
 using PortfolioManagerAPI.Repository.IRepository;
 using PortfolioManagerAPI.Service.IService;
-using System.Xml.Linq;
 using XAct;
-
 namespace PortfolioManagerAPI.Service
 {
     public class PortfolioService : IPortfolioService
@@ -93,8 +90,11 @@ namespace PortfolioManagerAPI.Service
 
             try
             {
-                var portfolioDto = await _portfolioRepository.GetByNameAsync(name);
-                return _mapper.Map<PortfolioDto>(portfolioDto);
+                var portfolio = await _portfolioRepository.GetByNameAsync(name);
+                var filePath = portfolio.IconPath;
+                var portfolioDto = _mapper.Map<PortfolioDto>(portfolio);
+                portfolioDto.Icon = TypeConverter.pathToIcon(filePath);
+                return portfolioDto;
             }
             catch (Exception ex)
             {
@@ -108,12 +108,24 @@ namespace PortfolioManagerAPI.Service
             try
             {
                 var portfolios = await _portfolioRepository.GetAllAsync();
-                return _mapper.Map<ICollection<PortfolioDto>>(portfolios);
+                if (portfolios == null || portfolios.Count == 0)
+                {
+                    return new List<PortfolioDto>();
+                }
+                var portfoliosDto = new List<PortfolioDto>();
+                foreach (var portfolio in portfolios)
+                {
+                    var portfolioDto = _mapper.Map<PortfolioDto>(portfolio);
+                    portfolioDto.Icon = portfolio.IconPath != null ? TypeConverter.pathToIcon(portfolio.IconPath) : Array.Empty<byte>();
+
+                    portfoliosDto.Add(portfolioDto);
+                }
+                return portfoliosDto;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error retrieving portfolio");
-                throw new Exception("An error occurred while retrieving all portfolio.", ex);
+                _logger.LogError(ex, "Error checking portfolio");
+                throw new Exception($"An error occurred while retrieving portfolios", ex);
             }
         }
 
@@ -127,7 +139,18 @@ namespace PortfolioManagerAPI.Service
             try
             {
                 var portfolios = await _portfolioRepository.GetAllByUserAsync(userEmail);
-                var portfoliosDto = _mapper.Map<ICollection<PortfolioDto>>(portfolios);
+                if (portfolios == null || portfolios.Count == 0)
+                {
+                    return [];
+                }
+                var portfoliosDto = new List<PortfolioDto>();
+                foreach (var portfolio in portfolios)
+                {
+                    var portfolioDto = _mapper.Map<PortfolioDto>(portfolio);
+                    portfolioDto.Icon = portfolio.IconPath != null ? TypeConverter.pathToIcon(portfolio.IconPath) : Array.Empty<byte>();
+
+                    portfoliosDto.Add(portfolioDto);
+                }
                 return portfoliosDto;
             }
             catch (Exception ex)

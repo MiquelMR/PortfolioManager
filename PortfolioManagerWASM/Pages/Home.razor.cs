@@ -9,7 +9,6 @@ namespace PortfolioManagerWASM.Pages
     {
         public User User { get; set; } = new User();
         public List<Asset> Assets { get; set; } = new List<Asset>();
-        public string Image { get; set; } = string.Empty;
         public List<Portfolio> Portfolios { get; set; } = new List<Portfolio>();
 
         [Inject]
@@ -32,7 +31,6 @@ namespace PortfolioManagerWASM.Pages
             await HomeViewModel.InitAsync();
             User = HomeViewModel.User;
             Assets = HomeViewModel.Assets;
-            Image = HomeViewModel.Image;
             Portfolios = HomeViewModel.Portfolios;
             activePortfolio = HomeViewModel.ActivePortfolio;
         }
@@ -48,6 +46,9 @@ namespace PortfolioManagerWASM.Pages
             HomeViewModel.SelectPortfolio(index);
             activePortfolio = HomeViewModel.ActivePortfolio;
         }
-
+        private string GetBase64String(byte[] icon)
+        {
+            return HomeViewModel.GetBase64String(icon);
+        }
     }
 }
