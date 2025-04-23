@@ -18,8 +18,6 @@ namespace PortfolioManagerWASM.Pages
         public NavigationManager NavigationManager { get; set; }
         [CascadingParameter]
         private Task<AuthenticationState> AuthState { get; set; }
-
-        private int indexOfActivePortfolio = 0;
         private Portfolio activePortfolio = new Portfolio();
         protected override async Task OnInitializedAsync()
         {
@@ -36,13 +34,19 @@ namespace PortfolioManagerWASM.Pages
             Assets = HomeViewModel.Assets;
             Image = HomeViewModel.Image;
             Portfolios = HomeViewModel.Portfolios;
-            activePortfolio = Portfolios[indexOfActivePortfolio];
+            activePortfolio = HomeViewModel.ActivePortfolio;
         }
 
         public void Logout()
         {
             HomeViewModel.Logout();
             NavigationManager.NavigateTo("/login");
+        }
+
+        public void SelectPortfolio(int index)
+        {
+            HomeViewModel.SelectPortfolio(index);
+            activePortfolio = HomeViewModel.ActivePortfolio;
         }
 
     }
