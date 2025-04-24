@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Authorization
+@using PortfolioManagerWASM.Components
 @using PortfolioManagerWASM.Models
 @using PortfolioManagerWASM.Services.IService
 @inject IUserService userService
@@ -62,7 +63,8 @@
             </div>
 
             <article class="row">
-                <img class="col-4 h-auto" src="" alt="Chart">
+
+                <PortfolioCompositionChart />
                 <ul class="col-8">
                     @foreach (Asset asset in Assets)
                     {

@@ -2,13 +2,13 @@
 using PortfolioManagerWASM.Helpers;
 using PortfolioManagerWASM.Models;
 using PortfolioManagerWASM.Services.IService;
+using System.Net.Http;
 
 namespace PortfolioManagerWASM.ViewModels
 {
     public class HomeViewModel
     {
         private readonly IAppService _AppService;
-        private readonly ILocalStorageService _localStorage;
 
         public User User { get; set; }
         public List<Asset> Assets { get; set; }
@@ -16,15 +16,14 @@ namespace PortfolioManagerWASM.ViewModels
         public Portfolio ActivePortfolio { get; set; }
 
 
-        public HomeViewModel(IAppService AppService, ILocalStorageService localStorage)
+        public HomeViewModel(IAppService AppService)
         {
             _AppService = AppService;
-            _localStorage = localStorage;
         }
 
         public async Task InitAsync()
         {
-            User = await GetUserAsync();
+            User = _AppService.UserService.ActiveUser;
             Assets = (List<Asset>)await _AppService.AssetService.GetAssets();
             Portfolios = (await _AppService.PortfolioService.GetAllByUserAsync(User.Email)).ToList();
             ActivePortfolio = Portfolios[0];
@@ -33,12 +32,6 @@ namespace PortfolioManagerWASM.ViewModels
         public void Logout()
         {
             _AppService.AuthService.Logout();
-        }
-
-        private async Task<User> GetUserAsync()
-        {
-            var ActiveUserEmail = await _localStorage.GetItemAsync<string>(Initialize.User_Local_Data);
-            return await _AppService.UserService.GetUserByEmail(ActiveUserEmail);
         }
 
         public string GetBase64String(byte[] icon)
