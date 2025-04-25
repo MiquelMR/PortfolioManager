@@ -10,18 +10,17 @@ namespace PortfolioManagerWASM.Data
         public UserRegisterDto UserRegisterDto { get; set; }
         public RegisterResponse RegisterResponse { get; set; }
         public string Message { get; set; } = string.Empty;
-        private readonly IAppService _appService;
-        public RegisterFormViewModel(IAppService appService)
+        private readonly IAuthService _authService;
+        public RegisterFormViewModel(IAuthService authService)
         {
             UserRegisterDto = new UserRegisterDto();
             RegisterResponse = new RegisterResponse();
-            _appService = appService;
-
+            _authService = authService;
         }
 
         public async Task RegisterUserAsync(UserRegisterDto userRegisterDTO)
         {
-            var result = await _appService.AuthService.RegisterUser(userRegisterDTO);
+            var result = await _authService.RegisterUser(userRegisterDTO);
             RegisterResponse.Success = result.IsSuccess;
             if (result.IsSuccess)
             {

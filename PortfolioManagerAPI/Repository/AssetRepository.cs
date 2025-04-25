@@ -86,7 +86,7 @@ namespace PortfolioManagerAPI.Repository
             }
         }
 
-        public async Task<ICollection<Asset>> GetAllAsync()
+        public async Task<ICollection<Asset>> GetAssetsAsync()
         {
             try
             {

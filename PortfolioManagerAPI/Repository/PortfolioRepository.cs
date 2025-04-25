@@ -9,99 +9,46 @@ namespace PortfolioManagerAPI.Repository
     public class PortfolioRepository : IPortfolioRepository
     {
         private readonly ApplicationDbContext _db;
-        private readonly ILogger<PortfolioRepository> _logger;
 
         public PortfolioRepository(ApplicationDbContext db, ILogger<PortfolioRepository> logger)
         {
             _db = db;
-            _logger = logger;
-        }
-        public async Task<bool> CreateAsync(Portfolio portfolio)
-        {
-            _db.Portfolios.Add(portfolio);
-            return await _db.SaveChangesAsync() > 0;
-        }
-        public async Task<bool> UpdateAsync(Portfolio portfolio)
-        {
-            try
-            {
-                _db.Portfolios.Update(portfolio);
-                return await _db.SaveChangesAsync() > 0;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error updating portfolio");
-                return false;
-            }
         }
 
-        public async Task<bool> DeleteByNameAsync(string name)
+        public async Task<Portfolio> GetPortfolioByIdAsync(int portfolioId)
         {
             try
             {
-                var portfolio = await _db.Portfolios.FirstOrDefaultAsync(portfolio => portfolio.Name == name);
-                if (portfolio == null) return false;
-
-                _db.Portfolios.Remove(portfolio);
-                return await _db.SaveChangesAsync() > 0;
+                return await _db.Portfolios.FirstOrDefaultAsync(portfolio => portfolio.PortfolioId == portfolioId);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                _logger.LogError(ex, "Error deleting portfolio");
-                return false;
-            }
-        }
-        public async Task<Portfolio> GetByNameAsync(string name)
-        {
-            try
-            {
-                return await _db.Portfolios.FirstOrDefaultAsync(portfolio => portfolio.Name == name);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error retrieving portfolio");
                 return null;
             }
         }
 
-        public async Task<ICollection<Portfolio>> GetAllByUserAsync(string userEmail)
+        public async Task<ICollection<Portfolio>> GetPortfoliosByUserEmailAsync(string userEmail)
         {
-            var user = await _db.Users.FirstOrDefaultAsync(user => user.Email == userEmail);
+            var userId = await _db.Users
+                .Where(user => user.Email == userEmail)
+                .Select(user => user.UserId)
+                .FirstOrDefaultAsync();
+
+            if (userId == 0)
+            {
+                return [];
+            }
+
             try
             {
                 return await _db.Portfolios
+                    .Where(portfolio => portfolio.UserId == userId)
                     .OrderBy(portfolio => portfolio.PortfolioId)
-                    .Where(portfolio => portfolio.UserId == user.UserId).ToListAsync();
+                    .ToListAsync();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                _logger.LogError(ex, "Error getting portfolios");
                 return [];
-            }
-        }
-        public async Task<ICollection<Portfolio>> GetAllAsync()
-        {
-            try
-            {
-                return await _db.Portfolios.OrderBy(portfolio => portfolio.PortfolioId).ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error getting portfolios");
-                return [];
-            }
-        }
-
-        public async Task<bool> ExistsByNameAsync(string name)
-        {
-            try
-            {
-                return await _db.Portfolios.AnyAsync(portfolio => portfolio.Name == name);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error checking portfolio");
-                return false;
             }
         }
     }

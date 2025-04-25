@@ -31,7 +31,7 @@ namespace PortfolioManagerWASM.Pages
             await HomeViewModel.InitAsync();
             User = HomeViewModel.User;
             Assets = HomeViewModel.Assets;
-            Portfolios = HomeViewModel.Portfolios;
+            Portfolios = HomeViewModel.PortfoliosBasicInfo;
             activePortfolio = HomeViewModel.ActivePortfolio;
         }
 

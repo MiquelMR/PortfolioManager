@@ -9,18 +9,18 @@ namespace PortfolioManagerWASM.Data
         public UserLoginDto UserLoginDto { get; set; }
         public AuthResponse AuthResponse { get; set; }
         public string Message { get; set; } = string.Empty;
-        private readonly IAppService _appService;
+        private readonly IAuthService _authService;
 
-        public LoginFormViewModel(IAppService appService)
+        public LoginFormViewModel(IAuthService authService)
         {
             UserLoginDto = new UserLoginDto();
-            _appService = appService;
             AuthResponse = new AuthResponse();
+            _authService = authService;
         }
 
         public async Task AuthenticateUser(UserLoginDto userLoginDTO)
         {
-            var result = await _appService.AuthService.Login(userLoginDTO);
+            var result = await _authService.Login(userLoginDTO);
             AuthResponse.IsSuccess = result.IsSuccess;
         }
     }

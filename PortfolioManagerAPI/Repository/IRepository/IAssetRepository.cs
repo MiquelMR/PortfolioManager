@@ -9,7 +9,7 @@ namespace PortfolioManagerAPI.Repository.IRepository
         Task<bool> DeleteByNameAsync(string name);
         Task<Asset> GetByNameAsync(string name);
         Task<Asset> GetByIdAsync(int assetId);
-        Task<ICollection<Asset>> GetAllAsync();
+        Task<ICollection<Asset>> GetAssetsAsync();
         Task<bool> ExistsByNameAsync(string name);
     }
 }

@@ -8,21 +8,23 @@ namespace PortfolioManagerWASM.Components
 {
     public partial class Navbar
     {
-        private readonly IAppService _appService;
+        private readonly IUserService _userService;
+        private readonly IAuthService _authService;
         public User ActiveUser { get; set; }
         [Inject]
         public NavigationManager NavigationManager { get; set; }
 
         public string MyProperty { get; set; } = "mimi";
 
-        public Navbar(IAppService AppService)
+        public Navbar(IUserService UserService, IAuthService authService)
         {
-            _appService = AppService;
+            _userService = UserService;
+            _authService = authService;
         }
 
-        protected override async Task OnInitializedAsync()
+        protected override void OnInitialized()
         {
-            ActiveUser = _appService.UserService.ActiveUser;
+            ActiveUser = _userService.ActiveUser;
 
             if (ActiveUser == null)
             {
@@ -32,7 +34,7 @@ namespace PortfolioManagerWASM.Components
 
         public void Logout()
         {
-            _appService.AuthService.Logout();
+            _authService.Logout();
             NavigationManager.NavigateTo("/login");
         }
 
