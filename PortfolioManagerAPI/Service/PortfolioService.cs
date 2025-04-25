@@ -93,7 +93,7 @@ namespace PortfolioManagerAPI.Service
                 var portfolio = await _portfolioRepository.GetByNameAsync(name);
                 var filePath = portfolio.IconPath;
                 var portfolioDto = _mapper.Map<PortfolioDto>(portfolio);
-                portfolioDto.Icon = TypeConverter.pathToIcon(filePath);
+                portfolioDto.Icon = TypeConverter.portfolioIconPathToIcon(filePath);
                 return portfolioDto;
             }
             catch (Exception ex)
@@ -108,15 +108,17 @@ namespace PortfolioManagerAPI.Service
             try
             {
                 var portfolios = await _portfolioRepository.GetAllAsync();
+                var portfoliosDto = new List<PortfolioDto>();
+
                 if (portfolios == null || portfolios.Count == 0)
                 {
-                    return new List<PortfolioDto>();
+                    return [];
                 }
-                var portfoliosDto = new List<PortfolioDto>();
+
                 foreach (var portfolio in portfolios)
                 {
                     var portfolioDto = _mapper.Map<PortfolioDto>(portfolio);
-                    portfolioDto.Icon = portfolio.IconPath != null ? TypeConverter.pathToIcon(portfolio.IconPath) : Array.Empty<byte>();
+                    portfolioDto.Icon = portfolio.IconPath != null ? TypeConverter.portfolioIconPathToIcon(portfolio.IconPath) : [];
 
                     portfoliosDto.Add(portfolioDto);
                 }
@@ -147,7 +149,7 @@ namespace PortfolioManagerAPI.Service
                 foreach (var portfolio in portfolios)
                 {
                     var portfolioDto = _mapper.Map<PortfolioDto>(portfolio);
-                    portfolioDto.Icon = portfolio.IconPath != null ? TypeConverter.pathToIcon(portfolio.IconPath) : Array.Empty<byte>();
+                    portfolioDto.Icon = portfolio.IconPath != null ? TypeConverter.portfolioIconPathToIcon(portfolio.IconPath) : Array.Empty<byte>();
 
                     portfoliosDto.Add(portfolioDto);
                 }

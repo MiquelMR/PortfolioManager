@@ -92,18 +92,6 @@ namespace PortfolioManagerAPI.Controllers
             return NoContent();
         }
 
-        [HttpGet("{Name}", Name = "GetAssetByName")]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetAssetByName(string name)
-        {
-            var assetDto = await _assetService.GetByNameAsync(name);
-            if (assetDto == null) { return NotFound(); }
-            return Ok(assetDto);
-        }
-
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
