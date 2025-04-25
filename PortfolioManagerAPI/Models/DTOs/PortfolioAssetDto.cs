@@ -5,7 +5,7 @@ namespace PortfolioManagerAPI.Models.DTOs
 {
     public class PortfolioAssetDto
     {
+        public AssetDto Asset { get; set; }
         public float AllocationPercentage { get; set; }
-        public AssetDto AssetDto { get; set; }
     }
 }

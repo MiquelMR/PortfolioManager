@@ -9,6 +9,6 @@ namespace PortfolioManagerAPI.Models
         public string Author { get; set; }
         public string Description { get; set; }
         public byte[] Icon { get; set; }
-        public ICollection<PortfolioAssetDto> PortfolioAssetsDto { get; set; }
+        public ICollection<PortfolioAssetDto> PortfolioAssets { get; set; }
     }
 }

@@ -10,20 +10,17 @@ namespace PortfolioManagerWASM.ViewModels
     public class HomeViewModel
     {
         private readonly IPortfolioService _portfolioService;
-        private readonly IAssetService _assetService;
         private readonly IUserService _userService;
         private readonly IAuthService _authService;
 
         public User User { get; set; }
-        public List<Asset> Assets { get; set; }
         public List<Portfolio> PortfoliosBasicInfo { get; set; }
         public Portfolio ActivePortfolio { get; set; }
 
 
-        public HomeViewModel(IPortfolioService PortfolioService, IAssetService AssetService, IUserService UserService, IAuthService AuthService)
+        public HomeViewModel(IPortfolioService PortfolioService, IUserService UserService, IAuthService AuthService)
         {
             _portfolioService = PortfolioService;
-            _assetService = AssetService;
             _userService = UserService;
             _authService = AuthService;
         }
@@ -31,9 +28,8 @@ namespace PortfolioManagerWASM.ViewModels
         public async Task InitAsync()
         {
             User = _userService.ActiveUser;
-            Assets = (List<Asset>)await _assetService.GetAssetsAsync();
             PortfoliosBasicInfo = (await _portfolioService.GetPortfoliosBasicInfoByUserAsync(User.Email)).ToList();
-            ActivePortfolio = await _portfolioService.GetPortfolioByIdAsync(PortfoliosBasicInfo[0].Id);
+            ActivePortfolio = await _portfolioService.GetPortfolioByIdAsync(PortfoliosBasicInfo[0].PortfolioId);
         }
 
         public void Logout()
@@ -46,9 +42,9 @@ namespace PortfolioManagerWASM.ViewModels
             return $"data:image/svg+xml;base64,{Convert.ToBase64String(icon)}";
         }
 
-        public void SelectPortfolio(int index)
+        public async Task SelectPortfolio(int index)
         {
-            ActivePortfolio = PortfoliosBasicInfo[index];
+            ActivePortfolio = await _portfolioService.GetPortfolioByIdAsync(PortfoliosBasicInfo[index].PortfolioId);
         }
     }
 }

@@ -45,14 +45,14 @@ namespace PortfolioManagerAPI.Service
                 portfolioAssetsDto = portfolioAssets.Select(portfolioAsset =>
                 {
                     var portfolioAssetDto = _mapper.Map<PortfolioAssetDto>(portfolioAsset);
-                    portfolioAssetDto.AssetDto = _mapper.Map<AssetDto>(portfolioAsset.Asset);
-                    portfolioAssetDto.AssetDto.Icon = portfolioAsset.Asset.IconPath != null
+                    portfolioAssetDto.Asset = _mapper.Map<AssetDto>(portfolioAsset.Asset);
+                    portfolioAssetDto.Asset.Icon = portfolioAsset.Asset.IconPath != null
                         ? TypeConverter.assetIconPathToIcon(portfolioAsset.Asset.IconPath)
                         : null;
                     return portfolioAssetDto;
                 }).ToList();
 
-                portfolioDto.PortfolioAssetsDto = portfolioAssetsDto;
+                portfolioDto.PortfolioAssets = portfolioAssetsDto;
 
                 // Map Icon: From path to byte[]
                 portfolioDto.Icon = portfolio.IconPath != null ? TypeConverter.portfolioIconPathToIcon(portfolio.IconPath) : [];

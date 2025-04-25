@@ -25,7 +25,7 @@ namespace PortfolioManagerAPI.Controllers
             return Ok(portfolioDtoList);
         }
 
-        [HttpGet("byId/{portfolioId}", Name = "GetPortfolioById")]
+        [HttpGet("byPortfolioId/{portfolioId}", Name = "GetPortfolioById")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

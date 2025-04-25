@@ -26,8 +26,8 @@ namespace PortfolioManagerWASM.Services
         {
             var response = await _httpClient.GetAsync($"{Initialize.UrlBaseApi}api/portfolios/byPortfolioId/{portfolioId}");
             var content = await response.Content.ReadAsStringAsync();
-            var portfolios = JsonConvert.DeserializeObject<Portfolio>(content);
-            return portfolios;
+            var portfolio = JsonConvert.DeserializeObject<Portfolio>(content);
+            return portfolio;
         }
     }
 }

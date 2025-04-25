@@ -17,10 +17,10 @@
         <aside class="col-3">
             <h2>Portfolios</h2>
             <div class="list-group">
-                @for (int i = 0; i < Portfolios.Count; i++)
+                @for (int i = 0; i < UserPortfolios.Count; i++)
                 {
                     int index = i;
-                    Portfolio portfolio = Portfolios[index];
+                    Portfolio portfolio = UserPortfolios[index];
                     <button @onclick="()=>SelectPortfolio(index)" type="button" class="list-group-item list-group-item-action d-flex justify-content-between">
                         <div>
                             <p class="mb-0">@portfolio.Name</p>
@@ -39,8 +39,8 @@
         <!--Main Page-->
         <main class="col-9">
 
-            <h2>@activePortfolio.Name</h2>
-            <p>@activePortfolio.Author</p>
+            <h2>@ActivePortfolio.Name</h2>
+            <p>@ActivePortfolio.Author</p>
             <div class="accordion accordion-flush" id="description">
                 <div class="accordion-item" id="header-1">
                     <h2 class="accordion-header">
@@ -58,21 +58,21 @@
                          aria-labelledby="encabezado-1"
                          data-bs-parent="#header-1">
                         <div class="accordion-body">
-                            <p>@activePortfolio.Description</p>
+                            <p>@ActivePortfolio.Description</p>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!--Portfolio charts-->
             <article class="row">
-
-                <PortfolioCompositionChart />
                 <ul class="col-8">
-                    @foreach (Asset asset in Assets)
+                    @foreach (PortfolioAsset portfolioAsset in ActivePortfolio.PortfolioAssets)
                     {
                         <li class="d-flex align-items-center mb-3">
-                            <p class="me-2">@asset.Name</p>
-                            <img src="@GetBase64String(asset.Icon)" alt="Icon" class="img-fluid">
+                            <p class="me-2">@portfolioAsset.Asset.Name</p>
+                            <img src="@GetBase64String(@portfolioAsset.Asset.Icon)" alt="Icon" class="img-fluid">
+                            <p class="me-2">@portfolioAsset.AllocationPercentage</p>
                         </li>
                     }
                 </ul>
