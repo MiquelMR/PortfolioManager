@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using PortfolioManagerAPI.Helpers;
 using PortfolioManagerAPI.Models;
 using PortfolioManagerAPI.Models.DTOs;
 using PortfolioManagerAPI.Repository;
@@ -76,36 +77,24 @@ namespace PortfolioManagerAPI.Service
             }
         }
 
-        public async Task<AssetDto> GetByNameAsync(string name)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                return null;
-            }
-
-            try
-            {
-                var asset = await _assetRepository.GetByNameAsync(name);
-                return _mapper.Map<AssetDto>(asset);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error retrieving asset");
-                throw new Exception($"An error occurred while retrieving the asset with name: {name}.", ex);
-            }
-        }
         public async Task<ICollection<AssetDto>> GetAllAsync()
         {
-            try
+            var assets = await _assetRepository.GetAllAsync();
+            var assetsDto = new List<AssetDto>();
+
+            if(assets == null || assets.Count == 0)
             {
-                var assets = await _assetRepository.GetAllAsync();
-                return _mapper.Map<List<AssetDto>>(assets);
+                return [];
             }
-            catch (Exception ex)
+
+            foreach (var asset in assets)
             {
-                _logger.LogError(ex, "Error retrieving assets");
-                throw new Exception("An error occurred while retrieving all assets.", ex);
+                var assetDto = _mapper.Map<AssetDto>(asset);
+                assetDto.Icon = asset.IconPath != null ? TypeConverter.assetIconPathToIcon(asset.IconPath) : [];
+            
+                assetsDto.Add(assetDto);
             }
+            return assetsDto;
         }
 
         public async Task<bool> ExistsByNameAsync(string name)

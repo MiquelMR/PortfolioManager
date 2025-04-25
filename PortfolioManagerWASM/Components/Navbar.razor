@@ -1,4 +1,8 @@
-﻿<nav class="navbar justify-content-around">
+﻿@using PortfolioManagerWASM.Services.IService
+@using Syncfusion.Blazor.SplitButtons
+
+<nav class="navbar justify-content-around">
+
     <div class="row">
         <div class="col align-content-center m-0 p-0">
             <button type="button" class="btn btn-primary rounded-circle" title="Branding">
@@ -29,11 +33,18 @@
         </li>
     </ul>
 
-    <button type="button" class="btn btn-primary rounded-circle">
-        <img src="icons/person-circle.svg" alt="BrandIcon">
-    </button>
+    <div class="row">
+        <div class="dropdown">
+            <button class="btn btn-primary rounded-circle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <img src="icons/bar-chart-line.svg" alt="BrandIcon">
+            </button>
+            <ul class="dropdown-menu">
+                <li><h6 class="dropdown-header">@ActiveUser.Name</h6></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><button class="dropdown-item" @onclick="@ToActiveUserProfile">Profile</button></li>
+                <li><button class="dropdown-item" @onclick="@Logout">Log out</button></li>
+            </ul>
+        </div>
+    </div>
 </nav>
 
-@code {
-
-}

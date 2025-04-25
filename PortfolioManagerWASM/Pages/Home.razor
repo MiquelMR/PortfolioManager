@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Authorization
+@using PortfolioManagerWASM.Components
 @using PortfolioManagerWASM.Models
 @using PortfolioManagerWASM.Services.IService
 @inject IUserService userService
@@ -12,6 +13,7 @@
 <div class="container">
     <div class="row">
 
+        <!--Side Portfolio List-->
         <aside class="col-3">
             <h2>Portfolios</h2>
             <div class="list-group">
@@ -34,6 +36,7 @@
             </div>
         </aside>
 
+        <!--Main Page-->
         <main class="col-9">
 
             <h2>@activePortfolio.Name</h2>
@@ -62,13 +65,14 @@
             </div>
 
             <article class="row">
-                <img class="col-4 h-auto" src="" alt="Chart">
+
+                <PortfolioCompositionChart />
                 <ul class="col-8">
                     @foreach (Asset asset in Assets)
                     {
                         <li class="d-flex align-items-center mb-3">
                             <p class="me-2">@asset.Name</p>
-                            <img src="#" alt="Icon" class="img-fluid">
+                            <img src="@GetBase64String(asset.Icon)" alt="Icon" class="img-fluid">
                         </li>
                     }
                 </ul>
@@ -78,7 +82,3 @@
 
     </div>
 </div>
-
-<button type="button" class="btn btn-danger" onclick="@Logout">
-    Logout
-</button>

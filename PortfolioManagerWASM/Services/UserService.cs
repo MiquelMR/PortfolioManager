@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using Blazored.LocalStorage;
+using Newtonsoft.Json;
 using PortfolioManagerWASM.Helpers;
 using PortfolioManagerWASM.Models;
-using PortfolioManagerWASM.Models.DTOs;
 using PortfolioManagerWASM.Services.IService;
 using System.Text;
 
@@ -10,10 +10,18 @@ namespace PortfolioManagerWASM.Services
     public class UserService : IUserService
     {
         private readonly HttpClient _httpClient;
-        public UserService(HttpClient httpClient)
+        private readonly ILocalStorageService _localStorage;
+        public User ActiveUser { get; set; }
+        public UserService(HttpClient httpClient, ILocalStorageService localStorage)
         {
             _httpClient = httpClient;
-        }        
+            _localStorage = localStorage;
+        }
+
+        public async Task InitializeAsync()
+        {
+            ActiveUser = await GetActiveUserAsync();
+        }
 
         public async Task<bool> DeleteUser(string Email)
         {
@@ -84,6 +92,14 @@ namespace PortfolioManagerWASM.Services
                 var errorModel = JsonConvert.DeserializeObject<ErrorModel>(contentTemp);
                 throw new Exception(errorModel.ErrorMessage);
             }
+        }
+        private async Task<User> GetActiveUserAsync()
+        {
+            if (ActiveUser != null) return ActiveUser;
+
+            var activeUserEmail = await _localStorage.GetItemAsync<string>(Initialize.User_Local_Data);
+            ActiveUser = await GetUserByEmail(activeUserEmail);
+            return ActiveUser;
         }
     }
 }

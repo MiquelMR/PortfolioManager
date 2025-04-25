@@ -1,5 +1,4 @@
 ﻿using PortfolioManagerWASM.Models;
-using PortfolioManagerWASM.Models.DTOs;
 
 namespace PortfolioManagerWASM.Services.IService
 {
@@ -9,5 +8,6 @@ namespace PortfolioManagerWASM.Services.IService
         public Task<User> GetUserByEmail(string Email);
         public Task<User> UpdateUser(int UserId, User user);
         public Task<bool> DeleteUser(string Email);
+        User ActiveUser { get; }
     }
 }

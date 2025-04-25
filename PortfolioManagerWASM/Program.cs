@@ -7,6 +7,7 @@ using PortfolioManagerWASM.Data;
 using PortfolioManagerWASM.Services;
 using PortfolioManagerWASM.Services.IService;
 using PortfolioManagerWASM.ViewModels;
+using Syncfusion.Blazor;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -28,13 +29,25 @@ builder.Services.AddScoped<RegisterFormViewModel>();
 builder.Services.AddScoped<LoginFormViewModel>();
 builder.Services.AddScoped<HomeViewModel>();
 
-
 // Local Storage
 builder.Services.AddBlazoredLocalStorage();
+
+// SyncFusion
+Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("MzgzMDkzOEAzMjM5MmUzMDJlMzAzYjMyMzkzYmtiM2ZVTVpqWDBxTVFyTkpJR1ljWG43MVZZcER4N3Z4NkhIeU1NM2Z0Kzg9");
+builder.Services.AddSyncfusionBlazor();
 
 // Authentication
 builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<AuthStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<AuthStateProvider>());
 
-await builder.Build().RunAsync();
+var host = builder.Build();
+
+// Initialize UserService to provide ActiveUser
+var userService = host.Services.GetRequiredService<IUserService>() as UserService;
+if (userService != null)
+{
+    await userService.InitializeAsync();
+}
+
+await host.RunAsync();
