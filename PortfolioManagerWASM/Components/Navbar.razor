@@ -39,10 +39,10 @@
                 <img src="icons/bar-chart-line.svg" alt="BrandIcon">
             </button>
             <ul class="dropdown-menu">
-                <li><h6 class="dropdown-header">Dropdown header</h6></li>
+                <li><h6 class="dropdown-header">@ActiveUser.Name</h6></li>
                 <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="#">Profile</a></li>
-                <li><a class="dropdown-item" href="#">Log out</a></li>
+                <li><button class="dropdown-item" @onclick="@ToActiveUserProfile">Profile</button></li>
+                <li><button class="dropdown-item" @onclick="@Logout">Log out</button></li>
             </ul>
         </div>
     </div>
