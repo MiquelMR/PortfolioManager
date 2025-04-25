@@ -33,6 +33,7 @@ builder.Services.AddScoped<HomeViewModel>();
 builder.Services.AddBlazoredLocalStorage();
 
 // SyncFusion
+Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("MzgzMDkzOEAzMjM5MmUzMDJlMzAzYjMyMzkzYmtiM2ZVTVpqWDBxTVFyTkpJR1ljWG43MVZZcER4N3Z4NkhIeU1NM2Z0Kzg9");
 builder.Services.AddSyncfusionBlazor();
 
 // Authentication

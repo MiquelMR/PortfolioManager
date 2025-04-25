@@ -35,12 +35,6 @@ namespace PortfolioManagerWASM.Pages
             activePortfolio = HomeViewModel.ActivePortfolio;
         }
 
-        public void Logout()
-        {
-            HomeViewModel.Logout();
-            NavigationManager.NavigateTo("/login");
-        }
-
         public void SelectPortfolio(int index)
         {
             HomeViewModel.SelectPortfolio(index);
