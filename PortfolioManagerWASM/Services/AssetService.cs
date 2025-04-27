@@ -5,14 +5,9 @@ using PortfolioManagerWASM.Services.IService;
 
 namespace PortfolioManagerWASM.Services
 {
-    public class AssetService : IAssetService
+    public class AssetService(HttpClient httpClient) : IAssetService
     {
-        private readonly HttpClient _httpClient;
-
-        public AssetService(HttpClient httpClient)
-        {
-            _httpClient = httpClient;
-        }
+        private readonly HttpClient _httpClient = httpClient;
 
         public async Task<IEnumerable<Asset>> GetAssetsAsync()
         {

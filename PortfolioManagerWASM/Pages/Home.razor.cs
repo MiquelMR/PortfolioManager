@@ -12,9 +12,9 @@ namespace PortfolioManagerWASM.Pages
         [Inject]
         public NavigationManager NavigationManager { get; set; }
         [CascadingParameter]
-        private Task<AuthenticationState> AuthState { get; set; }
 
-        public User User { get; set; } = new User();
+        private Task<AuthenticationState> AuthState { get; set; }
+        public User ActiveUser { get; set; } = new User();
         public List<Portfolio> UserPortfolios { get; set; } = [];
         private Portfolio ActivePortfolio = new();
 
@@ -29,7 +29,7 @@ namespace PortfolioManagerWASM.Pages
             }
 
             await HomeViewModel.InitAsync();
-            User = HomeViewModel.User;
+            ActiveUser = HomeViewModel.ActiveUser;
             UserPortfolios = HomeViewModel.PortfoliosBasicInfo;
             ActivePortfolio = HomeViewModel.ActivePortfolio;
         }

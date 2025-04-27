@@ -7,16 +7,11 @@ using System.Text;
 
 namespace PortfolioManagerWASM.Services
 {
-    public class UserService : IUserService
+    public class UserService(HttpClient httpClient, ILocalStorageService localStorage) : IUserService
     {
-        private readonly HttpClient _httpClient;
-        private readonly ILocalStorageService _localStorage;
-        public User ActiveUser { get; set; }
-        public UserService(HttpClient httpClient, ILocalStorageService localStorage)
-        {
-            _httpClient = httpClient;
-            _localStorage = localStorage;
-        }
+        private readonly HttpClient _httpClient = httpClient;
+        private readonly ILocalStorageService _localStorage = localStorage;
+        public User ActiveUser { get; set; } = null;
 
         public async Task InitializeAsync()
         {
@@ -98,8 +93,10 @@ namespace PortfolioManagerWASM.Services
             if (ActiveUser != null) return ActiveUser;
 
             var activeUserEmail = await _localStorage.GetItemAsync<string>(Initialize.User_Local_Data);
-            ActiveUser = await GetUserByEmail(activeUserEmail);
-            return ActiveUser;
+
+            return string.IsNullOrEmpty(activeUserEmail)
+                ? null 
+                : await GetUserByEmail(activeUserEmail);
         }
     }
 }

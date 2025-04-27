@@ -11,18 +11,11 @@ using System.Text;
 
 namespace PortfolioManagerWASM.Services
 {
-    public class AuthService : IAuthService
+    public class AuthService(HttpClient httpClient, ILocalStorageService localStorageService, AuthenticationStateProvider authenticationStateProvider) : IAuthService
     {
-        private readonly HttpClient _httpClient;
-        private readonly ILocalStorageService _localStorage;
-        private readonly AuthenticationStateProvider _authenticationStateProvider;
-
-        public AuthService(HttpClient httpClient, ILocalStorageService localStorageService, AuthenticationStateProvider authenticationStateProvider)
-        {
-            _authenticationStateProvider = authenticationStateProvider;
-            _localStorage = localStorageService;
-            _httpClient = httpClient;
-        }
+        private readonly HttpClient _httpClient = httpClient;
+        private readonly ILocalStorageService _localStorage = localStorageService;
+        private readonly AuthenticationStateProvider _authenticationStateProvider = authenticationStateProvider;
 
         public async Task<AuthResponse> RegisterUser(UserRegisterDto userRegisterDto)
         {

@@ -5,14 +5,9 @@ using PortfolioManagerWASM.Services.IService;
 
 namespace PortfolioManagerWASM.Services
 {
-    public class PortfolioService : IPortfolioService
+    public class PortfolioService(HttpClient httpClient) : IPortfolioService
     {
-        private readonly HttpClient _httpClient;
-
-        public PortfolioService(HttpClient httpClient)
-        {
-            _httpClient = httpClient;
-        }
+        private readonly HttpClient _httpClient = httpClient;
 
         public async Task<ICollection<Portfolio>> GetPortfoliosBasicInfoByUserAsync(string userEmail)
         {

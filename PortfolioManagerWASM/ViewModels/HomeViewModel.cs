@@ -1,34 +1,22 @@
-﻿using Blazored.LocalStorage;
-using PortfolioManagerWASM.Helpers;
-using PortfolioManagerWASM.Models;
-using PortfolioManagerWASM.Services;
+﻿using PortfolioManagerWASM.Models;
 using PortfolioManagerWASM.Services.IService;
-using System.Net.Http;
 
 namespace PortfolioManagerWASM.ViewModels
 {
-    public class HomeViewModel
+    public class HomeViewModel(IPortfolioService PortfolioService, IUserService UserService, IAuthService AuthService)
     {
-        private readonly IPortfolioService _portfolioService;
-        private readonly IUserService _userService;
-        private readonly IAuthService _authService;
+        private readonly IPortfolioService _portfolioService = PortfolioService;
+        private readonly IUserService _userService = UserService;
+        private readonly IAuthService _authService = AuthService;
 
-        public User User { get; set; }
+        public User ActiveUser { get; set; }
         public List<Portfolio> PortfoliosBasicInfo { get; set; }
         public Portfolio ActivePortfolio { get; set; }
 
-
-        public HomeViewModel(IPortfolioService PortfolioService, IUserService UserService, IAuthService AuthService)
-        {
-            _portfolioService = PortfolioService;
-            _userService = UserService;
-            _authService = AuthService;
-        }
-
         public async Task InitAsync()
         {
-            User = _userService.ActiveUser;
-            PortfoliosBasicInfo = (await _portfolioService.GetPortfoliosBasicInfoByUserAsync(User.Email)).ToList();
+            ActiveUser = _userService.ActiveUser;
+            PortfoliosBasicInfo = (await _portfolioService.GetPortfoliosBasicInfoByUserAsync(ActiveUser.Email)).ToList();
             ActivePortfolio = await _portfolioService.GetPortfolioByIdAsync(PortfoliosBasicInfo[0].PortfolioId);
         }
 
