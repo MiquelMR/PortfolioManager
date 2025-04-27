@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Authorization
+@using PortfolioManagerAPI.Helpers
 @using PortfolioManagerWASM.Components
 @using PortfolioManagerWASM.Models
 @using PortfolioManagerWASM.Services.IService
@@ -26,7 +27,7 @@
                         </div>
                         <div class="d-flex align-items-center">
                             <span class="badge bg-body-secondary">
-                                <img src="@GetBase64String(portfolio.Icon)" alt="Icon">
+                                <img src="@TypeConverter.GetBase64String(portfolio.Icon)" alt="Icon">
                             </span>
                         </div>
                     </button>
@@ -69,7 +70,7 @@
                     {
                         <li class="d-flex align-items-center mb-3">
                             <p class="me-2">@portfolioAsset.Asset.Name</p>
-                            <img src="@GetBase64String(@portfolioAsset.Asset.Icon)" alt="Icon" class="img-fluid">
+                            <img src="@TypeConverter.GetBase64String(@portfolioAsset.Asset.Icon)" alt="Icon" class="img-fluid">
                             <p class="me-2">@portfolioAsset.AllocationPercentage</p>
                         </li>
                     }

@@ -9,5 +9,6 @@ namespace PortfolioManagerWASM.Services.IService
         public Task<User> UpdateUser(int UserId, User user);
         public Task<bool> DeleteUser(string Email);
         User ActiveUser { get; }
+        public void CleanActiveUser();
     }
 }

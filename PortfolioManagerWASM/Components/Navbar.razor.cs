@@ -21,7 +21,7 @@ namespace PortfolioManagerWASM.Components
         }
 
         public void Logout()
-        {
+        {            
             NavbarViewModel.Logout();
             NavigationManager.NavigateTo("/login");
         }

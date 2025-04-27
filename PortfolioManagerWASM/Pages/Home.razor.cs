@@ -39,9 +39,5 @@ namespace PortfolioManagerWASM.Pages
             await HomeViewModel.SelectPortfolio(index);
             ActivePortfolio = HomeViewModel.ActivePortfolio;
         }
-        private string GetBase64String(byte[] icon)
-        {
-            return HomeViewModel.GetBase64String(icon);
-        }
     }
 }

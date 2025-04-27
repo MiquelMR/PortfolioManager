@@ -17,6 +17,8 @@ namespace PortfolioManagerWASM.ViewModels
 
         public void Logout()
         {
+            ActiveUser = null;
+            _userService.CleanActiveUser();
             _authService.Logout();
         }
     }
