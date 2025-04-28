@@ -1,45 +1,34 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using PortfolioManagerWASM.Models;
-using PortfolioManagerWASM.Services;
-using PortfolioManagerWASM.Services.IService;
 using PortfolioManagerWASM.ViewModels;
 
 namespace PortfolioManagerWASM.Components
 {
     public partial class Navbar
     {
-        private readonly IAppService _appService;
-        public User ActiveUser { get; set; }
+        [Inject]
+        private NavbarViewModel NavbarViewModel { get; set; }
         [Inject]
         public NavigationManager NavigationManager { get; set; }
 
-        public string MyProperty { get; set; } = "mimi";
+        public User ActiveUser { get; set; } = new User();
 
-        public Navbar(IAppService AppService)
+        protected override void OnInitialized()
         {
-            _appService = AppService;
-        }
-
-        protected override async Task OnInitializedAsync()
-        {
-            ActiveUser = _appService.UserService.ActiveUser;
-
-            if (ActiveUser == null)
-            {
-                Console.WriteLine("ActiveUser is not initialized.");
-            }
+            NavbarViewModel.Init();
+            ActiveUser = NavbarViewModel.ActiveUser;
         }
 
         public void Logout()
-        {
-            _appService.AuthService.Logout();
-            NavigationManager.NavigateTo("/login");
+        {            
+            NavbarViewModel.Logout();
+            NavigationManager.NavigateTo("/");
         }
 
         public void ToActiveUserProfile()
         {
             NavigationManager.NavigateTo("/userProfile");
         }
-
     }
 }

@@ -1,47 +1,34 @@
-﻿using Blazored.LocalStorage;
-using PortfolioManagerWASM.Helpers;
-using PortfolioManagerWASM.Models;
+﻿using PortfolioManagerWASM.Models;
 using PortfolioManagerWASM.Services.IService;
-using System.Net.Http;
 
 namespace PortfolioManagerWASM.ViewModels
 {
-    public class HomeViewModel
+    public class HomeViewModel(IPortfolioService PortfolioService, IUserService UserService)
     {
-        private readonly IAppService _AppService;
+        private readonly IPortfolioService _portfolioService = PortfolioService;
+        private readonly IUserService _userService = UserService;
 
-        public User User { get; set; }
-        public List<Asset> Assets { get; set; }
-        public List<Portfolio> Portfolios { get; set; }
-        public Portfolio ActivePortfolio { get; set; }
-
-
-        public HomeViewModel(IAppService AppService)
-        {
-            _AppService = AppService;
-        }
+        public User ActiveUser { get; set; } = new User();
+        public List<Portfolio> PortfoliosBasicInfo { get; set; } = [];
+        public Portfolio ActivePortfolio { get; set; } = new Portfolio();
 
         public async Task InitAsync()
         {
-            User = _AppService.UserService.ActiveUser;
-            Assets = (List<Asset>)await _AppService.AssetService.GetAssets();
-            Portfolios = (await _AppService.PortfolioService.GetAllByUserAsync(User.Email)).ToList();
-            ActivePortfolio = Portfolios[0];
+            ActiveUser = _userService.ActiveUser;
+            PortfoliosBasicInfo = (await _portfolioService.GetPortfoliosBasicInfoByUserAsync(ActiveUser.Email)).ToList();
+            ActivePortfolio = await _portfolioService.GetPortfolioByIdAsync(PortfoliosBasicInfo[0].PortfolioId);
         }
 
-        public void Logout()
+        public async Task SelectPortfolio(int index)
         {
-            _AppService.AuthService.Logout();
+            ActivePortfolio = await _portfolioService.GetPortfolioByIdAsync(PortfoliosBasicInfo[index].PortfolioId);
         }
 
-        public string GetBase64String(byte[] icon)
+        public void CleanData()
         {
-            return $"data:image/svg+xml;base64,{Convert.ToBase64String(icon)}";
-        }
-
-        public void SelectPortfolio(int index)
-        {
-            ActivePortfolio = Portfolios[index];
+            ActiveUser = new User();
+            ActivePortfolio = new Portfolio();
+            PortfoliosBasicInfo.Clear();
         }
     }
 }

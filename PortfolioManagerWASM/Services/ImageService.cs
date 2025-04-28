@@ -6,14 +6,9 @@ using static System.Net.WebRequestMethods;
 
 namespace PortfolioManagerWASM.Services
 {
-    public class ImageService : IImageService
+    public class ImageService(HttpClient httpClient) : IImageService
     {
-        private readonly HttpClient _httpClient;
-
-        public ImageService(HttpClient httpClient)
-        {
-            _httpClient = httpClient;
-        }
+        private readonly HttpClient _httpClient = httpClient;
 
         public async Task<string> GetImageByName(string name)
         {

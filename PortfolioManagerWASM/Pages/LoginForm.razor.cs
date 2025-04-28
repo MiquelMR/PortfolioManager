@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
-using PortfolioManagerWASM.Data;
 using PortfolioManagerWASM.Models.DTOs;
+using PortfolioManagerWASM.ViewModels;
 
 namespace PortfolioManagerWASM.Pages
 {
@@ -10,8 +10,8 @@ namespace PortfolioManagerWASM.Pages
         private LoginFormViewModel LoginFormViewModel { get; set; }
         [Inject]
         public NavigationManager NavigationManager { get; set; }
-        public UserLoginDto UserLoginDto { get; set; }
-        public string Message { get; set; }
+        public UserLoginDto UserLoginDto { get; set; } = new UserLoginDto();
+        public string Message { get; set; } = string.Empty;
         protected override void OnInitialized()
         {
             UserLoginDto = LoginFormViewModel.UserLoginDto;

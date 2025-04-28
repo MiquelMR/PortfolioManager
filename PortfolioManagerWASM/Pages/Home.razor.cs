@@ -7,17 +7,17 @@ namespace PortfolioManagerWASM.Pages
 {
     public partial class Home
     {
-        public User User { get; set; } = new User();
-        public List<Asset> Assets { get; set; } = new List<Asset>();
-        public List<Portfolio> Portfolios { get; set; } = new List<Portfolio>();
-
         [Inject]
         private HomeViewModel HomeViewModel { get; set; }
         [Inject]
         public NavigationManager NavigationManager { get; set; }
         [CascadingParameter]
+
         private Task<AuthenticationState> AuthState { get; set; }
-        private Portfolio activePortfolio = new Portfolio();
+        public User ActiveUser { get; set; } = new();
+        public List<Portfolio> UserPortfolios { get; set; } = [];
+        private Portfolio ActivePortfolio = new();
+
         protected override async Task OnInitializedAsync()
         {
             var authState = await AuthState;
@@ -29,20 +29,15 @@ namespace PortfolioManagerWASM.Pages
             }
 
             await HomeViewModel.InitAsync();
-            User = HomeViewModel.User;
-            Assets = HomeViewModel.Assets;
-            Portfolios = HomeViewModel.Portfolios;
-            activePortfolio = HomeViewModel.ActivePortfolio;
+            ActiveUser = HomeViewModel.ActiveUser;
+            UserPortfolios = HomeViewModel.PortfoliosBasicInfo;
+            ActivePortfolio = HomeViewModel.ActivePortfolio;
         }
 
-        public void SelectPortfolio(int index)
+        public async Task SelectPortfolio(int index)
         {
-            HomeViewModel.SelectPortfolio(index);
-            activePortfolio = HomeViewModel.ActivePortfolio;
-        }
-        private string GetBase64String(byte[] icon)
-        {
-            return HomeViewModel.GetBase64String(icon);
+            await HomeViewModel.SelectPortfolio(index);
+            ActivePortfolio = HomeViewModel.ActivePortfolio;
         }
     }
 }
