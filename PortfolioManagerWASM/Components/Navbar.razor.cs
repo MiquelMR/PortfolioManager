@@ -12,7 +12,7 @@ namespace PortfolioManagerWASM.Components
         [Inject]
         public NavigationManager NavigationManager { get; set; }
 
-        public User ActiveUser { get; set; } = null;
+        public User ActiveUser { get; set; } = new User();
 
         protected override void OnInitialized()
         {
@@ -23,7 +23,7 @@ namespace PortfolioManagerWASM.Components
         public void Logout()
         {            
             NavbarViewModel.Logout();
-            NavigationManager.NavigateTo("/login");
+            NavigationManager.NavigateTo("/");
         }
 
         public void ToActiveUserProfile()

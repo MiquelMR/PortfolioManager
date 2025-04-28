@@ -95,7 +95,7 @@ namespace PortfolioManagerWASM.Services
             var activeUserEmail = await _localStorage.GetItemAsync<string>(Initialize.User_Local_Data);
 
             return string.IsNullOrEmpty(activeUserEmail)
-                ? null
+                ? new User()
                 : await GetUserByEmail(activeUserEmail);
         }
 

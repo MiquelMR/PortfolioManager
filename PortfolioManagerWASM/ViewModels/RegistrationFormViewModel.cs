@@ -1,22 +1,15 @@
-﻿using Microsoft.AspNetCore.Components;
-using PortfolioManagerWASM.Models;
+﻿using PortfolioManagerWASM.Models;
 using PortfolioManagerWASM.Models.DTOs;
 using PortfolioManagerWASM.Services.IService;
 
-namespace PortfolioManagerWASM.Data
+namespace PortfolioManagerWASM.ViewModels
 {
-    public class RegisterFormViewModel
+    public class RegisterFormViewModel(IAuthService authService)
     {
-        public UserRegisterDto UserRegisterDto { get; set; }
-        public RegisterResponse RegisterResponse { get; set; }
+        public UserRegisterDto UserRegisterDto { get; set; } = new UserRegisterDto();
+        public RegisterResponse RegisterResponse { get; set; } = new RegisterResponse();
         public string Message { get; set; } = string.Empty;
-        private readonly IAuthService _authService;
-        public RegisterFormViewModel(IAuthService authService)
-        {
-            UserRegisterDto = new UserRegisterDto();
-            RegisterResponse = new RegisterResponse();
-            _authService = authService;
-        }
+        private readonly IAuthService _authService = authService;
 
         public async Task RegisterUserAsync(UserRegisterDto userRegisterDTO)
         {

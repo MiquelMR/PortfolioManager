@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
-using PortfolioManagerWASM.Data;
 using PortfolioManagerWASM.Models.DTOs;
+using PortfolioManagerWASM.ViewModels;
 
 namespace PortfolioManagerWASM.Pages
 {

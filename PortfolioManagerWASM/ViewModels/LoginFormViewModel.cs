@@ -2,7 +2,7 @@
 using PortfolioManagerWASM.Services.IService;
 using PortfolioManagerWASM.Models;
 
-namespace PortfolioManagerWASM.Data
+namespace PortfolioManagerWASM.ViewModels
 {
     public class LoginFormViewModel
     {

@@ -9,6 +9,6 @@ namespace PortfolioManagerWASM.Models
         public string Author { get; set; }
         public string Description { get; set; }
         public byte[] Icon { get; set; }
-        public List<PortfolioAsset> PortfolioAssets { get; set; }
+        public List<PortfolioAsset> PortfolioAssets { get; set; } = [];
     }
 }

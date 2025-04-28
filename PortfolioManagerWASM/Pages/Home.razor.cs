@@ -14,7 +14,7 @@ namespace PortfolioManagerWASM.Pages
         [CascadingParameter]
 
         private Task<AuthenticationState> AuthState { get; set; }
-        public User ActiveUser { get; set; } = new User();
+        public User ActiveUser { get; set; } = new();
         public List<Portfolio> UserPortfolios { get; set; } = [];
         private Portfolio ActivePortfolio = new();
 
