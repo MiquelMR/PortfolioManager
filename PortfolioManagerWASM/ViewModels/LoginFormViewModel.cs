@@ -4,23 +4,19 @@ using PortfolioManagerWASM.Models;
 
 namespace PortfolioManagerWASM.ViewModels
 {
-    public class LoginFormViewModel
+    public class LoginFormViewModel(IAuthService authService, IUserService userService)
     {
-        public UserLoginDto UserLoginDto { get; set; }
-        public AuthResponse AuthResponse { get; set; }
-        public string Message { get; set; } = string.Empty;
-        private readonly IAuthService _authService;
+        private readonly IAuthService _authService = authService;
+        private readonly IUserService _userService = userService;
 
-        public LoginFormViewModel(IAuthService authService)
-        {
-            UserLoginDto = new UserLoginDto();
-            AuthResponse = new AuthResponse();
-            _authService = authService;
-        }
+        public UserLoginDto UserLoginDto { get; set; } = new UserLoginDto();
+        public AuthResponse AuthResponse { get; set; } = new AuthResponse();
+        public string Message { get; set; } = string.Empty;
 
         public async Task AuthenticateUser(UserLoginDto userLoginDTO)
         {
             var result = await _authService.Login(userLoginDTO);
+            await _userService.RefreshActiveUserAsync();
             AuthResponse.IsSuccess = result.IsSuccess;
         }
     }

@@ -10,5 +10,6 @@ namespace PortfolioManagerWASM.Services.IService
         public Task<bool> DeleteUser(string Email);
         User ActiveUser { get; }
         public void CleanActiveUser();
+        public Task RefreshActiveUserAsync();
     }
 }

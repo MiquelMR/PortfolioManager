@@ -1,9 +1,10 @@
-﻿@page "/login"
-@using PortfolioManagerWASM.Services.IService
+﻿@using PortfolioManagerWASM.Services.IService
 @using PortfolioManagerWASM.Models.DTOs
 @using System.ComponentModel.DataAnnotations
 @inject IUserService UserService
 
+@layout LoginLayout
+@page "/login"
 <h3>Login</h3>
 
 <EditForm Model="@UserLoginDto" OnValidSubmit="@AuthenticateUser">

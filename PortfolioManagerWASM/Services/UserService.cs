@@ -11,11 +11,11 @@ namespace PortfolioManagerWASM.Services
     {
         private readonly HttpClient _httpClient = httpClient;
         private readonly ILocalStorageService _localStorage = localStorage;
-        public User ActiveUser { get; set; } = null;
+        public User ActiveUser { get; set; } = new();
 
         public async Task InitializeAsync()
         {
-            ActiveUser = await GetActiveUserAsync();
+            await RefreshActiveUserAsync();
         }
 
         public async Task<bool> DeleteUser(string Email)
@@ -88,20 +88,27 @@ namespace PortfolioManagerWASM.Services
                 throw new Exception(errorModel.ErrorMessage);
             }
         }
-        private async Task<User> GetActiveUserAsync()
+
+        public async Task RefreshActiveUserAsync()
         {
-            if (ActiveUser != null) return ActiveUser;
+            try
+            {
+                var activeUserEmail = await _localStorage.GetItemAsync<string>(Initialize.User_Local_Data);
 
-            var activeUserEmail = await _localStorage.GetItemAsync<string>(Initialize.User_Local_Data);
-
-            return string.IsNullOrEmpty(activeUserEmail)
-                ? new User()
-                : await GetUserByEmail(activeUserEmail);
+                ActiveUser = string.IsNullOrEmpty(activeUserEmail)
+                   ? new User()
+                   : await GetUserByEmail(activeUserEmail);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error refreshing active user: {ex.Message}");
+                ActiveUser = new User();
+            }
         }
 
         public void CleanActiveUser()
         {
-            ActiveUser = null;
+            ActiveUser = new();
         }
     }
 }
