@@ -28,6 +28,7 @@ builder.Services.AddScoped<RegisterFormViewModel>();
 builder.Services.AddScoped<LoginFormViewModel>();
 builder.Services.AddScoped<HomeViewModel>();
 builder.Services.AddScoped<NavbarViewModel>();
+builder.Services.AddScoped<UserProfileViewModel>();
 
 // Local Storage
 builder.Services.AddBlazoredLocalStorage();

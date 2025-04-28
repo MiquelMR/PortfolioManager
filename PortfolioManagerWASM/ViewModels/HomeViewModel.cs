@@ -8,9 +8,9 @@ namespace PortfolioManagerWASM.ViewModels
         private readonly IPortfolioService _portfolioService = PortfolioService;
         private readonly IUserService _userService = UserService;
 
-        public User ActiveUser { get; set; } = new User();
+        public User ActiveUser { get; set; } = new();
         public List<Portfolio> PortfoliosBasicInfo { get; set; } = [];
-        public Portfolio ActivePortfolio { get; set; } = new Portfolio();
+        public Portfolio ActivePortfolio { get; set; } = new();
 
         public async Task InitAsync()
         {
