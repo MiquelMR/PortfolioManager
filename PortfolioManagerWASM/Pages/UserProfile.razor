@@ -6,7 +6,9 @@
     <!--Profile-->
     <div class="row">
         <div class="col-4">
-            <img src="snail.svg" class="rounded img-fluid w-100" alt="avatar">
+            <img src="@(ActiveUser.Icon == null
+                ? $"https://avatar.iran.liara.run/public"
+                : $"data:image/svg+xml;base64,{ActiveUser.Icon}")" class="rounded img-fluid w-100" alt="avatar" />
         </div>
 
         <div class="col-8 d-flex flex-column justify-content-between">
