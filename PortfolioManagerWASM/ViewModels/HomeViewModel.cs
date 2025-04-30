@@ -16,7 +16,7 @@ namespace PortfolioManagerWASM.ViewModels
         {
             ActiveUser = _userService.ActiveUser;
             PortfoliosBasicInfo = (await _portfolioService.GetPortfoliosBasicInfoByUserAsync(ActiveUser.Email)).ToList();
-            ActivePortfolio = await _portfolioService.GetPortfolioByIdAsync(PortfoliosBasicInfo[0].PortfolioId);
+            ActivePortfolio = PortfoliosBasicInfo.Count > 0 ? await _portfolioService.GetPortfolioByIdAsync(PortfoliosBasicInfo[0].PortfolioId) : new();
         }
 
         public async Task SelectPortfolio(int index)
