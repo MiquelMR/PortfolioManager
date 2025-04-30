@@ -2,7 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using PortfolioManagerAPI.Helpers;
 using PortfolioManagerAPI.Models;
-using PortfolioManagerAPI.Models.DTOs;
+using PortfolioManagerAPI.Models.DTOs.UserDto;
 using PortfolioManagerAPI.Repository.IRepository;
 using PortfolioManagerAPI.Service.IService;
 using System.IdentityModel.Tokens.Jwt;
@@ -11,20 +11,34 @@ using System.Text;
 
 namespace PortfolioManagerAPI.Service
 {
-    public class UserService : IUserService
+    public class UserService(IUserRepository userRepository, IMapper mapper, IConfiguration config) : IUserService
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IMapper _mapper;
-        private readonly string secretKey;
+        private readonly IUserRepository _userRepository = userRepository;
+        private readonly IMapper _mapper = mapper;
+        private readonly string secretKey = config.GetValue<string>("ApiSettings:Secret");
 
-        public UserService(IUserRepository userRepository, IMapper mapper, IConfiguration config)
+        public async Task<UserDto> GetByEmailAsync(string email)
         {
-            _userRepository = userRepository;
-            _mapper = mapper;
-            secretKey = config.GetValue<string>("ApiSettings:Secret");
+            var user = await _userRepository.GetByEmailAsync(email);
+            var userDto = _mapper.Map<UserDto>(user);
+            userDto.Avatar = user.AvatarPath != null
+                ? TypeConverter.UserAvatarPathToAvatar(user.AvatarPath)
+                : null;
+
+            return userDto;
+        }
+        public async Task<bool> UpdateAsync(UserUpdateDto userUpdateDto)
+        {
+            var userUpdate = _mapper.Map<User>(userUpdateDto);
+            return await _userRepository.UpdateAsync(userUpdate);
         }
 
-        public async Task<bool> Register(UserRegisterDto userRegisterDto)
+        public async Task<bool> DeleteByEmailAsync(string email)
+        {
+            return await _userRepository.DeleteByEmailAsync(email);
+        }
+
+        public async Task<bool> RegisterAsync(UserRegisterDto userRegisterDto)
         {
 
             var (hashedPassword, salt) = PasswordHelper.HashPassword(userRegisterDto.Password);
@@ -34,7 +48,7 @@ namespace PortfolioManagerAPI.Service
 
             return await _userRepository.CreateAsync(user);
         }
-        public async Task<UserLoginResponseDto> Login(UserLoginDto userLoginDto)
+        public async Task<UserLoginResponseDto> LoginAsync(UserLoginDto userLoginDto)
         {
             var user = await _userRepository.GetByEmailAsync(userLoginDto.Email);
             if (user == null || !PasswordHelper.VerifyPassword(userLoginDto.Password, user.Salt, user.Password))
@@ -67,24 +81,6 @@ namespace PortfolioManagerAPI.Service
             };
 
             return userLoginResponseDto;
-        }
-        public async Task<bool> UpdateAsync(UserRegisterDto userRegisterDto)
-        {
-            var user = _userRepository.GetByEmailAsync(userRegisterDto.Email);
-            var updatedUser = _mapper.Map<User>(user);
-            return await _userRepository.UpdateAsync(updatedUser);
-        }
-
-        public async Task<bool> DeleteByEmailAsync(string email)
-        {
-            return await _userRepository.DeleteByEmailAsync(email);
-        }
-
-        public async Task<UserDto> GetByEmailAsync(string email)
-        {
-            var user = await _userRepository.GetByEmailAsync(email);
-            var userDto = _mapper.Map<UserDto>(user);
-            return userDto;
         }
 
         public async Task<bool> ExistsByEmailAsync(string email)

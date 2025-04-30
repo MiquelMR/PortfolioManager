@@ -11,7 +11,7 @@ namespace PortfolioManagerWASM.Services
         public void CleanAllState()
         {
             _homeViewmodel.CleanData();
-            _userService.CleanActiveUser();
+            _userService.RefreshActiveUserAsync();
         }
     }
 }

@@ -6,24 +6,9 @@ namespace PortfolioManagerAPI.Controllers
     // [Authorize]
     [Route("api/portfolios")]
     [ApiController]
-    public class PortfolioController : ControllerBase
+    public class PortfolioController(IPortfolioService portfolioService) : ControllerBase
     {
-        private readonly IPortfolioService _portfolioService;
-
-        public PortfolioController(IPortfolioService portfolioService)
-        {
-            _portfolioService = portfolioService;
-        }
-
-        [HttpGet("basicPortfolioInfoByUserEmail/{userEmail}", Name = "GetPortfoliosBasicInfoByUserEmail")]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetPortfoliosBasicInfoByUserEmail(string userEmail)
-        {
-            var portfolioDtoList = await _portfolioService.GetPortfoliosBasicInfoByUserEmailAsync(userEmail);
-            if (portfolioDtoList == null) { return NotFound(); }
-            return Ok(portfolioDtoList);
-        }
+        private readonly IPortfolioService _portfolioService = portfolioService;
 
         [HttpGet("byPortfolioId/{portfolioId}", Name = "GetPortfolioById")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -35,6 +20,16 @@ namespace PortfolioManagerAPI.Controllers
             var portfolioDto = await _portfolioService.GetPortfolioById(portfolioId);
             if (portfolioDto == null) { return NotFound(); }
             return Ok(portfolioDto);
+        }
+
+        [HttpGet("basicPortfolioInfoByUserEmail/{userEmail}", Name = "GetPortfoliosBasicInfoByUserEmail")]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetPortfoliosBasicInfoByUserEmail(string userEmail)
+        {
+            var portfolioDtoList = await _portfolioService.GetPortfoliosBasicInfoByUserEmailAsync(userEmail);
+            if (portfolioDtoList == null) { return NotFound(); }
+            return Ok(portfolioDtoList);
         }
     }
 }

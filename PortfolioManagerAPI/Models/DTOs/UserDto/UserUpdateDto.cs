@@ -1,14 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace PortfolioManagerWASM.Models.DTOs
+namespace PortfolioManagerAPI.Models.DTOs.UserDto
 {
-    public class UserRegisterDto
+    public class UserUpdateDto
     {
         public string Name { get; set; }
         public string Password { get; set; }
         public string Email { get; set; }
         public byte[] Avatar { get; set; }
-        public DateTime? RegistrationDate { get; set; }
     }
 }

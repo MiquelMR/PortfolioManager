@@ -18,14 +18,12 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 // Inject Services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAssetService, AssetService>();
-builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<IPortfolioService, PortfolioService>();
 builder.Services.AddScoped<ICleaningService, CleaningService>();
 
 // Inject ViewModels
-builder.Services.AddScoped<RegisterFormViewModel>();
-builder.Services.AddScoped<LoginFormViewModel>();
+builder.Services.AddScoped<LoginViewModel>();
 builder.Services.AddScoped<HomeViewModel>();
 builder.Services.AddScoped<NavbarViewModel>();
 builder.Services.AddScoped<UserProfileViewModel>();

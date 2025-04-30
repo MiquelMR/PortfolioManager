@@ -7,16 +7,9 @@ using System.Xml.Linq;
 
 namespace PortfolioManagerAPI.Repository
 {
-    public class PortfolioAssetRepository : IPortfolioAssetRepository
+    public class PortfolioAssetRepository(ApplicationDbContext db) : IPortfolioAssetRepository
     {
-        private readonly ApplicationDbContext _db;
-        private readonly ILogger<PortfolioAssetRepository> _logger;
-
-        public PortfolioAssetRepository(ApplicationDbContext db, ILogger<PortfolioAssetRepository> logger)
-        {
-            _db = db;
-            _logger = logger;
-        }
+        private readonly ApplicationDbContext _db = db;
 
         public async Task<ICollection<PortfolioAsset>> GetPortfolioAssetsByPortfolioIdAsync(int portfolioId)
         {
@@ -27,9 +20,8 @@ namespace PortfolioManagerAPI.Repository
                     .Where(pa => pa.PortfolioId == portfolioId)
                     .ToListAsync();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                _logger.LogError(ex, "Error getting portfolioAssets");
                 return [];
             }
         }

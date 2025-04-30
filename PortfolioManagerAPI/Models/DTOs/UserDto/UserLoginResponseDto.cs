@@ -1,4 +1,4 @@
-﻿namespace PortfolioManagerAPI.Models.DTOs
+﻿namespace PortfolioManagerAPI.Models.DTOs.UserDto
 {
     public class UserLoginResponseDto
     {

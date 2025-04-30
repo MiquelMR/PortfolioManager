@@ -6,14 +6,9 @@ using System.Xml.Linq;
 
 namespace PortfolioManagerAPI.Repository
 {
-    public class PortfolioRepository : IPortfolioRepository
+    public class PortfolioRepository(ApplicationDbContext db) : IPortfolioRepository
     {
-        private readonly ApplicationDbContext _db;
-
-        public PortfolioRepository(ApplicationDbContext db, ILogger<PortfolioRepository> logger)
-        {
-            _db = db;
-        }
+        private readonly ApplicationDbContext _db = db;
 
         public async Task<Portfolio> GetPortfolioByIdAsync(int portfolioId)
         {

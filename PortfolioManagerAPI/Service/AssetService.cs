@@ -8,18 +8,11 @@ using PortfolioManagerAPI.Service.IService;
 
 namespace PortfolioManagerAPI.Service
 {
-    public class AssetService : IAssetService
+    public class AssetService(IAssetRepository assetRepository, IMapper mapper, ILogger<AssetService> logger) : IAssetService
     {
-        private readonly IAssetRepository _assetRepository;
-        private readonly IMapper _mapper;
-        private readonly ILogger<AssetService> _logger;
-
-        public AssetService(IAssetRepository assetRepository, IMapper mapper, ILogger<AssetService> logger)
-        {
-            _assetRepository = assetRepository;
-            _mapper = mapper;
-            _logger = logger;
-        }
+        private readonly IAssetRepository _assetRepository = assetRepository;
+        private readonly IMapper _mapper = mapper;
+        private readonly ILogger<AssetService> _logger = logger;
 
         public async Task<ICollection<AssetDto>> GetAssetsAsync()
         {
@@ -34,7 +27,7 @@ namespace PortfolioManagerAPI.Service
             foreach (var asset in assets)
             {
                 var assetDto = _mapper.Map<AssetDto>(asset);
-                assetDto.Icon = asset.IconPath != null ? TypeConverter.assetIconPathToIcon(asset.IconPath) : [];
+                assetDto.Icon = asset.IconPath != null ? TypeConverter.AssetIconPathToIcon(asset.IconPath) : [];
             
                 assetsDto.Add(assetDto);
             }

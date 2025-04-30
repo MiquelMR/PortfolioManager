@@ -1,15 +1,17 @@
 ﻿using PortfolioManagerWASM.Models;
+using PortfolioManagerWASM.Models.DTOs;
 
 namespace PortfolioManagerWASM.Services.IService
 {
     public interface IUserService
     {
-        public Task<User> GetUserById(int UserId);
-        public Task<User> GetUserByEmail(string Email);
-        public Task<User> UpdateUser(int UserId, User user);
-        public Task<bool> DeleteUser(string Email);
         User ActiveUser { get; }
-        public void CleanActiveUser();
+        public Task<User> GetUserByEmail(string Email);
+        public Task<AuthResponse> LoginUser(UserLoginDto userLoginDto);
+        public Task Logout();
+        public Task<bool> RegisterUser(UserRegisterDto registerUserDto);
+        public Task<User> UpdateUser(UserUpdateDto userUpdateDto);
+        public Task<bool> DeleteUserAsync();
         public Task RefreshActiveUserAsync();
     }
 }

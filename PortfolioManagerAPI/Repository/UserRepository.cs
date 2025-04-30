@@ -6,16 +6,9 @@ using PortfolioManagerAPI.Repository.IRepository;
 
 namespace PortfolioManagerAPI.Repository
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository(ApplicationDbContext db) : IUserRepository
     {
-        private readonly ApplicationDbContext _db;
-        private readonly ILogger<UserRepository> _logger;
-
-        public UserRepository(ApplicationDbContext db, ILogger<UserRepository> logger)
-        {
-            _db = db;
-            _logger = logger;
-        }
+        private readonly ApplicationDbContext _db = db;
 
         public async Task<bool> CreateAsync(User user)
         {
@@ -24,10 +17,8 @@ namespace PortfolioManagerAPI.Repository
                 _db.Add(user);
                 return await _db.SaveChangesAsync() > 0;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-
-                _logger.LogError(ex, "Error creating user");
                 return false;
             }
         }
@@ -42,9 +33,8 @@ namespace PortfolioManagerAPI.Repository
                 _db.Remove(user);
                 return await _db.SaveChangesAsync() > 0;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                _logger.LogError(ex, "Error deleting user");
                 return false;
             }
         }
@@ -55,9 +45,8 @@ namespace PortfolioManagerAPI.Repository
             {
                 return await _db.Users.FirstOrDefaultAsync(user => user.Email == email);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                _logger.LogError(ex, "Error retrieving user");
                 return null;
             }
         }
@@ -69,9 +58,8 @@ namespace PortfolioManagerAPI.Repository
                 _db.Update(user);
                 return await _db.SaveChangesAsync() > 0;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                _logger.LogError(ex, "Error updating user");
                 return false;
             }
         }
@@ -82,9 +70,8 @@ namespace PortfolioManagerAPI.Repository
             {
                 return await _db.Users.AnyAsync(u => u.Email == email);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                _logger.LogError(ex, "Error checking user");
                 return false;
             }
         }

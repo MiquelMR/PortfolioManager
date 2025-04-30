@@ -7,14 +7,9 @@ namespace PortfolioManagerAPI.Controllers
     // [Authorize]
     [Route("api/assets")]
     [ApiController]
-    public class AssetController : ControllerBase
+    public class AssetController(IAssetService assetService) : ControllerBase
     {
-        private readonly IAssetService _assetService;
-
-        public AssetController(IAssetService assetService)
-        {
-            _assetService = assetService;
-        }
+        private readonly IAssetService _assetService = assetService;
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]

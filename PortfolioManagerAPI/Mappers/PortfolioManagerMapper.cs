@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using PortfolioManagerAPI.Models;
 using PortfolioManagerAPI.Models.DTOs;
+using PortfolioManagerAPI.Models.DTOs.UserDto;
 
 namespace PortfolioManagerAPI.Mappers
 {

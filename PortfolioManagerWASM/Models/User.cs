@@ -7,12 +7,8 @@ namespace PortfolioManagerWASM.Models
     public class User
     {
         public string Name { get; set; }
-        [Required]
         public DateTime? RegistrationDate { get; set; }
-        [Required]
-        [EmailAddress]
-        [MaxLength(48)]
         public string Email { get; set; }
-        public byte[] Icon { get; set; }
+        public byte[] Avatar { get; set; }
     }
 }

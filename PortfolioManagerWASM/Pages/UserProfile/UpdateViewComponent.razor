@@ -1,0 +1,27 @@
+﻿@using PortfolioManagerWASM.Models.DTOs
+
+<div class="container">
+
+    <EditForm Model="@userUpdated" OnValidSubmit="@UpdateUserAsync">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div>
+            <label for="name">Name:</label>
+            <InputText id="name" @bind-Value="userUpdated.Name" />
+        </div>
+        <div>
+            <label for="password">Password:</label>
+            <InputText id="password" @bind-Value="userUpdated.Password" />
+        </div>
+        <div>
+            <label for="email">Email:</label>
+            <InputText id="email" @bind-Value="userUpdated.Email" />
+        </div>
+
+        <button type="submit">Submit</button>
+    </EditForm>
+
+</div>
+
+

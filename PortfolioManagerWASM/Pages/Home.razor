@@ -70,9 +70,9 @@
                     @foreach (PortfolioAsset portfolioAsset in ActivePortfolio.PortfolioAssets)
                     {
                         <li class="d-flex align-items-center mb-3">
-                            <p class="me-2">@portfolioAsset.Asset.Name</p>
-                            <img src="@TypeConverter.GetBase64String(@portfolioAsset.Asset.Icon)" alt="Icon" class="img-fluid">
-                            <p class="me-2">@portfolioAsset.AllocationPercentage</p>
+                            <p class="m-2">@portfolioAsset.Asset.Name</p>
+                            <img src="@TypeConverter.GetBase64String(@portfolioAsset.Asset.Icon)" alt="Icon" class="img-fluid asset-icon">
+                            <p class="m-2">@portfolioAsset.AllocationPercentage</p>
                         </li>
                     }
                 </ul>

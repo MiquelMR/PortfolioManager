@@ -29,7 +29,6 @@ builder.Services.AddScoped<IPortfolioAssetRepository, PortfolioAssetRepository>(
 // Services
 builder.Services.AddScoped<IAssetService, AssetService>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<IPortfolioService, PortfolioService>();
 
 // Auto-Mapper

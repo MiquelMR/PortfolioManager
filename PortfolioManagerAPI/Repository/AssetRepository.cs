@@ -5,16 +5,9 @@ using PortfolioManagerAPI.Repository.IRepository;
 
 namespace PortfolioManagerAPI.Repository
 {
-    public class AssetRepository : IAssetRepository
+    public class AssetRepository(ApplicationDbContext db) : IAssetRepository
     {
-        private readonly ApplicationDbContext _db;
-        private readonly ILogger<AssetRepository> _logger;
-
-        public AssetRepository(ApplicationDbContext db, ILogger<AssetRepository> logger)
-        {
-            _db = db;
-            _logger = logger;
-        }
+        private readonly ApplicationDbContext _db = db;
 
         public async Task<bool> CreateAsync(Asset asset)
         {
@@ -23,9 +16,8 @@ namespace PortfolioManagerAPI.Repository
                 _db.Assets.Add(asset);
                 return await _db.SaveChangesAsync() > 0;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                _logger.LogError(ex, "Error creating asset");
                 return false;
             }
         }
@@ -37,9 +29,8 @@ namespace PortfolioManagerAPI.Repository
                 _db.Assets.Update(asset);
                 return await _db.SaveChangesAsync() > 0;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                _logger.LogError(ex, "Error updating asset");
                 return false;
             }
         }
@@ -54,9 +45,8 @@ namespace PortfolioManagerAPI.Repository
                 _db.Assets.Remove(asset);
                 return await _db.SaveChangesAsync() > 0;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                _logger.LogError(ex, "Error deleting asset");
                 return false;
             }
         }
@@ -67,9 +57,8 @@ namespace PortfolioManagerAPI.Repository
             {
                 return await _db.Assets.FirstOrDefaultAsync(asset => asset.AssetId == assetId);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                _logger.LogError(ex, "Error retrieving asset");
                 return null;
             }
         }
@@ -79,9 +68,8 @@ namespace PortfolioManagerAPI.Repository
             {
                 return await _db.Assets.FirstOrDefaultAsync(asset => asset.Name == name);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                _logger.LogError(ex, "Error retrieving asset");
                 return null;
             }
         }
@@ -92,9 +80,8 @@ namespace PortfolioManagerAPI.Repository
             {
                 return await _db.Assets.OrderBy(asset => asset.AssetId).ToListAsync();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                _logger.LogError(ex, "Error getting assets");
                 return [];
             }
         }
@@ -105,9 +92,8 @@ namespace PortfolioManagerAPI.Repository
             {
                 return await _db.Assets.AnyAsync(asset => asset.Name == name);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                _logger.LogError(ex, "Error checking asset");
                 return false;
             }
         }

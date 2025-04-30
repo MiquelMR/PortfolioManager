@@ -4,10 +4,9 @@ using PortfolioManagerWASM.Services.IService;
 
 namespace PortfolioManagerWASM.ViewModels
 {
-    public class NavbarViewModel(IUserService UserService, IAuthService AuthService, ICleaningService cleaningService)
+    public class NavbarViewModel(IUserService UserService, ICleaningService cleaningService)
     {
         private readonly IUserService _userService = UserService;
-        private readonly IAuthService _authService = AuthService;
         private readonly ICleaningService _cleaningService = cleaningService;
 
         public User ActiveUser { get; set; }
@@ -21,7 +20,7 @@ namespace PortfolioManagerWASM.ViewModels
         {
             ActiveUser = null;
             _cleaningService.CleanAllState();
-            await _authService.Logout();
+            await _userService.Logout();
         }
     }
 }

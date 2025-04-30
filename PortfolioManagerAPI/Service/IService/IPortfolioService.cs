@@ -5,7 +5,7 @@ namespace PortfolioManagerAPI.Service.IService
 {
     public interface IPortfolioService
     {
-        Task<ICollection<PortfolioDto>> GetPortfoliosBasicInfoByUserEmailAsync(string userEmail);
         Task<PortfolioDto> GetPortfolioById(int portfolioId);
+        Task<ICollection<PortfolioDto>> GetPortfoliosBasicInfoByUserEmailAsync(string userEmail);
     }
 }
