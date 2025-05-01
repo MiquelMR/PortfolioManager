@@ -11,18 +11,17 @@ namespace PortfolioManagerAPI.Helpers
             string extension = "";
             if (image.Length > 4)
             {
-                // Check JPG (Magic Number: FF D8)
                 if (image[0] == 0xFF && image[1] == 0xD8)
                     extension = "jpg";
-
-                // Check PNG (Magic Number: 89 50 4E 47)
-                if (image[0] == 0x89 && image[1] == 0x50 && image[2] == 0x4E && image[3] == 0x47)
+                else if (image[0] == 0x89 && image[1] == 0x50 && image[2] == 0x4E && image[3] == 0x47)
                     extension = "png";
-
-                // Check SVG (XML-based, not binary)
-                if (System.Text.Encoding.UTF8.GetString(image).StartsWith("<?xml") && image.Contains((byte)'<'))
+                else if (image.Length > 100 && System.Text.Encoding.UTF8.GetString(image[..100]).StartsWith("<?xml") && image.Take(100).Contains((byte)'<'))
                     extension = "svg+xml";
             }
+
+            if (string.IsNullOrEmpty(extension))
+                extension = "octet-stream"; // Fallback for unknown types
+
             return $"data:image/{extension};base64,{Convert.ToBase64String(image)}";
         }
     }

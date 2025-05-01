@@ -1,6 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Authorization
 @using PortfolioManagerAPI.Helpers
 @using PortfolioManagerWASM.Components
+@using PortfolioManagerWASM.Helpers
 @using PortfolioManagerWASM.Models
 @using PortfolioManagerWASM.Services.IService
 @attribute [Authorize]
@@ -30,7 +31,14 @@
                             </div>
                             <div class="d-flex align-items-center">
                                 <span class="badge bg-body-secondary">
-                                    <img src="@TypeConverter.GetBase64String(portfolio.Icon)" alt="Icon">
+                                    @if (portfolio.Icon != null && portfolio.Icon.Length > 0)
+                                    {
+                                        <img src="@TypeConverter.GetBase64String(portfolio.Icon)" alt="Icon">
+                                    }
+                                    else
+                                    {
+                                        <i class="bi bi-pie-chart asset-icon"></i>
+                                    }
                                 </span>
                             </div>
                         </button>
@@ -73,7 +81,14 @@
                         {
                             <li class="d-flex align-items-center mb-3">
                                 <p class="m-2">@portfolioAsset.Asset.Name</p>
-                                <img src="@TypeConverter.GetBase64String(@portfolioAsset.Asset.Icon)" alt="Icon" class="img-fluid asset-icon">
+                                @if (portfolioAsset.Asset.Icon != null && portfolioAsset.Asset.Icon.Length > 0)
+                                {
+                                    <img src="@TypeConverter.GetBase64String(@portfolioAsset.Asset.Icon)" alt="Icon" class="img-fluid asset-icon">
+                                }
+                                else
+                                {
+                                    <i class="bi bi-cash asset-icon"></i>
+                                }
                                 <p class="m-2">@portfolioAsset.AllocationPercentage</p>
                             </li>
                         }

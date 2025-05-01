@@ -7,12 +7,12 @@ namespace PortfolioManagerAPI.Helpers
     {
         public static byte[] PortfolioIconPathToIcon(string fileName)
         {
-            string fullPath = Path.Combine("Resources/PortfolioIcons/", fileName + ".svg");
+            string fullPath = Path.Combine("Resources/PortfolioIcons/", fileName);
             return PathToByteArray(fullPath);
         }
         public static byte[] AssetIconPathToIcon(string fileName)
         {
-            string fullPath = Path.Combine("Resources/AssetIcons/", fileName + ".svg");
+            string fullPath = Path.Combine("Resources/AssetIcons/", fileName);
             return PathToByteArray(fullPath);
         }
         public static byte[] UserAvatarPathToAvatar(string fileName)

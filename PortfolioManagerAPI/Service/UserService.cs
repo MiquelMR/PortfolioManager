@@ -53,7 +53,17 @@ namespace PortfolioManagerAPI.Service
 
         public async Task<bool> DeleteByEmailAsync(string email)
         {
-            return await _userRepository.DeleteUserByEmailAsync(email);
+            var user = await _userRepository.GetUserByEmailAsync(email);
+            var success = await _userRepository.DeleteUserByEmailAsync(email);
+            if (success)
+            {
+                string fullPath = Path.Combine("Resources/UserAvatars/", user.AvatarPath);
+                if (File.Exists(fullPath))
+                {
+                    File.Delete(fullPath);
+                }
+            }
+            return success;
         }
 
         public async Task<bool> RegisterAsync(UserRegisterDto userRegisterDto)

@@ -24,7 +24,6 @@ namespace PortfolioManagerWASM.Pages
 
             if (authState.User == null)
             {
-                var returnUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
                 NavigationManager.NavigateTo("login", true);
             }
 
