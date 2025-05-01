@@ -5,19 +5,20 @@ namespace PortfolioManagerAPI.Helpers
 {
     public static class TypeConverter
     {
-        public static byte[] PortfolioIconPathToIcon(string path)
+        public static byte[] PortfolioIconPathToIcon(string fileName)
         {
-            string fullPath = Path.Combine("Resources/PortfolioIcons/", path + ".svg");
+            string fullPath = Path.Combine("Resources/PortfolioIcons/", fileName + ".svg");
             return PathToByteArray(fullPath);
         }
-        public static byte[] AssetIconPathToIcon(string path)
+        public static byte[] AssetIconPathToIcon(string fileName)
         {
-            string fullPath = Path.Combine("Resources/AssetIcons/", path + ".svg");
+            string fullPath = Path.Combine("Resources/AssetIcons/", fileName + ".svg");
             return PathToByteArray(fullPath);
         }
-        public static byte[] UserAvatarPathToAvatar(string path)
+        public static byte[] UserAvatarPathToAvatar(string fileName)
         {
-            string fullPath = Path.Combine("Resources/UserAvatars/", path + ".svg");
+            var fullPath = Path.Combine("Resources/UserAvatars/", fileName);
+
             return PathToByteArray(fullPath);
         }
 

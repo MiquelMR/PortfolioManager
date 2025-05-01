@@ -23,7 +23,6 @@ namespace PortfolioManagerAPI.Service
             var userDto = _mapper.Map<UserDto>(user);
             if (userDto != null)
             {
-
                 userDto.Avatar = user.AvatarPath != null
                     ? TypeConverter.UserAvatarPathToAvatar(user.AvatarPath)
                     : null;
@@ -31,6 +30,7 @@ namespace PortfolioManagerAPI.Service
 
             return userDto;
         }
+
         public async Task<UserDto> UpdateAsync(UserUpdateDto userUpdateDto)
         {
             userUpdateDto.GetType().GetProperties()
@@ -63,7 +63,19 @@ namespace PortfolioManagerAPI.Service
             var user = _mapper.Map<User>(userRegisterDto);
             user.Password = hashedPassword;
             user.Salt = salt;
+            user.RegistrationDate = DateTime.Now;
 
+            // Avatar
+
+            if (userRegisterDto.Avatar != null)
+            {
+                string filePath = "Resources/UserAvatars/" + userRegisterDto.AvatarFileName;
+                //Aqui deberia verse la imagen en el arbol 
+                File.WriteAllBytes(filePath, userRegisterDto.Avatar);
+
+            }
+            //Aqui deberia guardarse
+            user.AvatarPath = userRegisterDto.AvatarFileName;
             return await _userRepository.CreateUserAsync(user);
         }
         public async Task<UserLoginResponseDto> LoginAsync(UserLoginDto userLoginDto)

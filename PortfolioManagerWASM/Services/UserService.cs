@@ -75,7 +75,6 @@ namespace PortfolioManagerWASM.Services
 
         public async Task<bool> RegisterUser(UserRegisterDto registerUserDto)
         {
-            registerUserDto.RegistrationDate = DateTime.Now;
             var body = JsonConvert.SerializeObject(registerUserDto);
             var bodyContent = new StringContent(body, Encoding.UTF8, "Application/json");
             var response = await _httpClient.PostAsync($"{Initialize.UrlBaseApi}api/users/register", bodyContent);

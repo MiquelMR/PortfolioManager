@@ -3,8 +3,8 @@
 <h3>Sign in</h3>
 <div class="container">
     <EditForm Model="@newUser" OnValidSubmit="@RegisterNewUserAsync">
-        <DataAnnotationsValidator /> 
-        <ValidationSummary /> 
+        <DataAnnotationsValidator />
+        <ValidationSummary />
 
         <div>
             <label for="name">Name:</label>
@@ -18,8 +18,13 @@
             <label for="email">Email:</label>
             <InputText id="email" @bind-Value="newUser.Email" />
         </div>
+        <div>
+            <label for="avatar">Avatar:</label>
+            <InputFile id="avatar" OnChange="FileUploadAsync" />
+        </div>
 
-        <button type="submit">Submit</button>
+
+        <button type="submit">Sign In</button>
     </EditForm>
 
 </div>

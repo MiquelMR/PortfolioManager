@@ -11,6 +11,10 @@
             <label for="name">Name:</label>
             <InputText id="name" @bind-Value="publicProfileUpdated.Name" />
         </div>
+        <div>
+            <label for="avatar">Avatar:</label>
+            <InputFile id="avatar" @bind-Value="publicProfileUpdated.Avatar" />
+        </div>
 
         <button type="submit">Save changes</button>
     </EditForm>
