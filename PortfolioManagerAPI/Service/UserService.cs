@@ -91,6 +91,7 @@ namespace PortfolioManagerAPI.Service
 
             }
             user.AvatarPath = userRegisterDto.AvatarFileName;
+            user.Role = UserRoles.User;
             return await _userRepository.CreateUserAsync(user);
         }
         public async Task<UserLoginResponseDto> LoginAsync(UserLoginDto userLoginDto)

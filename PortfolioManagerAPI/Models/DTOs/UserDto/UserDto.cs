@@ -9,5 +9,6 @@ namespace PortfolioManagerAPI.Models.DTOs.UserDto
         public DateTime RegistrationDate { get; set; }
         public string Email { get; set; }
         public byte[] Avatar { get; set; }
+        public UserRoles Role { get; set; }
     }
 }
