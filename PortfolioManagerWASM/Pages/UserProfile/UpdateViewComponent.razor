@@ -13,7 +13,7 @@
         </div>
         <div>
             <label for="avatar">Avatar:</label>
-            <InputFile id="avatar" @bind-Value="publicProfileUpdated.Avatar" />
+            <InputFile id="avatar" OnChange="FileUploadAsync" />
         </div>
 
         <button type="submit">Save changes</button>

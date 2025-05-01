@@ -80,7 +80,6 @@ namespace PortfolioManagerWASM.Services
             var response = await _httpClient.PostAsync($"{Initialize.UrlBaseApi}api/users/register", bodyContent);
             if (response.IsSuccessStatusCode)
             {
-
                 var contentTemp = await response.Content.ReadAsStringAsync();
                 var result = JsonConvert.DeserializeObject<User>(contentTemp);
                 return true;

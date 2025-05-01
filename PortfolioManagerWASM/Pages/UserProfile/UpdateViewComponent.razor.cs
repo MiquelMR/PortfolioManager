@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using PortfolioManagerWASM.Models.DTOs;
 
 namespace PortfolioManagerWASM.Pages.UserProfile
@@ -15,6 +16,17 @@ namespace PortfolioManagerWASM.Pages.UserProfile
             {
                 await UpdatePublicProfileAsyncDelegate.Invoke(publicProfileUpdated);
             }
+        }
+        private async Task FileUploadAsync(InputFileChangeEventArgs e)
+        {
+            var file = e.File;
+            publicProfileUpdated.AvatarFileName = Path.GetRandomFileName() + Path.GetExtension(file.Name);
+            var buffer = new byte[file.Size];
+
+            using var stream = file.OpenReadStream();
+            await stream.ReadExactlyAsync(buffer);
+
+            publicProfileUpdated.Avatar = buffer;
         }
     }
 }

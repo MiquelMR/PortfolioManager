@@ -46,7 +46,15 @@ namespace PortfolioManagerAPI.Service
                 });
             var user = await _userRepository.GetUserByEmailAsync(userUpdateDto.Email);
             _mapper.Map(userUpdateDto, user);
+            user.AvatarPath = userUpdateDto.AvatarFileName;
             await _userRepository.UpdateUserAsync(user);
+            // Avatar
+            if (userUpdateDto.Avatar != null)
+            {
+                string filePath = "Resources/UserAvatars/" + userUpdateDto.AvatarFileName;
+                File.WriteAllBytes(filePath, userUpdateDto.Avatar);
+
+            }
             var userDto = _mapper.Map<UserDto>(user);
             return userDto;
         }
@@ -76,15 +84,12 @@ namespace PortfolioManagerAPI.Service
             user.RegistrationDate = DateTime.Now;
 
             // Avatar
-
             if (userRegisterDto.Avatar != null)
             {
                 string filePath = "Resources/UserAvatars/" + userRegisterDto.AvatarFileName;
-                //Aqui deberia verse la imagen en el arbol 
                 File.WriteAllBytes(filePath, userRegisterDto.Avatar);
 
             }
-            //Aqui deberia guardarse
             user.AvatarPath = userRegisterDto.AvatarFileName;
             return await _userRepository.CreateUserAsync(user);
         }
