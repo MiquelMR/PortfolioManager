@@ -1,0 +1,15 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using PortfolioManagerWASM.Models
+@using PortfolioManagerWASM.Services.IService
+@inject IUserService userService
+@inject IAssetService assetService
+@attribute [Authorize]
+
+@page "/admin"
+<PageTitle>Community</PageTitle>
+
+Admin
+
+@code {
+
+}

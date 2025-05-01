@@ -30,5 +30,10 @@ namespace PortfolioManagerWASM.Components
         {
             NavigationManager.NavigateTo("/userProfile");
         }
+
+        public void ToAdmin()
+        {
+            NavigationManager.NavigateTo("/admin");
+        }
     }
 }
