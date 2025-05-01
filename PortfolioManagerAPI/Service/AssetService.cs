@@ -8,11 +8,10 @@ using PortfolioManagerAPI.Service.IService;
 
 namespace PortfolioManagerAPI.Service
 {
-    public class AssetService(IAssetRepository assetRepository, IMapper mapper, ILogger<AssetService> logger) : IAssetService
+    public class AssetService(IAssetRepository assetRepository, IMapper mapper) : IAssetService
     {
         private readonly IAssetRepository _assetRepository = assetRepository;
         private readonly IMapper _mapper = mapper;
-        private readonly ILogger<AssetService> _logger = logger;
 
         public async Task<ICollection<AssetDto>> GetAssetsAsync()
         {
