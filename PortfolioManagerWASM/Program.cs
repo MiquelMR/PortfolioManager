@@ -20,7 +20,6 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAssetService, AssetService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<IPortfolioService, PortfolioService>();
-builder.Services.AddScoped<ICleaningService, CleaningService>();
 
 // Inject ViewModels
 builder.Services.AddScoped<LoginViewModel>();
@@ -41,12 +40,5 @@ builder.Services.AddScoped<AuthStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<AuthStateProvider>());
 
 var host = builder.Build();
-
-// Initialize UserService to provide ActiveUser
-var userService = host.Services.GetRequiredService<IUserService>() as UserService;
-if (userService != null)
-{
-    await userService.InitializeAsync();
-}
 
 await host.RunAsync();

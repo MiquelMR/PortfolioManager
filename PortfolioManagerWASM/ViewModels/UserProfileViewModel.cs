@@ -21,6 +21,7 @@ namespace PortfolioManagerWASM.ViewModels
 
         public async Task UpdateUserAsync(UserUpdateDto userUpdateDto)
         {
+            userUpdateDto.Email = _userService.ActiveUser.Email;
             await _userService.UpdateUser(userUpdateDto);
         }
 

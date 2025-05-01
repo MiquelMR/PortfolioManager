@@ -20,8 +20,9 @@ namespace PortfolioManagerWASM.Services
 
         public async Task InitializeAsync()
         {
-            await RefreshActiveUserAsync();
+            ActiveUser = await GetActiveUserAsync();
         }
+
         public async Task<User> GetUserByEmail(string Email)
         {
             var response = await _httpClient.GetAsync($"{Initialize.UrlBaseApi}api/users/by-email/{Email}");
@@ -101,7 +102,6 @@ namespace PortfolioManagerWASM.Services
             {
                 await _localStorage.RemoveItemAsync(Initialize.Token_Local);
                 await _localStorage.RemoveItemAsync(Initialize.User_Local_Data);
-                await RefreshActiveUserAsync();
                 return true;
             }
             else
@@ -113,12 +113,24 @@ namespace PortfolioManagerWASM.Services
         }
         public async Task<User> UpdateUser(UserUpdateDto userUpdateDto)
         {
+            userUpdateDto.GetType().GetProperties()
+                .Where(p => p.PropertyType == typeof(string))
+                .ToList()
+                .ForEach(p =>
+                {
+                    var value = (string)p.GetValue(userUpdateDto);
+                    if (string.IsNullOrWhiteSpace(value))
+                    {
+                        p.SetValue(userUpdateDto, null);
+                    }
+                });
             var body = JsonConvert.SerializeObject(userUpdateDto);
             var bodyContent = new StringContent(body, Encoding.UTF8, "Application/json");
             var response = await _httpClient.PatchAsync($"{Initialize.UrlBaseApi}api/users/update", bodyContent);
             if (response.IsSuccessStatusCode)
             {
-
+                await _localStorage.RemoveItemAsync(Initialize.User_Local_Data);
+                await _localStorage.SetItemAsync(Initialize.User_Local_Data, userUpdateDto.EmailNew);
                 var contentTemp = await response.Content.ReadAsStringAsync();
                 var result = JsonConvert.DeserializeObject<User>(contentTemp);
                 return result;
@@ -131,21 +143,14 @@ namespace PortfolioManagerWASM.Services
             }
         }
 
-        public async Task RefreshActiveUserAsync()
+        private async Task<User> GetActiveUserAsync()
         {
-            try
+            var activeUserEmail = await _localStorage.GetItemAsync<string>(Initialize.User_Local_Data);
+            if (activeUserEmail == null || activeUserEmail == string.Empty)
             {
-                var activeUserEmail = await _localStorage.GetItemAsync<string>(Initialize.User_Local_Data);
-
-                ActiveUser = string.IsNullOrEmpty(activeUserEmail)
-                   ? new User()
-                   : await GetUserByEmail(activeUserEmail);
+                return new();
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error refreshing active user: {ex.Message}");
-                ActiveUser = new User();
-            }
+            return await GetUserByEmail(activeUserEmail);
         }
     }
 }

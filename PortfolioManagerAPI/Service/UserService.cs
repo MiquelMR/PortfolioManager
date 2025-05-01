@@ -21,16 +21,33 @@ namespace PortfolioManagerAPI.Service
         {
             var user = await _userRepository.GetByEmailAsync(email);
             var userDto = _mapper.Map<UserDto>(user);
-            userDto.Avatar = user.AvatarPath != null
-                ? TypeConverter.UserAvatarPathToAvatar(user.AvatarPath)
-                : null;
+            if (userDto != null)
+            {
+
+                userDto.Avatar = user.AvatarPath != null
+                    ? TypeConverter.UserAvatarPathToAvatar(user.AvatarPath)
+                    : null;
+            }
 
             return userDto;
         }
         public async Task<bool> UpdateAsync(UserUpdateDto userUpdateDto)
         {
-            var userUpdate = _mapper.Map<User>(userUpdateDto);
-            return await _userRepository.UpdateAsync(userUpdate);
+            userUpdateDto.GetType().GetProperties()
+                .Where(p => p.PropertyType == typeof(string))
+                .ToList()
+                .ForEach(p =>
+                {
+                    var value = (string)p.GetValue(userUpdateDto);
+                    if (string.IsNullOrWhiteSpace(value))
+                    {
+                        p.SetValue(userUpdateDto, null);
+                    }
+                });
+            var user = await _userRepository.GetByEmailAsync(userUpdateDto.Email);
+            _mapper.Map(user, userUpdateDto);
+            user.Email = userUpdateDto.EmailNew ?? user.Email;
+            return await _userRepository.UpdateAsync(user);
         }
 
         public async Task<bool> DeleteByEmailAsync(string email)

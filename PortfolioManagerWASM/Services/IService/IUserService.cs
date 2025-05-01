@@ -12,6 +12,6 @@ namespace PortfolioManagerWASM.Services.IService
         public Task<bool> RegisterUser(UserRegisterDto registerUserDto);
         public Task<User> UpdateUser(UserUpdateDto userUpdateDto);
         public Task<bool> DeleteUserAsync();
-        public Task RefreshActiveUserAsync();
+        public Task InitializeAsync();
     }
 }

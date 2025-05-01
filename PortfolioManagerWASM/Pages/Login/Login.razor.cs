@@ -18,12 +18,12 @@ namespace PortfolioManagerWASM.Pages.Login
             LoginViewModel.Init();
             if (LoginViewModel.AlreadyLogged)
             {
-                NavigationManager.NavigateTo("/home");
+                NavigationManager.NavigateTo("/home", true);
             }
             LoginUserAsyncDelegate = async (userLoginDto) =>
             {
                 await LoginViewModel.LoginUserAsyncDelegate.Invoke(userLoginDto);
-                NavigationManager.NavigateTo("/home");
+                NavigationManager.NavigateTo("/home", true);
             };
             RegisterUserAsyncDelegate = async (userRegisterDto) =>
             {
@@ -32,7 +32,7 @@ namespace PortfolioManagerWASM.Pages.Login
                 userLogin.Email = userRegisterDto.Email;
                 userLogin.Password = userRegisterDto.Password;
                 await LoginViewModel.LoginUserAsyncDelegate.Invoke(userLogin);
-                NavigationManager.NavigateTo("/home");
+                NavigationManager.NavigateTo("/home", true);
             };
         }
 

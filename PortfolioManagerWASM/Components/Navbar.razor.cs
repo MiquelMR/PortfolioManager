@@ -14,15 +14,15 @@ namespace PortfolioManagerWASM.Components
 
         public User ActiveUser { get; set; } = new User();
 
-        protected override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
-            NavbarViewModel.Init();
+            await NavbarViewModel.InitAsync();
             ActiveUser = NavbarViewModel.ActiveUser;
         }
 
-        public void Logout()
-        {            
-            NavbarViewModel.Logout();
+        public async Task Logout()
+        {
+            await NavbarViewModel.Logout();
             NavigationManager.NavigateTo("/");
         }
 

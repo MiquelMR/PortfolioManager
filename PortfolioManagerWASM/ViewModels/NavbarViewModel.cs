@@ -4,22 +4,21 @@ using PortfolioManagerWASM.Services.IService;
 
 namespace PortfolioManagerWASM.ViewModels
 {
-    public class NavbarViewModel(IUserService UserService, ICleaningService cleaningService)
+    public class NavbarViewModel(IUserService UserService)
     {
         private readonly IUserService _userService = UserService;
-        private readonly ICleaningService _cleaningService = cleaningService;
 
         public User ActiveUser { get; set; }
 
-        public void Init()
+        public async Task InitAsync()
         {
+            await _userService.InitializeAsync();
             ActiveUser = _userService.ActiveUser;
         }
 
         public async Task Logout()
         {
             ActiveUser = null;
-            _cleaningService.CleanAllState();
             await _userService.Logout();
         }
     }

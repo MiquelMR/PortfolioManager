@@ -20,7 +20,13 @@ namespace PortfolioManagerWASM.Pages.UserProfile
         {
             UserProfileViewModel.Init();
             ActiveUser = UserProfileViewModel.ActiveUser;
-            UpdateUserAsyncDelegate = UserProfileViewModel.UpdateUserAsyncDelegate;
+
+            UpdateUserAsyncDelegate = async (userUpdateDto) =>
+            {
+                await UserProfileViewModel.UpdateUserAsyncDelegate.Invoke(userUpdateDto);
+                NavigationManager.NavigateTo("/home");
+            };
+
             DeleteUserAsyncDelegate = async () =>
             {
                 await UserProfileViewModel.DeleteUserAsyncDelegate.Invoke();

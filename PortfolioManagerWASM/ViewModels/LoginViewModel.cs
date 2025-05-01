@@ -17,7 +17,6 @@ namespace PortfolioManagerWASM.ViewModels
 
         public void Init()
         {
-            _userService.RefreshActiveUserAsync();
             LoginUserAsyncDelegate = AuthenticateUser;
             RegisterUserAsyncDelegate = RegisterUserAsync;
             AlreadyLogged = _userService.ActiveUser.Email != null;
@@ -25,7 +24,6 @@ namespace PortfolioManagerWASM.ViewModels
         public async Task AuthenticateUser(UserLoginDto userLoginDTO)
         {
             var result = await _userService.LoginUser(userLoginDTO);
-            await _userService.RefreshActiveUserAsync();
             AuthResponse.IsSuccess = result.IsSuccess;
         }
 
