@@ -5,15 +5,15 @@ namespace PortfolioManagerWASM.Pages.UserProfile
 {
     public partial class UpdateViewComponent
     {
-        private UserUpdateDto userUpdated = new();
+        private readonly UserUpdateDto publicProfileUpdated = new();
         [Parameter]
-        public Func<UserUpdateDto, Task> UpdateUserAsyncDelegate { get; set; }
+        public Func<UserUpdateDto, Task> UpdatePublicProfileAsyncDelegate { get; set; }
 
         public async Task UpdateUserAsync()
         {
-            if (UpdateUserAsyncDelegate != null)
+            if (UpdatePublicProfileAsyncDelegate != null)
             {
-                await UpdateUserAsyncDelegate.Invoke(userUpdated);
+                await UpdatePublicProfileAsyncDelegate.Invoke(publicProfileUpdated);
             }
         }
     }

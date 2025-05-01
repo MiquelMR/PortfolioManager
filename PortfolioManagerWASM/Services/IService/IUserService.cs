@@ -10,7 +10,7 @@ namespace PortfolioManagerWASM.Services.IService
         public Task<AuthResponse> LoginUser(UserLoginDto userLoginDto);
         public Task Logout();
         public Task<bool> RegisterUser(UserRegisterDto registerUserDto);
-        public Task<User> UpdateUser(UserUpdateDto userUpdateDto);
+        public Task<User> UpdatePublicProfile(UserUpdateDto userUpdateDto);
         public Task<bool> DeleteUserAsync();
         public Task InitializeAsync();
     }

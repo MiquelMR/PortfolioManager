@@ -9,20 +9,20 @@ namespace PortfolioManagerWASM.ViewModels
         private readonly IUserService _userService = userService;
 
         public User ActiveUser { get; set; } = new();
-        public Func<UserUpdateDto, Task> UpdateUserAsyncDelegate { get; private set; }
+        public Func<UserUpdateDto, Task> UpdatePublicProfileAsyncDelegate { get; private set; }
         public Func<Task> DeleteUserAsyncDelegate { get; private set; }
 
         public void Init()
         {
             ActiveUser = _userService.ActiveUser;
-            UpdateUserAsyncDelegate = UpdateUserAsync;
+            UpdatePublicProfileAsyncDelegate = UpdatePublicProfileAsync;
             DeleteUserAsyncDelegate = DeleteUserAsync;
         }
 
-        public async Task UpdateUserAsync(UserUpdateDto userUpdateDto)
+        public async Task UpdatePublicProfileAsync(UserUpdateDto userUpdateDto)
         {
-            userUpdateDto.Email = _userService.ActiveUser.Email;
-            await _userService.UpdateUser(userUpdateDto);
+            userUpdateDto.Email = ActiveUser.Email;
+            await _userService.UpdatePublicProfile(userUpdateDto);
         }
 
         internal async Task<bool> DeleteUserAsync()

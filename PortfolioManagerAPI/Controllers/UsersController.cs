@@ -29,11 +29,11 @@ namespace PortfolioManagerAPI.Controllers
         }
 
         // [Authorize]
-        [HttpPatch("update")]
+        [HttpPatch("updatePublicProfile")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Update([FromBody] UserUpdateDto userUpdateDto)
+        public async Task<IActionResult> UpdatePublicProfile([FromBody] UserUpdateDto userUpdateDto)
         {
             bool exists = await _userService.ExistsByEmailAsync(userUpdateDto.Email);
             if (!exists)
@@ -43,9 +43,8 @@ namespace PortfolioManagerAPI.Controllers
                 _responseApi.ErrorMessages.Add("User don't exists");
                 return BadRequest(_responseApi);
             }
-
-            var success = await _userService.UpdateAsync(userUpdateDto);
-            if (!success)
+            var user = await _userService.UpdateAsync(userUpdateDto);
+            if (user == null)
             {
                 _responseApi.StatusCode = HttpStatusCode.InternalServerError;
                 _responseApi.IsSuccess = false;
@@ -53,9 +52,7 @@ namespace PortfolioManagerAPI.Controllers
                 return StatusCode((int)HttpStatusCode.InternalServerError, _responseApi);
             }
 
-            _responseApi.StatusCode = HttpStatusCode.OK;
-            _responseApi.IsSuccess = true;
-            return Ok(_responseApi);
+            return Ok(user);
         }
 
         // [Authorize]

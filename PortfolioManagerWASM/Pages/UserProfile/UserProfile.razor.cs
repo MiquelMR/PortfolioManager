@@ -13,7 +13,7 @@ namespace PortfolioManagerWASM.Pages.UserProfile
         public NavigationManager NavigationManager { get; set; }
         public User ActiveUser { get; set; } = new();
         public UserProfileView UserProfileView { get; set; } = UserProfileView.ProfileView;
-        public Func<UserUpdateDto, Task> UpdateUserAsyncDelegate { get; set; }
+        public Func<UserUpdateDto, Task> UpdatePublicProfileAsyncDelegate { get; set; }
         public Func<Task> DeleteUserAsyncDelegate { get; set; }
 
         protected override void OnInitialized()
@@ -21,16 +21,16 @@ namespace PortfolioManagerWASM.Pages.UserProfile
             UserProfileViewModel.Init();
             ActiveUser = UserProfileViewModel.ActiveUser;
 
-            UpdateUserAsyncDelegate = async (userUpdateDto) =>
+            UpdatePublicProfileAsyncDelegate = async (userUpdateDto) =>
             {
-                await UserProfileViewModel.UpdateUserAsyncDelegate.Invoke(userUpdateDto);
-                NavigationManager.NavigateTo("/home");
+                await UserProfileViewModel.UpdatePublicProfileAsyncDelegate.Invoke(userUpdateDto);
+                NavigationManager.NavigateTo("/home", true);
             };
 
             DeleteUserAsyncDelegate = async () =>
             {
                 await UserProfileViewModel.DeleteUserAsyncDelegate.Invoke();
-                NavigationManager.NavigateTo("/login");
+                NavigationManager.NavigateTo("/login", true);
             };
         }
 

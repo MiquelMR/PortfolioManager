@@ -2,24 +2,17 @@
 
 <div class="container">
 
-    <EditForm Model="@userUpdated" OnValidSubmit="@UpdateUserAsync">
+    <EditForm Model="@publicProfileUpdated" OnValidSubmit="@UpdateUserAsync">
         <DataAnnotationsValidator />
         <ValidationSummary />
-        <h3>Update</h3>
+        <h3>Update Public profile</h3>
+
         <div>
             <label for="name">Name:</label>
-            <InputText id="name" @bind-Value="userUpdated.Name" />
-        </div>
-        <div>
-            <label for="password">Password:</label>
-            <InputText type="password" id="password" @bind-Value="userUpdated.Password" />
-        </div>
-        <div>
-            <label for="email">Email:</label>
-            <InputText id="email" @bind-Value="userUpdated.EmailNew" />
+            <InputText id="name" @bind-Value="publicProfileUpdated.Name" />
         </div>
 
-        <button type="submit">Submit</button>
+        <button type="submit">Save changes</button>
     </EditForm>
 
 </div>

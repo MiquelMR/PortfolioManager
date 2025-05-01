@@ -111,7 +111,7 @@ namespace PortfolioManagerWASM.Services
                 throw new Exception(errorModel.ErrorMessage);
             }
         }
-        public async Task<User> UpdateUser(UserUpdateDto userUpdateDto)
+        public async Task<User> UpdatePublicProfile(UserUpdateDto userUpdateDto)
         {
             userUpdateDto.GetType().GetProperties()
                 .Where(p => p.PropertyType == typeof(string))
@@ -126,13 +126,13 @@ namespace PortfolioManagerWASM.Services
                 });
             var body = JsonConvert.SerializeObject(userUpdateDto);
             var bodyContent = new StringContent(body, Encoding.UTF8, "Application/json");
-            var response = await _httpClient.PatchAsync($"{Initialize.UrlBaseApi}api/users/update", bodyContent);
+
+            var response = await _httpClient.PatchAsync($"{Initialize.UrlBaseApi}api/users/updatePublicProfile", bodyContent);
             if (response.IsSuccessStatusCode)
             {
-                await _localStorage.RemoveItemAsync(Initialize.User_Local_Data);
-                await _localStorage.SetItemAsync(Initialize.User_Local_Data, userUpdateDto.EmailNew);
                 var contentTemp = await response.Content.ReadAsStringAsync();
                 var result = JsonConvert.DeserializeObject<User>(contentTemp);
+                await _localStorage.SetItemAsync(Initialize.User_Local_Data, result.Email);
                 return result;
             }
             else

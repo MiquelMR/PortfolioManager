@@ -10,7 +10,30 @@ namespace PortfolioManagerAPI.Repository
     {
         private readonly ApplicationDbContext _db = db;
 
-        public async Task<bool> CreateAsync(User user)
+        public async Task<User> GetUserByUserIdAsync(int userId)
+        {
+            try
+            {
+                return await _db.Users.FirstOrDefaultAsync(user => user.UserId == userId);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public async Task<User> GetUserByEmailAsync(string email)
+        {
+            try
+            {
+                return await _db.Users.FirstOrDefaultAsync(user => user.Email == email);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+        public async Task<bool> CreateUserAsync(User user)
         {
             try
             {
@@ -23,7 +46,7 @@ namespace PortfolioManagerAPI.Repository
             }
         }
 
-        public async Task<bool> DeleteByEmailAsync(string email)
+        public async Task<bool> DeleteUserByEmailAsync(string email)
         {
             try
             {
@@ -39,19 +62,7 @@ namespace PortfolioManagerAPI.Repository
             }
         }
 
-        public async Task<User> GetByEmailAsync(string email)
-        {
-            try
-            {
-                return await _db.Users.FirstOrDefaultAsync(user => user.Email == email);
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
-
-        public async Task<bool> UpdateAsync(User user)
+        public async Task<bool> UpdateUserAsync(User user)
         {
             try
             {

@@ -19,7 +19,7 @@ namespace PortfolioManagerAPI.Service
 
         public async Task<UserDto> GetByEmailAsync(string email)
         {
-            var user = await _userRepository.GetByEmailAsync(email);
+            var user = await _userRepository.GetUserByEmailAsync(email);
             var userDto = _mapper.Map<UserDto>(user);
             if (userDto != null)
             {
@@ -31,7 +31,7 @@ namespace PortfolioManagerAPI.Service
 
             return userDto;
         }
-        public async Task<bool> UpdateAsync(UserUpdateDto userUpdateDto)
+        public async Task<UserDto> UpdateAsync(UserUpdateDto userUpdateDto)
         {
             userUpdateDto.GetType().GetProperties()
                 .Where(p => p.PropertyType == typeof(string))
@@ -44,15 +44,16 @@ namespace PortfolioManagerAPI.Service
                         p.SetValue(userUpdateDto, null);
                     }
                 });
-            var user = await _userRepository.GetByEmailAsync(userUpdateDto.Email);
-            _mapper.Map(user, userUpdateDto);
-            user.Email = userUpdateDto.EmailNew ?? user.Email;
-            return await _userRepository.UpdateAsync(user);
+            var user = await _userRepository.GetUserByEmailAsync(userUpdateDto.Email);
+            _mapper.Map(userUpdateDto, user);
+            await _userRepository.UpdateUserAsync(user);
+            var userDto = _mapper.Map<UserDto>(user);
+            return userDto;
         }
 
         public async Task<bool> DeleteByEmailAsync(string email)
         {
-            return await _userRepository.DeleteByEmailAsync(email);
+            return await _userRepository.DeleteUserByEmailAsync(email);
         }
 
         public async Task<bool> RegisterAsync(UserRegisterDto userRegisterDto)
@@ -63,11 +64,11 @@ namespace PortfolioManagerAPI.Service
             user.Password = hashedPassword;
             user.Salt = salt;
 
-            return await _userRepository.CreateAsync(user);
+            return await _userRepository.CreateUserAsync(user);
         }
         public async Task<UserLoginResponseDto> LoginAsync(UserLoginDto userLoginDto)
         {
-            var user = await _userRepository.GetByEmailAsync(userLoginDto.Email);
+            var user = await _userRepository.GetUserByEmailAsync(userLoginDto.Email);
             if (user == null || !PasswordHelper.VerifyPassword(userLoginDto.Password, user.Salt, user.Password))
             {
                 return new UserLoginResponseDto()
