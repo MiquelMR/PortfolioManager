@@ -1,41 +1,35 @@
-﻿using Blazored.LocalStorage;
-using PortfolioManagerWASM.Helpers;
-using PortfolioManagerWASM.Models;
-using PortfolioManagerWASM.Models.DTOs;
+﻿using PortfolioManagerWASM.Models;
 using PortfolioManagerWASM.Services.IService;
-using System.Runtime.CompilerServices;
-using System.Text.Json;
 
 namespace PortfolioManagerWASM.ViewModels
 {
-    public class HomeViewModel
+    public class HomeViewModel(IPortfolioService PortfolioService, IUserService UserService)
     {
-        private readonly IAppService _AppService;
-        private readonly ILocalStorageService _localStorage;
+        private readonly IPortfolioService _portfolioService = PortfolioService;
+        private readonly IUserService _userService = UserService;
 
-        public User User { get; set; }
-        public List<Asset> Assets { get; set; }
-
-        public HomeViewModel(IAppService AppService, ILocalStorageService localStorage)
-        {
-            _AppService = AppService;
-            _localStorage = localStorage;
-        }
+        public User ActiveUser { get; set; } = new();
+        public List<Portfolio> PortfoliosBasicInfo { get; set; } = [];
+        public Portfolio ActivePortfolio { get; set; } = new();
 
         public async Task InitAsync()
         {
-            User = await GetUserAsync();
+            await _userService.InitializeAsync();
+            ActiveUser = _userService.ActiveUser;
+            PortfoliosBasicInfo = (await _portfolioService.GetPortfoliosBasicInfoByUserAsync(ActiveUser.Email)).ToList();
+            ActivePortfolio = PortfoliosBasicInfo.Count > 0 ? await _portfolioService.GetPortfolioByIdAsync(PortfoliosBasicInfo[0].PortfolioId) : new();
         }
 
-        public void Logout()
+        public async Task SelectPortfolio(int index)
         {
-            _AppService.AuthService.Logout();
+            ActivePortfolio = await _portfolioService.GetPortfolioByIdAsync(PortfoliosBasicInfo[index].PortfolioId);
         }
 
-        private async Task<User> GetUserAsync()
+        public void CleanData()
         {
-            var ActiveUserEmail = await _localStorage.GetItemAsync<string>(Initialize.User_Local_Data);
-            return await _AppService.UserService.GetUserByEmail(ActiveUserEmail);
+            ActiveUser = new User();
+            ActivePortfolio = new Portfolio();
+            PortfoliosBasicInfo.Clear();
         }
     }
 }

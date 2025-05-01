@@ -6,16 +6,10 @@ using System.Security.Claims;
 
 namespace PortfolioManagerWASM.Services
 {
-    public class AuthStateProvider : AuthenticationStateProvider
+    public class AuthStateProvider(HttpClient httpClient, ILocalStorageService localStorageService) : AuthenticationStateProvider
     {
-        private readonly HttpClient _httpClient;
-        private readonly ILocalStorageService _localStorageService;
-
-        public AuthStateProvider(HttpClient httpClient, ILocalStorageService localStorageService)
-        {
-            _httpClient = httpClient;
-            _localStorageService = localStorageService;
-        }
+        private readonly HttpClient _httpClient = httpClient;
+        private readonly ILocalStorageService _localStorageService = localStorageService;
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {

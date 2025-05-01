@@ -7,32 +7,36 @@ namespace PortfolioManagerWASM.Pages
 {
     public partial class Home
     {
-        public User User { get; set; }
         [Inject]
         private HomeViewModel HomeViewModel { get; set; }
         [Inject]
         public NavigationManager NavigationManager { get; set; }
         [CascadingParameter]
+
         private Task<AuthenticationState> AuthState { get; set; }
+        public User ActiveUser { get; set; } = new();
+        public List<Portfolio> UserPortfolios { get; set; } = [];
+        private Portfolio ActivePortfolio = new();
+
         protected override async Task OnInitializedAsync()
         {
             var authState = await AuthState;
 
             if (authState.User == null)
             {
-                var returnUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
                 NavigationManager.NavigateTo("login", true);
             }
 
             await HomeViewModel.InitAsync();
-            User = HomeViewModel.User;
+            ActiveUser = HomeViewModel.ActiveUser;
+            UserPortfolios = HomeViewModel.PortfoliosBasicInfo;
+            ActivePortfolio = HomeViewModel.ActivePortfolio;
         }
 
-        public void Logout()
+        public async Task SelectPortfolio(int index)
         {
-            HomeViewModel.Logout();
-            NavigationManager.NavigateTo("/login");
+            await HomeViewModel.SelectPortfolio(index);
+            ActivePortfolio = HomeViewModel.ActivePortfolio;
         }
-
     }
 }

@@ -1,60 +1,101 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PortfolioManagerAPI.Data;
 using PortfolioManagerAPI.Models;
-using PortfolioManagerAPI.Models.DTOs;
 using PortfolioManagerAPI.Repository.IRepository;
 
 namespace PortfolioManagerAPI.Repository
 {
-    public class AssetRepository : IAssetRepository
+    public class AssetRepository(ApplicationDbContext db) : IAssetRepository
     {
-        private readonly ApplicationDbContext _db;
+        private readonly ApplicationDbContext _db = db;
 
-        public AssetRepository(ApplicationDbContext db)
+        public async Task<bool> CreateAsync(Asset asset)
         {
-            _db = db;
-        }
-        public async Task<bool> CreateAssetAsync(Asset asset)
-        {
-            _db.Assets.Add(asset);
-            return await _db.SaveChangesAsync() > 0;
-        }
-        public async Task<bool> UpdateAssetAsync(Asset asset)
-        {
-            _db.Assets.Update(asset);
-            return await _db.SaveChangesAsync() > 0;
+            try
+            {
+                _db.Assets.Add(asset);
+                return await _db.SaveChangesAsync() > 0;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
-        public async Task<bool> DeleteAssetAsync(Asset asset)
+        public async Task<bool> UpdateAsync(Asset asset)
         {
-            _db.Assets.Remove(asset);
-            return await _db.SaveChangesAsync() > 0;
+            try
+            {
+                _db.Assets.Update(asset);
+                return await _db.SaveChangesAsync() > 0;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
-        public async Task<bool> ExistsByIdAsync(int assetId)
+        public async Task<bool> DeleteByNameAsync(string name)
         {
-            bool result = await _db.Assets.AnyAsync(asset => asset.AssetId == assetId);
-            return result;
+            try
+            {
+                var asset = await _db.Assets.FirstOrDefaultAsync(asset => asset.Name == name);
+                if (asset == null) return false;
+
+                _db.Assets.Remove(asset);
+                return await _db.SaveChangesAsync() > 0;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
-        public async Task<bool> ExistsByNameAsync(string name)
+        public async Task<Asset> GetByIdAsync(int assetId)
         {
-            bool result = await _db.Assets.AnyAsync(asset => asset.Name == name);
-            return result;
+            try
+            {
+                return await _db.Assets.FirstOrDefaultAsync(asset => asset.AssetId == assetId);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
-
-        public async Task<Asset> GetAssetByIdAsync(int assetId)
+        public async Task<Asset> GetByNameAsync(string name)
         {
-            return await _db.Assets.FirstOrDefaultAsync(asset => asset.AssetId == assetId);
-        }
-        public async Task<Asset> GetAssetByNameAsync(string name)
-        {
-            return await _db.Assets.FirstOrDefaultAsync(asset => asset.Name == name);
+            try
+            {
+                return await _db.Assets.FirstOrDefaultAsync(asset => asset.Name == name);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         public async Task<ICollection<Asset>> GetAssetsAsync()
         {
-            return await _db.Assets.OrderBy(asset => asset.AssetId).ToListAsync();
+            try
+            {
+                return await _db.Assets.OrderBy(asset => asset.AssetId).ToListAsync();
+            }
+            catch (Exception)
+            {
+                return [];
+            }
+        }
+
+        public async Task<bool> ExistsByNameAsync(string name)
+        {
+            try
+            {
+                return await _db.Assets.AnyAsync(asset => asset.Name == name);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

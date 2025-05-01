@@ -30,7 +30,7 @@ namespace PortfolioManagerAPI.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("AssetId"));
 
-                    b.Property<string>("ImagePath")
+                    b.Property<string>("IconPath")
                         .HasMaxLength(48)
                         .HasColumnType("varchar(48)");
 
@@ -57,8 +57,10 @@ namespace PortfolioManagerAPI.Migrations
                         .HasColumnType("varchar(48)");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("IconPath")
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -86,6 +88,8 @@ namespace PortfolioManagerAPI.Migrations
 
                     b.HasKey("PortfolioId", "AssetId");
 
+                    b.HasIndex("AssetId");
+
                     b.ToTable("PortfolioAssets");
                 });
 
@@ -96,6 +100,9 @@ namespace PortfolioManagerAPI.Migrations
                         .HasColumnType("int");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("UserId"));
+
+                    b.Property<string>("AvatarPath")
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -125,11 +132,19 @@ namespace PortfolioManagerAPI.Migrations
 
             modelBuilder.Entity("PortfolioManagerAPI.Models.PortfolioAsset", b =>
                 {
+                    b.HasOne("PortfolioManagerAPI.Models.Asset", "Asset")
+                        .WithMany()
+                        .HasForeignKey("AssetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("PortfolioManagerAPI.Models.Portfolio", "Portfolio")
                         .WithMany()
                         .HasForeignKey("PortfolioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Asset");
 
                     b.Navigation("Portfolio");
                 });

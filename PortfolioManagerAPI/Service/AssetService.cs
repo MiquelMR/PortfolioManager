@@ -1,59 +1,38 @@
 ﻿using AutoMapper;
+using PortfolioManagerAPI.Helpers;
 using PortfolioManagerAPI.Models;
 using PortfolioManagerAPI.Models.DTOs;
+using PortfolioManagerAPI.Repository;
 using PortfolioManagerAPI.Repository.IRepository;
 using PortfolioManagerAPI.Service.IService;
 
 namespace PortfolioManagerAPI.Service
 {
-    public class AssetService : IAssetService
+    public class AssetService(IAssetRepository assetRepository, IMapper mapper, ILogger<AssetService> logger) : IAssetService
     {
-        private readonly IAssetRepository _assetRepository;
-        private readonly IMapper _mapper;
-        private readonly string secretKey;
-
-        public AssetService(IAssetRepository assetRepository, IMapper mapper, IConfiguration config)
-        {
-            _assetRepository = assetRepository;
-            _mapper = mapper;
-            secretKey = config.GetValue<string>("ApiSettings:Secret");
-        }
-
-
-
-        public Task<bool> CreateAssetAsync(Asset asset)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<bool> DeleteAssetAsync(string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<bool> ExistsByNameAsync(string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<AssetDto> GetAssetByNameAsync(string name)
-        {
-            throw new NotImplementedException();
-        }
+        private readonly IAssetRepository _assetRepository = assetRepository;
+        private readonly IMapper _mapper = mapper;
+        private readonly ILogger<AssetService> _logger = logger;
 
         public async Task<ICollection<AssetDto>> GetAssetsAsync()
         {
-            throw new NotImplementedException();
-        }
+            var assets = await _assetRepository.GetAssetsAsync();
+            var assetsDto = new List<AssetDto>();
 
-        public async Task<bool> UpdateAssetAsync(string name)
-        {
-            throw new NotImplementedException();
-        }
+            if(assets == null || assets.Count == 0)
+            {
+                return [];
+            }
 
-        public Task<bool> UpdateAssetAsync(Asset asset)
-        {
-            throw new NotImplementedException();
+            foreach (var asset in assets)
+            {
+                var assetDto = _mapper.Map<AssetDto>(asset);
+                assetDto.Icon = asset.IconPath != null ? TypeConverter.AssetIconPathToIcon(asset.IconPath) : [];
+            
+                assetsDto.Add(assetDto);
+            }
+            return assetsDto;
         }
     }
 }
+

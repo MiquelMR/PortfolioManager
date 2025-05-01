@@ -1,0 +1,30 @@
+﻿@using PortfolioManagerWASM.Services.IService
+@using PortfolioManagerWASM.Models.DTOs
+@using System.ComponentModel.DataAnnotations
+@inject IUserService UserService
+
+@layout LoginLayout
+@page "/login"
+
+<div class="container">
+
+    @switch (LoginView)
+    {
+        case LoginView.LogIn:
+            {
+                <LogInFormComponent LoginUserAsyncDelegate="@LoginUserAsyncDelegate"></LogInFormComponent>
+                <button @onclick="ChangeView" class="btn btn-primary">Sign In</button>
+            }
+            break;
+        case LoginView.SignIn:
+            {
+                <SignInFormComponent RegisterNewUserAsyncDelegate="@RegisterUserAsyncDelegate"></SignInFormComponent>
+                <button @onclick="ChangeView" class="btn btn-primary">Back</button>
+            }
+            break;
+        default:
+            <p>Server under maintenance. We apologize for the inconvenience</p>
+            break;
+    }
+
+</div>

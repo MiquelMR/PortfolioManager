@@ -1,0 +1,7 @@
+﻿[*.{cs,vb}]
+
+# IDE0305: Simplify collection initialization
+dotnet_style_prefer_collection_expression = when_types_exactly_match
+
+# IDE0305: Simplify collection initialization
+dotnet_diagnostic.IDE0305.severity = none

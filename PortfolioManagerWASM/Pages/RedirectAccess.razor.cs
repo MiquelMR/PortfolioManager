@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components;
 
 namespace PortfolioManagerWASM.Pages
@@ -6,31 +5,11 @@ namespace PortfolioManagerWASM.Pages
     public partial class RedirectAccess
     {
         [Inject]
-        private NavigationManager navigationManager { get; set; }
-        [CascadingParameter]
-        private Task<AuthenticationState> estadoProveedorAutenticacion { get; set; }
-        bool noAutorizado { get; set; } = false;
+        private NavigationManager NavigationManager { get; set; }
 
-        protected override async Task OnInitializedAsync()
+        protected override void OnInitialized()
         {
-            var estadoAutorizacion = await estadoProveedorAutenticacion;
-
-            if (estadoAutorizacion.User == null)
-            {
-                var returnUrl = navigationManager.ToBaseRelativePath(navigationManager.Uri);
-                if (string.IsNullOrEmpty(returnUrl))
-                {
-                    navigationManager.NavigateTo("Acceder", true);
-                }
-                else
-                {
-                    navigationManager.NavigateTo($"Acceder?returnUrl={returnUrl}", true);
-                }
-            }
-            else
-            {
-                noAutorizado = true;
-            }
+            NavigationManager.NavigateTo("/login", true);
         }
     }
 }

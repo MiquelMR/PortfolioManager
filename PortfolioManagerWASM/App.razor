@@ -5,14 +5,16 @@
                 <p>Please wait user authentication</p>
             </Authorizing>
             <NotAuthorized>
-                <PortfolioManagerWASM.Pages.RedirectAccess></PortfolioManagerWASM.Pages.RedirectAccess>
+                <LayoutView Layout="@typeof(LoginLayout)">
+                    <PortfolioManagerWASM.Pages.RedirectAccess />
+                </LayoutView>
             </NotAuthorized>
         </AuthorizeRouteView>
     </Found>
     <NotFound>
         <CascadingAuthenticationState>
             <LayoutView Layout="@typeof(MainLayout)">
-                <p></p>
+                <p>Page not found</p>
             </LayoutView>
         </CascadingAuthenticationState>
     </NotFound>

@@ -1,31 +1,106 @@
 ﻿@using Microsoft.AspNetCore.Authorization
+@using PortfolioManagerAPI.Helpers
+@using PortfolioManagerWASM.Components
+@using PortfolioManagerWASM.Helpers
 @using PortfolioManagerWASM.Models
 @using PortfolioManagerWASM.Services.IService
-@inject IUserService userService
-@inject IAssetService assetService
 @attribute [Authorize]
 
+@layout MainLayout
 @page "/"
 @page "/home"
 <PageTitle>Home</PageTitle>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Registration Date</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>@User.Name</td>
-            <td>@User.Email</td>
-            <td>@User.RegistrationDate</td>
-        </tr>
-    </tbody>
-</table>
+<div class="container">
+    @if (UserPortfolios.Count > 0)
+    {
+        <div class="row">
 
-<button type="button" class="btn btn-danger" onclick="@Logout">
-    Logout
-</button>
+            <!--Side Portfolio List-->
+            <aside class="col-3">
+                <h2>Portfolios</h2>
+                <div class="list-group">
+                    @for (int i = 0; i < UserPortfolios.Count; i++)
+                    {
+                        int index = i;
+                        Portfolio portfolio = UserPortfolios[index];
+                        <button @onclick="()=>SelectPortfolio(index)" type="button" class="list-group-item list-group-item-action d-flex justify-content-between">
+                            <div>
+                                <p class="mb-0">@portfolio.Name</p>
+                                <p class="mb-0"><small>@portfolio.Author</small></p>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <span class="badge bg-body-secondary">
+                                    @if (portfolio.Icon != null && portfolio.Icon.Length > 0)
+                                    {
+                                        <img src="@TypeConverter.GetBase64String(portfolio.Icon)" alt="Icon">
+                                    }
+                                    else
+                                    {
+                                        <i class="bi bi-pie-chart asset-icon"></i>
+                                    }
+                                </span>
+                            </div>
+                        </button>
+                    }
+                </div>
+            </aside>
+
+            <!--Main Page-->
+            <main class="col-9">
+
+                <h2>@ActivePortfolio.Name</h2>
+                <p>@ActivePortfolio.Author</p>
+                <div class="accordion accordion-flush" id="description">
+                    <div class="accordion-item" id="header-1">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#element-1"
+                            aria-expanded="true"
+                            aria-controls="element-1">
+                                Description
+                            </button>
+                        </h2>
+                        <div id="element-1"
+                        class="accordion-collapse collapse"
+                        aria-labelledby="encabezado-1"
+                        data-bs-parent="#header-1">
+                            <div class="accordion-body">
+                                <p>@ActivePortfolio.Description</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Portfolio charts-->
+                <article class="row">
+                    <ul class="col-8">
+                        @foreach (PortfolioAsset portfolioAsset in ActivePortfolio.PortfolioAssets)
+                        {
+                            <li class="d-flex align-items-center mb-3">
+                                <p class="m-2">@portfolioAsset.Asset.Name</p>
+                                @if (portfolioAsset.Asset.Icon != null && portfolioAsset.Asset.Icon.Length > 0)
+                                {
+                                    <img src="@TypeConverter.GetBase64String(@portfolioAsset.Asset.Icon)" alt="Icon" class="img-fluid asset-icon">
+                                }
+                                else
+                                {
+                                    <i class="bi bi-cash asset-icon"></i>
+                                }
+                                <p class="m-2">@portfolioAsset.AllocationPercentage</p>
+                            </li>
+                        }
+                    </ul>
+                </article>
+
+            </main>
+
+        </div>
+    }
+    else
+    {
+        <p>Still no portfolio</p>
+    }
+</div>

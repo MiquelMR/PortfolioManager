@@ -4,11 +4,7 @@ namespace PortfolioManagerWASM.Models
 {
     public class Asset
     {
-        [Required]
-        [MaxLength(48)]
         public string Name { get; set; }
-
-        [MaxLength(48)]
-        public string ImagePath { get; set; }
+        public byte[] Icon { get; set; }
     }
 }

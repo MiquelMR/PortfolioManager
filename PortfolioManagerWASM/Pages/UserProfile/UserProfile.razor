@@ -1,0 +1,22 @@
+﻿@layout MainLayout
+@page "/userProfile"
+@using PortfolioManagerAPI.Helpers
+@using PortfolioManagerWASM.Pages.UserProfile
+
+<div class="container">
+    @switch (UserProfileView)
+    {
+        case UserProfileView.ProfileView:
+            <ProfileViewComponent ActiveUser="@ActiveUser" />
+            <button type="button" class="btn btn-primary" @onclick="@ToUpdateView">Update</button>
+            <button type="button" class="btn btn-primary" @onclick="@DeleteUserAsyncDelegate">Delete</button>
+            break;
+        case UserProfileView.UpdateView:
+            <UpdateViewComponent UpdatePublicProfileAsyncDelegate="@UpdatePublicProfileAsyncDelegate" />
+            break;
+        default:
+            <p>Server under maintenance. We apologize for the inconvenience</p>
+            break;
+    }
+
+</div>

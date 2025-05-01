@@ -1,0 +1,24 @@
+﻿@using PortfolioManagerWASM.Models.DTOs
+
+<div class="container">
+
+    <EditForm Model="@publicProfileUpdated" OnValidSubmit="@UpdateUserAsync">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <h3>Update Public profile</h3>
+
+        <div>
+            <label for="name">Name:</label>
+            <InputText id="name" @bind-Value="publicProfileUpdated.Name" />
+        </div>
+        <div>
+            <label for="avatar">Avatar:</label>
+            <InputFile id="avatar" OnChange="FileUploadAsync" />
+        </div>
+
+        <button type="submit">Save changes</button>
+    </EditForm>
+
+</div>
+
+

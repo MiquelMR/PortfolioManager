@@ -23,5 +23,6 @@ namespace PortfolioManagerAPI.Models
         [EmailAddress]
         [MaxLength(48)]
         public string Email { get; set; }
+        public string AvatarPath { get; set; }
     }
 }
