@@ -5,7 +5,7 @@ using Newtonsoft.Json.Linq;
 using PortfolioManagerAPI.Models;
 using PortfolioManagerWASM.Helpers;
 using PortfolioManagerWASM.Models;
-using PortfolioManagerWASM.Models.DTOs;
+using PortfolioManagerWASM.Models.UserDto;
 using PortfolioManagerWASM.Services.IService;
 using System.Net.Http.Headers;
 using System.Text;

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using PortfolioManagerWASM.Models.DTOs;
+using PortfolioManagerWASM.Models.UserDto;
 
 namespace PortfolioManagerWASM.Pages.Login
 {

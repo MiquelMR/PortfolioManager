@@ -25,8 +25,7 @@ namespace PortfolioManagerAPI.Helpers
 
             if (string.IsNullOrEmpty(extension))
                 extension = "octet-stream";
-            var mi = $"data:image/{extension};base64,{Convert.ToBase64String(image)}";
-            return mi;
+            return $"data:image/{extension};base64,{Convert.ToBase64String(image)}";
         }
     }
 }

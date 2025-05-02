@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Components;
-using PortfolioManagerWASM.Models.DTOs;
+using PortfolioManagerWASM.Models.UserDto;
 
 namespace PortfolioManagerWASM.Pages.Login
 {

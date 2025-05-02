@@ -1,11 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PortfolioManagerWASM.Models.DTOs
+namespace PortfolioManagerWASM.Models.UserDto
 {
-    public class UserLoginDto
-    {
-        [Required(ErrorMessage ="User name is required")]
-        public string Password { get; set; }     
+    public class UserDeleteDto
+    { 
         [Required(ErrorMessage ="User password is required")]
         [EmailAddress]
         [MaxLength(48)]

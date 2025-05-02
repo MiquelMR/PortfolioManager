@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using PortfolioManagerWASM.Models;
-using PortfolioManagerWASM.Models.DTOs;
+﻿using PortfolioManagerWASM.Models;
 using PortfolioManagerWASM.Services.IService;
 
 namespace PortfolioManagerWASM.ViewModels
@@ -14,6 +12,21 @@ namespace PortfolioManagerWASM.ViewModels
         public async Task InitAsync()
         {
             Assets = (await _assetService.GetAssetsAsync()).ToList();
+        }
+
+        public async Task<Asset> CreateAssetAsync(Asset asset)
+        {
+            return await _assetService.CreateAssetAsync(asset);
+        }
+
+        public async Task<Asset> UpdatePublicProfileAsync(Asset updateAsset)
+        {
+            return await _assetService.UpdateAssetAsync(updateAsset);
+        }
+
+        public async Task<bool> DeleteAssetAsync(Asset asset)
+        {
+            return await _assetService.DeleteAssetAsync(asset);
         }
     }
 }

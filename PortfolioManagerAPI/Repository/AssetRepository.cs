@@ -9,64 +9,11 @@ namespace PortfolioManagerAPI.Repository
     {
         private readonly ApplicationDbContext _db = db;
 
-        public async Task<bool> CreateAsync(Asset asset)
-        {
-            try
-            {
-                _db.Assets.Add(asset);
-                return await _db.SaveChangesAsync() > 0;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-
-        public async Task<bool> UpdateAsync(Asset asset)
-        {
-            try
-            {
-                _db.Assets.Update(asset);
-                return await _db.SaveChangesAsync() > 0;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-
-        public async Task<bool> DeleteByNameAsync(string name)
-        {
-            try
-            {
-                var asset = await _db.Assets.FirstOrDefaultAsync(asset => asset.Name == name);
-                if (asset == null) return false;
-
-                _db.Assets.Remove(asset);
-                return await _db.SaveChangesAsync() > 0;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-
         public async Task<Asset> GetByIdAsync(int assetId)
         {
             try
             {
                 return await _db.Assets.FirstOrDefaultAsync(asset => asset.AssetId == assetId);
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
-        public async Task<Asset> GetByNameAsync(string name)
-        {
-            try
-            {
-                return await _db.Assets.FirstOrDefaultAsync(asset => asset.Name == name);
             }
             catch (Exception)
             {
@@ -85,12 +32,55 @@ namespace PortfolioManagerAPI.Repository
                 return [];
             }
         }
-
-        public async Task<bool> ExistsByNameAsync(string name)
+        public async Task<Asset> CreateAssetAsync(Asset asset)
         {
             try
             {
-                return await _db.Assets.AnyAsync(asset => asset.Name == name);
+                var _asset = await _db.Assets.AddAsync(asset);
+                await _db.SaveChangesAsync();
+                return _asset.Entity;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public async Task<Asset> UpdateAsync(Asset asset)
+        {
+            try
+            {
+                var _asset = _db.Assets.Update(asset);
+                await _db.SaveChangesAsync();
+                return _asset.Entity;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public async Task<bool> DeleteAssetByIdAsync(int assetId)
+        {
+            try
+            {
+                var asset = await _db.Assets.FirstOrDefaultAsync(asset => asset.AssetId == assetId);
+                if (asset == null) return false;
+
+                _db.Assets.Remove(asset);
+                return await _db.SaveChangesAsync() > 0;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> ExistsByIdAsync(int assetId)
+        {
+            try
+            {
+                return await _db.Assets.AnyAsync(asset => asset.AssetId == assetId);
             }
             catch (Exception)
             {
