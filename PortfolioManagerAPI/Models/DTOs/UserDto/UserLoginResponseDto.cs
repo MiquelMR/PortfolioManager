@@ -1,4 +1,6 @@
-﻿namespace PortfolioManagerAPI.Models.DTOs.UserDto
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PortfolioManagerAPI.Models.DTOs.UserDto
 {
     public class UserLoginResponseDto
     {

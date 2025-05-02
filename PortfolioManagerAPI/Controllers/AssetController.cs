@@ -26,6 +26,7 @@ namespace PortfolioManagerAPI.Controllers
         public async Task<IActionResult> CreateAsset([FromBody] AssetDto assetDto)
         {
             if (assetDto == null) { BadRequest(); }
+            if (!ModelState.IsValid) { return BadRequest(); }
             var _assetDto = await _assetService.CreateAssetAsync(assetDto) ?? new();
             return Ok(_assetDto);
         }
@@ -35,6 +36,7 @@ namespace PortfolioManagerAPI.Controllers
         public async Task<IActionResult> UpdateAsset([FromBody] AssetDto assetDto)
         {
             if (assetDto == null) { BadRequest(); }
+            if (!ModelState.IsValid) { return BadRequest(); }
             var _assetDto = await _assetService.UpdateAssetAsync(assetDto) ?? new();
             return Ok(_assetDto);
         }

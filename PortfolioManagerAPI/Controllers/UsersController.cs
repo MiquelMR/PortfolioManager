@@ -28,6 +28,7 @@ namespace PortfolioManagerAPI.Controllers
         public async Task<IActionResult> UpdatePublicProfile([FromBody] UserUpdateDto userUpdateDto)
         {
             if (userUpdateDto == null) { return BadRequest(); }
+            if (!ModelState.IsValid) { return BadRequest(); }
             if (!await _userService.ExistsByEmailAsync(userUpdateDto.Email)) { return BadRequest(new()); }
             var userDto = await _userService.UpdateUserAsync(userUpdateDto) ?? new();
             return Ok(userDto);
@@ -38,6 +39,7 @@ namespace PortfolioManagerAPI.Controllers
         public async Task<IActionResult> DeleteByEmail(string email)
         {
             if (email == null) { return BadRequest(); }
+
             if (!await _userService.ExistsByEmailAsync(email)) { return BadRequest(new()); }
             var success = await _userService.DeleteUserByEmailAsync(email);
             return Ok(success);
@@ -48,6 +50,7 @@ namespace PortfolioManagerAPI.Controllers
         public async Task<IActionResult> Register([FromBody] UserRegisterDto userRegisterDto)
         {
             if (userRegisterDto == null) { return BadRequest(); }
+            if (!ModelState.IsValid) { return BadRequest(); }
             if (await _userService.ExistsByEmailAsync(userRegisterDto.Email)) { return BadRequest(new()); }
             var userDto = await _userService.RegisterUserAsync(userRegisterDto);
             return Ok(userDto);
@@ -58,6 +61,7 @@ namespace PortfolioManagerAPI.Controllers
         public async Task<IActionResult> Login([FromBody] UserLoginDto userLoginDto)
         {
             if (userLoginDto == null) { return BadRequest(); }
+            if (!ModelState.IsValid) { return BadRequest(); }
             var responseLogin = await _userService.LoginUserAsync(userLoginDto);
             if (string.IsNullOrEmpty(responseLogin.Token)) { return BadRequest(responseLogin); }
             return Ok(responseLogin);
