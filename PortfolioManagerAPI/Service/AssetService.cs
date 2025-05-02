@@ -10,27 +10,24 @@ using XAct;
 
 namespace PortfolioManagerAPI.Service
 {
-    public class AssetService(IAssetRepository assetRepository, IMapper mapper) : IAssetService
+    public class AssetService(IAssetRepository assetRepository, IMapper mapper, IConfiguration config) : IAssetService
     {
         private readonly IAssetRepository _assetRepository = assetRepository;
         private readonly IMapper _mapper = mapper;
 
-        private const string resourcesPath = "Resources/AssetIcons/";
+        private readonly string resourcePath = config.GetValue<string>("ResourcesPaths:AssetIcons");
 
-        public async Task<ICollection<AssetDto>> GetAssetsAsync()
+        public async Task<List<AssetDto>> GetAssetsAsync()
         {
-            var assets = await _assetRepository.GetAssetsAsync();
+            var assets = await _assetRepository.GetAssetsAsync() ?? [];
+
             var assetsDto = new List<AssetDto>();
-
-            if (assets == null || assets.Count == 0)
-            {
-                return [];
-            }
-
             foreach (var asset in assets)
             {
                 var assetDto = _mapper.Map<AssetDto>(asset);
-                assetDto.Icon = asset.IconPath != null ? TypeConverter.AssetIconPathToIcon(asset.IconPath) : [];
+
+                var iconFullpath = Path.Combine(resourcePath, asset.IconFilename);
+                assetDto.Icon = ImageHelper.ImagePathToImage(iconFullpath) ?? [];
 
                 assetsDto.Add(assetDto);
             }
@@ -50,21 +47,19 @@ namespace PortfolioManagerAPI.Service
                         p.SetValue(assetDto, null);
                     }
                 });
-
-
-            // Save new image
-            string fileName = null;
-            if (assetDto.Icon != null)
-            {
-                var imageExtension = TypeConverter.ByteArrayImageToImageFileExtension(assetDto.Icon);
-                fileName = Guid.NewGuid().ToString() + imageExtension;
-                string fullPath = resourcesPath + fileName;
-                File.WriteAllBytes(fullPath, assetDto.Icon);
-            }
+            var iconFilename = Guid.NewGuid().ToString() + ImageHelper.GetImageExtension(assetDto.Icon);
+            string iconFullpath = resourcePath + iconFilename;
 
             var asset = _mapper.Map<Asset>(assetDto);
-            asset.IconPath = fileName;
-            return _mapper.Map<AssetDto>(await _assetRepository.CreateAssetAsync(asset));
+            asset.IconFilename = iconFilename;
+            var success = await _assetRepository.CreateAssetAsync(asset);
+
+            if (success)
+            {
+                File.WriteAllBytes(iconFullpath, assetDto.Icon);
+            }
+
+            return assetDto;
         }
 
         public async Task<AssetDto> UpdateAssetAsync(AssetDto assetDto)
@@ -81,42 +76,35 @@ namespace PortfolioManagerAPI.Service
                 }
             });
 
-            // Save new image
-            var imageExtension = TypeConverter.ByteArrayImageToImageFileExtension(assetDto.Icon);
-            string fileName = Guid.NewGuid().ToString() + imageExtension;
-            string fullPath = resourcesPath + fileName;
-            File.WriteAllBytes(fullPath, assetDto.Icon);
+            var asset = await _assetRepository.GetAssetByIdAsync(assetDto.AssetId);
+            var oldImgFullpath = Path.Combine(resourcePath, asset.IconFilename);
+            _mapper.Map(assetDto, asset);
 
-            var asset = await _assetRepository.GetByIdAsync(assetDto.AssetId);
+            string iconFilename = Guid.NewGuid().ToString() + ImageHelper.GetImageExtension(assetDto.Icon);
+            asset.IconFilename = iconFilename;
+            var success = await _assetRepository.UpdateAssetAsync(asset);
 
-            // Delete old image
-            if (asset != null)
+            if (success && File.Exists(oldImgFullpath))
             {
-                var imageToDelete = resourcesPath + asset.IconPath;
-                if (File.Exists(imageToDelete))
-                    File.Delete(imageToDelete);
+                var fullPath = Path.Combine(resourcePath + iconFilename);
+                ImageHelper.SaveImage(fullPath, assetDto.Icon);
+                File.Delete(oldImgFullpath);
             }
 
-            asset.IconPath = fileName;
-            _mapper.Map(assetDto, asset);
-            return _mapper.Map<AssetDto>(await _assetRepository.UpdateAsync(asset));
+            return assetDto;
         }
 
         public async Task<bool> DeleteAssetByIdAsync(int assetId)
         {
-            var asset = await _assetRepository.GetByIdAsync(assetId);
+            var asset = await _assetRepository.GetAssetByIdAsync(assetId);
             var success = await _assetRepository.DeleteAssetByIdAsync(assetId);
 
-            // Delete old image
-            if (success)
-            {
-                var imageToDeleteFullPath = resourcesPath + asset.IconPath;
-                if (File.Exists(imageToDeleteFullPath))
-                    File.Delete(imageToDeleteFullPath);
-                File.Delete(resourcesPath + asset.IconPath);
-            }
+            var iconFullPath = resourcePath + asset.IconFilename;
+            if (success && File.Exists(iconFullPath))
+                File.Delete(iconFullPath);
             return success;
         }
+
         public async Task<bool> ExistsByIdAsync(int assetId)
         {
             return await _assetRepository.ExistsByIdAsync(assetId);

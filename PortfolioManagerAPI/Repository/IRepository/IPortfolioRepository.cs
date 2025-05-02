@@ -5,6 +5,6 @@ namespace PortfolioManagerAPI.Repository.IRepository
     public interface IPortfolioRepository
     {
         Task<Portfolio> GetPortfolioByIdAsync(int portfolioId);
-        Task <ICollection<Portfolio>> GetPortfoliosByUserEmailAsync(string userEmail);
+        Task <List<Portfolio>> GetPortfoliosByUserEmailAsync(string userEmail);
     }
 }

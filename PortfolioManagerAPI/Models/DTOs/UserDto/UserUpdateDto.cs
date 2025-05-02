@@ -8,6 +8,5 @@ namespace PortfolioManagerAPI.Models.DTOs.UserDto
         public string Name { get; set; }
         public string Email { get; set; }
         public byte[] Avatar { get; set; }
-        public string AvatarFileName { get; set; }
     }
 }

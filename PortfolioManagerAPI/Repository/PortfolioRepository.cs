@@ -22,7 +22,7 @@ namespace PortfolioManagerAPI.Repository
             }
         }
 
-        public async Task<ICollection<Portfolio>> GetPortfoliosByUserEmailAsync(string userEmail)
+        public async Task<List<Portfolio>> GetPortfoliosByUserEmailAsync(string userEmail)
         {
             var userId = await _db.Users
                 .Where(user => user.Email == userEmail)

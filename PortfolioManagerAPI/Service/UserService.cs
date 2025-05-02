@@ -2,6 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using PortfolioManagerAPI.Helpers;
 using PortfolioManagerAPI.Models;
+using PortfolioManagerAPI.Models.DTOs;
 using PortfolioManagerAPI.Models.DTOs.UserDto;
 using PortfolioManagerAPI.Repository.IRepository;
 using PortfolioManagerAPI.Service.IService;
@@ -15,23 +16,22 @@ namespace PortfolioManagerAPI.Service
     {
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IMapper _mapper = mapper;
-        private readonly string secretKey = config.GetValue<string>("ApiSettings:Secret");
 
-        public async Task<UserDto> GetByEmailAsync(string email)
+        private readonly string secretKey = config.GetValue<string>("ApiSettings:Secret");
+        private readonly string resourcePath = config.GetValue<string>("ResourcesPaths:UserAvatar");
+
+        public async Task<UserDto> GetUserByEmailAsync(string email)
         {
             var user = await _userRepository.GetUserByEmailAsync(email);
-            var userDto = _mapper.Map<UserDto>(user);
-            if (userDto != null)
-            {
-                userDto.Avatar = user.AvatarPath != null
-                    ? TypeConverter.UserAvatarPathToAvatar(user.AvatarPath)
-                    : null;
-            }
+            var userDto = _mapper.Map<UserDto>(user) ?? new();
+
+            var avatarFullPath = Path.Combine(resourcePath, user.AvatarFilename);
+            userDto.Avatar = ImageHelper.ImagePathToImage(avatarFullPath);
 
             return userDto;
         }
 
-        public async Task<UserDto> UpdateAsync(UserUpdateDto userUpdateDto)
+        public async Task<UserDto> UpdateUserAsync(UserUpdateDto userUpdateDto)
         {
             userUpdateDto.GetType().GetProperties()
                 .Where(p => p.PropertyType == typeof(string))
@@ -44,57 +44,62 @@ namespace PortfolioManagerAPI.Service
                         p.SetValue(userUpdateDto, null);
                     }
                 });
-            var user = await _userRepository.GetUserByEmailAsync(userUpdateDto.Email);
-            _mapper.Map(userUpdateDto, user);
-            user.AvatarPath = userUpdateDto.AvatarFileName;
-            await _userRepository.UpdateUserAsync(user);
-            // Avatar
-            if (userUpdateDto.Avatar != null)
-            {
-                string filePath = "Resources/UserAvatars/" + userUpdateDto.AvatarFileName;
-                File.WriteAllBytes(filePath, userUpdateDto.Avatar);
 
+            var user = await _userRepository.GetUserByEmailAsync(userUpdateDto.Email) ?? new();
+            _mapper.Map(userUpdateDto, user);
+
+            var avatarFilename = Guid.NewGuid().ToString() + ImageHelper.GetImageExtension(userUpdateDto.Avatar);
+            user.AvatarFilename = avatarFilename;
+            var success = await _userRepository.UpdateUserAsync(user);
+
+            if (success)
+            {
+                var avatarFullpath = Path.Combine(resourcePath, avatarFilename); ;
+                ImageHelper.SaveImage(avatarFullpath, userUpdateDto.Avatar);
             }
+
             var userDto = _mapper.Map<UserDto>(user);
+            userDto.Avatar = userUpdateDto.Avatar;
             return userDto;
         }
 
-        public async Task<bool> DeleteByEmailAsync(string email)
+        public async Task<bool> DeleteUserByEmailAsync(string email)
         {
             var user = await _userRepository.GetUserByEmailAsync(email);
             var success = await _userRepository.DeleteUserByEmailAsync(email);
-            if (success)
-            {
-                string fullPath = Path.Combine("Resources/UserAvatars/", user.AvatarPath);
-                if (File.Exists(fullPath))
-                {
-                    File.Delete(fullPath);
-                }
-            }
+
+            var avatarFullpath = resourcePath + user.AvatarFilename;
+            if (success && File.Exists(avatarFullpath))
+                File.Delete(avatarFullpath);
+
             return success;
         }
 
-        public async Task<bool> RegisterAsync(UserRegisterDto userRegisterDto)
+        public async Task<UserDto> RegisterUserAsync(UserRegisterDto userRegisterDto)
         {
-
             var (hashedPassword, salt) = PasswordHelper.HashPassword(userRegisterDto.Password);
+
             var user = _mapper.Map<User>(userRegisterDto);
             user.Password = hashedPassword;
             user.Salt = salt;
             user.RegistrationDate = DateTime.Now;
+            user.Role = UserRole.User;
+            var avatarFilename = Guid.NewGuid().ToString() + ImageHelper.GetImageExtension(userRegisterDto.Avatar);
+            user.AvatarFilename = avatarFilename;
+            var success = await _userRepository.CreateUserAsync(user);
 
-            // Avatar
-            if (userRegisterDto.Avatar != null)
+            if (success)
             {
-                string filePath = "Resources/UserAvatars/" + userRegisterDto.AvatarFileName;
-                File.WriteAllBytes(filePath, userRegisterDto.Avatar);
-
+                var avatarFullpath = Path.Combine(resourcePath, avatarFilename);
+                ImageHelper.SaveImage(avatarFullpath, userRegisterDto.Avatar);
             }
-            user.AvatarPath = userRegisterDto.AvatarFileName;
-            user.Role = UserRoles.User;
-            return await _userRepository.CreateUserAsync(user);
+
+            var userDto = _mapper.Map<UserDto>(user);
+            userDto.Avatar = userRegisterDto.Avatar;
+            return userDto;
         }
-        public async Task<UserLoginResponseDto> LoginAsync(UserLoginDto userLoginDto)
+
+        public async Task<UserLoginResponseDto> LoginUserAsync(UserLoginDto userLoginDto)
         {
             var user = await _userRepository.GetUserByEmailAsync(userLoginDto.Email);
             if (user == null || !PasswordHelper.VerifyPassword(userLoginDto.Password, user.Salt, user.Password))

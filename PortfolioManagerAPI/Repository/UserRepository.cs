@@ -10,18 +10,6 @@ namespace PortfolioManagerAPI.Repository
     {
         private readonly ApplicationDbContext _db = db;
 
-        public async Task<User> GetUserByUserIdAsync(int userId)
-        {
-            try
-            {
-                return await _db.Users.FirstOrDefaultAsync(user => user.UserId == userId);
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
-
         public async Task<User> GetUserByEmailAsync(string email)
         {
             try
@@ -30,14 +18,27 @@ namespace PortfolioManagerAPI.Repository
             }
             catch (Exception)
             {
-                return null;
+                return new();
             }
         }
         public async Task<bool> CreateUserAsync(User user)
         {
             try
             {
-                _db.Add(user);
+                await _db.AddAsync(user);
+                return await _db.SaveChangesAsync() > 0;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> UpdateUserAsync(User user)
+        {
+            try
+            {
+                _db.Update(user);
                 return await _db.SaveChangesAsync() > 0;
             }
             catch (Exception)
@@ -54,19 +55,6 @@ namespace PortfolioManagerAPI.Repository
                 if (user == null) return false;
 
                 _db.Remove(user);
-                return await _db.SaveChangesAsync() > 0;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-
-        public async Task<bool> UpdateUserAsync(User user)
-        {
-            try
-            {
-                _db.Update(user);
                 return await _db.SaveChangesAsync() > 0;
             }
             catch (Exception)

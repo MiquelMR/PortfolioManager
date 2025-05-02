@@ -13,77 +13,38 @@ namespace PortfolioManagerAPI.Controllers
     public class AssetController(IAssetService assetService) : ControllerBase
     {
         private readonly IAssetService _assetService = assetService;
-        protected ResponseAPI _responseApi = new();
 
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAssets()
         {
-            var assetDtoList = await _assetService.GetAssetsAsync();
-            if (assetDtoList == null) { return NotFound(); }
+            var assetDtoList = await _assetService.GetAssetsAsync() ?? [];
             return Ok(assetDtoList);
         }
 
         // [Authorize]
-        [HttpPost("create")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpPost]
         public async Task<IActionResult> CreateAsset([FromBody] AssetDto assetDto)
         {
-            var assetTemp = await _assetService.CreateAssetAsync(assetDto);
-            if (assetTemp == null)
-            {
-                _responseApi.StatusCode = HttpStatusCode.InternalServerError;
-                _responseApi.IsSuccess = false;
-                _responseApi.ErrorMessages.Add("Error during updadte");
-                return StatusCode((int)HttpStatusCode.InternalServerError, _responseApi);
-            }
-
-            return Ok(assetTemp);
+            if (assetDto == null) { BadRequest(); }
+            var _assetDto = await _assetService.CreateAssetAsync(assetDto) ?? new();
+            return Ok(_assetDto);
         }
 
         // [Authorize]
-        [HttpPatch("updateAsset")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpPatch]
         public async Task<IActionResult> UpdateAsset([FromBody] AssetDto assetDto)
         {
-            var assetTemp = await _assetService.UpdateAssetAsync(assetDto);
-            if (assetTemp == null)
-            {
-                _responseApi.StatusCode = HttpStatusCode.InternalServerError;
-                _responseApi.IsSuccess = false;
-                _responseApi.ErrorMessages.Add("Error during updadte");
-                return StatusCode((int)HttpStatusCode.InternalServerError, _responseApi);
-            }
-
-            return Ok(assetTemp);
+            if (assetDto == null) { BadRequest(); }
+            var _assetDto = await _assetService.UpdateAssetAsync(assetDto) ?? new();
+            return Ok(_assetDto);
         }
 
         // [Authorize]
         [HttpDelete("{assetId}")]
         public async Task<IActionResult> DeleteAssetById(int assetId)
         {
-            if (!await _assetService.ExistsByIdAsync(assetId))
-            {
-                _responseApi.StatusCode = HttpStatusCode.NotFound;
-                _responseApi.IsSuccess = false;
-                _responseApi.ErrorMessages.Add("Asset not found with the given email");
-                return BadRequest(_responseApi);
-            }
-
+            if (assetId == 0) { BadRequest(); }
             var success = await _assetService.DeleteAssetByIdAsync(assetId);
-            if (!success)
-            {
-                _responseApi.StatusCode = HttpStatusCode.InternalServerError;
-                _responseApi.IsSuccess = false;
-                _responseApi.ErrorMessages.Add("Server error");
-                return BadRequest(_responseApi);
-            }
-
             return Ok(success);
         }
     }

@@ -1,6 +1,6 @@
 ﻿namespace PortfolioManagerAPI.Models
 {
-    public enum UserRoles
+    public enum UserRole
     {
         User = 0,
         Admin = 1

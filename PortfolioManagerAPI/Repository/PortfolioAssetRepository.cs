@@ -11,7 +11,7 @@ namespace PortfolioManagerAPI.Repository
     {
         private readonly ApplicationDbContext _db = db;
 
-        public async Task<ICollection<PortfolioAsset>> GetPortfolioAssetsByPortfolioIdAsync(int portfolioId)
+        public async Task<List<PortfolioAsset>> GetPortfolioAssetsByPortfolioIdAsync(int portfolioId)
         {
             try
             {

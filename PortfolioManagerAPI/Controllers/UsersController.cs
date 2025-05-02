@@ -13,126 +13,54 @@ namespace PortfolioManagerAPI.Controllers
     public class UsersController(IUserService userService) : ControllerBase
     {
         private readonly IUserService _userService = userService;
-        protected ResponseAPI _responseApi = new();
 
         // [Authorize]
-        [HttpGet("by-email/{email}", Name = "GetUserByEmail")]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpGet("by-email/{email}")]
         public async Task<IActionResult> GetUserByEmail(string email)
         {
-            var userDTO = await _userService.GetByEmailAsync(email);
-            if (userDTO == null) { return NotFound(); }
+            if (email == null) { return BadRequest(); }
+            var userDTO = await _userService.GetUserByEmailAsync(email) ?? new();
             return Ok(userDTO);
         }
 
         // [Authorize]
-        [HttpPatch("updatePublicProfile")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpPatch]
         public async Task<IActionResult> UpdatePublicProfile([FromBody] UserUpdateDto userUpdateDto)
         {
-            bool exists = await _userService.ExistsByEmailAsync(userUpdateDto.Email);
-            if (!exists)
-            {
-                _responseApi.StatusCode = HttpStatusCode.BadRequest;
-                _responseApi.IsSuccess = false;
-                _responseApi.ErrorMessages.Add("User don't exists");
-                return BadRequest(_responseApi);
-            }
-            var user = await _userService.UpdateAsync(userUpdateDto);
-            if (user == null)
-            {
-                _responseApi.StatusCode = HttpStatusCode.InternalServerError;
-                _responseApi.IsSuccess = false;
-                _responseApi.ErrorMessages.Add("Error during register");
-                return StatusCode((int)HttpStatusCode.InternalServerError, _responseApi);
-            }
-
-            return Ok(user);
+            if (userUpdateDto == null) { return BadRequest(); }
+            if (!await _userService.ExistsByEmailAsync(userUpdateDto.Email)) { return BadRequest(new()); }
+            var userDto = await _userService.UpdateUserAsync(userUpdateDto) ?? new();
+            return Ok(userDto);
         }
 
         // [Authorize]
         [HttpDelete("{email}")]
         public async Task<IActionResult> DeleteByEmail(string email)
         {
-            if (string.IsNullOrWhiteSpace(email))
-            {
-                return BadRequest(new { message = "Email cannot be null or empty." });
-            }
-            if (!await _userService.ExistsByEmailAsync(email))
-            {
-                _responseApi.StatusCode = HttpStatusCode.NotFound;
-                _responseApi.IsSuccess = false;
-                _responseApi.ErrorMessages.Add("User not found with the given email");
-                return BadRequest(_responseApi);
-            }
-
-            var success = await _userService.DeleteByEmailAsync(email);
-            if (!success)
-            {
-                _responseApi.StatusCode = HttpStatusCode.InternalServerError;
-                _responseApi.IsSuccess = false;
-                _responseApi.ErrorMessages.Add("Server error");
-                return BadRequest(_responseApi);
-            }
-
-            return NoContent();
+            if (email == null) { return BadRequest(); }
+            if (!await _userService.ExistsByEmailAsync(email)) { return BadRequest(new()); }
+            var success = await _userService.DeleteUserByEmailAsync(email);
+            return Ok(success);
         }
 
         [AllowAnonymous]
         [HttpPost("register")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Register([FromBody] UserRegisterDto userRegisterDto)
         {
-            bool alreadyExists = await _userService.ExistsByEmailAsync(userRegisterDto.Email);
-            if (alreadyExists)
-            {
-                _responseApi.StatusCode = HttpStatusCode.BadRequest;
-                _responseApi.IsSuccess = false;
-                _responseApi.ErrorMessages.Add("Email already exists");
-                return BadRequest(_responseApi);
-            }
-
-            var success = await _userService.RegisterAsync(userRegisterDto);
-            if (!success)
-            {
-                _responseApi.StatusCode = HttpStatusCode.InternalServerError;
-                _responseApi.IsSuccess = false;
-                _responseApi.ErrorMessages.Add("Error during register");
-                return StatusCode((int)HttpStatusCode.InternalServerError, _responseApi);
-            }
-
-            _responseApi.StatusCode = HttpStatusCode.OK;
-            _responseApi.IsSuccess = true;
-            return Ok(_responseApi);
+            if (userRegisterDto == null) { return BadRequest(); }
+            if (await _userService.ExistsByEmailAsync(userRegisterDto.Email)) { return BadRequest(new()); }
+            var userDto = await _userService.RegisterUserAsync(userRegisterDto);
+            return Ok(userDto);
         }
 
         [AllowAnonymous]
         [HttpPost("login")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Login([FromBody] UserLoginDto userLoginDto)
         {
-            var responseLogin = await _userService.LoginAsync(userLoginDto);
-            if (responseLogin == null || string.IsNullOrEmpty(responseLogin.Token))
-            {
-                _responseApi.StatusCode = HttpStatusCode.BadRequest;
-                _responseApi.IsSuccess = false;
-                _responseApi.ErrorMessages.Add("The email or password is incorrect");
-                return BadRequest(_responseApi);
-            }
-
-            _responseApi.StatusCode = HttpStatusCode.OK;
-            _responseApi.IsSuccess = true;
-            _responseApi.Result = responseLogin;
-            return Ok(_responseApi);
+            if (userLoginDto == null) { return BadRequest(); }
+            var responseLogin = await _userService.LoginUserAsync(userLoginDto);
+            if (string.IsNullOrEmpty(responseLogin.Token)) { return BadRequest(responseLogin); }
+            return Ok(responseLogin);
         }
     }
 }

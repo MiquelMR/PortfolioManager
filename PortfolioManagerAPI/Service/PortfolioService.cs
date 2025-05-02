@@ -6,87 +6,62 @@ using PortfolioManagerAPI.Repository.IRepository;
 using PortfolioManagerAPI.Service.IService;
 namespace PortfolioManagerAPI.Service
 {
-    public class PortfolioService(IPortfolioRepository portfolioRepository, IUserRepository userRepository, IPortfolioAssetRepository portfolioAssetsRepository, IMapper mapper, ILogger<AssetService> logger, IAssetRepository assetRepository) : IPortfolioService
+    public class PortfolioService(IPortfolioRepository portfolioRepository, IPortfolioAssetRepository portfolioAssetsRepository, IMapper mapper, IConfiguration config) : IPortfolioService
     {
         private readonly IPortfolioRepository _portfolioRepository = portfolioRepository;
-        private readonly IUserRepository _userRepository = userRepository;
-        private readonly IAssetRepository _assetRepository = assetRepository;
         private readonly IPortfolioAssetRepository _portfolioAssetRepository = portfolioAssetsRepository;
         private readonly IMapper _mapper = mapper;
-        private readonly ILogger<AssetService> _logger = logger;
+
+        private readonly string portfolioResourcePath = config.GetValue<string>("ResourcesPaths:PortfolioIcons");
+        private readonly string assetsResourcePath = config.GetValue<string>("ResourcesPaths:AssetIcons");
 
         public async Task<PortfolioDto> GetPortfolioById(int portfolioId)
         {
-            try
+            var portfolio = await _portfolioRepository.GetPortfolioByIdAsync(portfolioId) ?? new();
+            var portfolioDto = _mapper.Map<PortfolioDto>(portfolio);
+
+            var portfolioAssets = await _portfolioAssetRepository.GetPortfolioAssetsByPortfolioIdAsync(portfolioDto.PortfolioId) ?? [];
+            var portfolioAssetsDto = new List<PortfolioAssetDto>();
+            portfolioAssetsDto = portfolioAssets.Select(portfolioAsset =>
             {
-                // Get and Map portfolio
-                var portfolio = await _portfolioRepository.GetPortfolioByIdAsync(portfolioId);
-                if (portfolio == null)
+                var portfolioAssetDto = _mapper.Map<PortfolioAssetDto>(portfolioAsset);
+                portfolioAssetDto.Asset = _mapper.Map<AssetDto>(portfolioAsset.Asset);
+                if (portfolioAsset.Asset.IconFilename != null)
                 {
-                    return new PortfolioDto();
+                    var assetIconFullPath = Path.Combine(assetsResourcePath, portfolioAsset.Asset.IconFilename);
+                    portfolioAssetDto.Asset.Icon = ImageHelper.ImagePathToImage(assetIconFullPath) ?? [];
                 }
+                return portfolioAssetDto;
+            }).ToList();
+            portfolioDto.PortfolioAssets = portfolioAssetsDto;
 
-                var portfolioDto = _mapper.Map<PortfolioDto>(portfolio);
-
-                // Get and Map PortfolioAssets for this portfolio
-                var portfolioAssets = await _portfolioAssetRepository.GetPortfolioAssetsByPortfolioIdAsync(portfolioDto.PortfolioId);
-                var portfolioAssetsDto = new List<PortfolioAssetDto>();
-
-                portfolioAssetsDto = portfolioAssets.Select(portfolioAsset =>
-                {
-                    var portfolioAssetDto = _mapper.Map<PortfolioAssetDto>(portfolioAsset);
-                    portfolioAssetDto.Asset = _mapper.Map<AssetDto>(portfolioAsset.Asset);
-                    portfolioAssetDto.Asset.Icon = portfolioAsset.Asset.IconPath != null
-                        ? TypeConverter.AssetIconPathToIcon(portfolioAsset.Asset.IconPath)
-                        : null;
-                    return portfolioAssetDto;
-                }).ToList();
-
-                portfolioDto.PortfolioAssets = portfolioAssetsDto;
-
-                // Map Icon: From path to byte[]
-                portfolioDto.Icon = portfolio.IconPath != null ? TypeConverter.PortfolioIconPathToIcon(portfolio.IconPath) : [];
-
-                return portfolioDto;
-            }
-            catch (Exception)
+            if (portfolio.IconPath != null)
             {
-                throw new Exception($"An error occurred while retrieving portfolios");
+                var portfolioIconFullpath = Path.Combine(portfolioResourcePath, portfolio.IconPath);
+                portfolioDto.Icon = ImageHelper.ImagePathToImage(portfolioIconFullpath) ?? [];
             }
+
+            return portfolioDto;
         }
 
-        public async Task<ICollection<PortfolioDto>> GetPortfoliosBasicInfoByUserEmailAsync(string userEmail)
+        public async Task<List<PortfolioDto>> GetPortfoliosBasicInfoByUserEmailAsync(string userEmail)
         {
-            if (string.IsNullOrWhiteSpace(userEmail))
-            {
-                return null;
-            }
 
-            try
+            var portfolios = await _portfolioRepository.GetPortfoliosByUserEmailAsync(userEmail) ?? [];
+            var portfoliosDto = portfolios.Select(portfolio =>
             {
-                var portfolios = await _portfolioRepository.GetPortfoliosByUserEmailAsync(userEmail);
-                if (portfolios == null || portfolios.Count == 0)
+                var portfolioDto = _mapper.Map<PortfolioDto>(portfolio);
+                if (portfolio.IconPath != null)
                 {
-                    return [];
+                    var portfolioIconFullpath = Path.Combine(portfolioResourcePath, portfolio.IconPath);
+                    portfolioDto.Icon = ImageHelper.ImagePathToImage(portfolioIconFullpath) ?? [];
                 }
+                return portfolioDto;
+            }).ToList();
 
-                var portfoliosDto = portfolios.Select(portfolio =>
-                {
-                    var portfolioDto = _mapper.Map<PortfolioDto>(portfolio);
-                    portfolioDto.Icon = portfolio.IconPath != null
-                        ? TypeConverter.PortfolioIconPathToIcon(portfolio.IconPath)
-                        : Array.Empty<byte>();
-
-                    return portfolioDto;
-                }).ToList();
-
-                return portfoliosDto;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error checking portfolio");
-                throw new Exception($"An error occurred while checking existence of the portfolio with email: {userEmail}.", ex);
-            }
+            return portfoliosDto;
         }
+
     }
 }
+

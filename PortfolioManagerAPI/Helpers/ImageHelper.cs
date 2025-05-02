@@ -3,28 +3,27 @@ using System.IO;
 
 namespace PortfolioManagerAPI.Helpers
 {
-    public static class TypeConverter
+    public static class ImageHelper
     {
-        public static byte[] PortfolioIconPathToIcon(string fileName)
+        public static byte[] ImagePathToImage(string fullPath)
         {
-            string fullPath = Path.Combine("Resources/PortfolioIcons/", fileName);
             return PathToByteArray(fullPath);
         }
 
-        public static byte[] AssetIconPathToIcon(string fileName)
+        public static bool SaveImage(string fullPath, byte[] image)
         {
-            string fullPath = Path.Combine("Resources/AssetIcons/", fileName);
-            return PathToByteArray(fullPath);
+            try
+            {
+                File.WriteAllBytes(fullPath, image);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
-        public static byte[] UserAvatarPathToAvatar(string fileName)
-        {
-            var fullPath = Path.Combine("Resources/UserAvatars/", fileName);
-
-            return PathToByteArray(fullPath);
-        }
-
-        public static string ByteArrayImageToImageFileExtension(byte[] image)
+        public static string GetImageExtension(byte[] image)
         {
             string extension = "";
             if (image.Length > 4)
