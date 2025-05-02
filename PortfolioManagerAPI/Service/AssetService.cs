@@ -6,6 +6,7 @@ using PortfolioManagerAPI.Models.DTOs.UserDto;
 using PortfolioManagerAPI.Repository;
 using PortfolioManagerAPI.Repository.IRepository;
 using PortfolioManagerAPI.Service.IService;
+using XAct;
 
 namespace PortfolioManagerAPI.Service
 {
@@ -91,8 +92,9 @@ namespace PortfolioManagerAPI.Service
             // Delete old image
             if (asset != null)
             {
-                var oldImageFullPath = resourcesPath + asset.IconPath;
-                File.Delete(oldImageFullPath);
+                var imageToDelete = resourcesPath + asset.IconPath;
+                if (File.Exists(imageToDelete))
+                    File.Delete(imageToDelete);
             }
 
             asset.IconPath = fileName;
@@ -108,6 +110,9 @@ namespace PortfolioManagerAPI.Service
             // Delete old image
             if (success)
             {
+                var imageToDeleteFullPath = resourcesPath + asset.IconPath;
+                if (File.Exists(imageToDeleteFullPath))
+                    File.Delete(imageToDeleteFullPath);
                 File.Delete(resourcesPath + asset.IconPath);
             }
             return success;
