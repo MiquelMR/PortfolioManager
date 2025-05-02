@@ -1,4 +1,4 @@
-﻿using PortfolioManagerWASM.Models.DTOs;
+﻿using PortfolioManagerWASM.Models.UserDto;
 using PortfolioManagerWASM.Services.IService;
 using PortfolioManagerWASM.Models;
 

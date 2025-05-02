@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using PortfolioManagerWASM.Models;
-using PortfolioManagerWASM.Models.DTOs;
+using PortfolioManagerWASM.Models.UserDto;
 using PortfolioManagerWASM.ViewModels;
 
 namespace PortfolioManagerWASM.Pages.UserProfile

@@ -15,13 +15,16 @@ namespace PortfolioManagerAPI.Helpers
                     extension = "jpg";
                 else if (image[0] == 0x89 && image[1] == 0x50 && image[2] == 0x4E && image[3] == 0x47)
                     extension = "png";
-                else if (image.Length > 100 && System.Text.Encoding.UTF8.GetString(image[..100]).StartsWith("<?xml") && image.Take(100).Contains((byte)'<'))
-                    extension = "svg+xml";
+                else if (image.Length > 100)
+                {
+                    string header = System.Text.Encoding.UTF8.GetString(image[..100]).Trim();
+                    if (header.StartsWith("<svg") || header.StartsWith("<?xml"))
+                        extension = "svg+xml";
+                }
             }
 
             if (string.IsNullOrEmpty(extension))
-                extension = "octet-stream"; // Fallback for unknown types
-
+                extension = "octet-stream";
             return $"data:image/{extension};base64,{Convert.ToBase64String(image)}";
         }
     }

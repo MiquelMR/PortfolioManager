@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using PortfolioManagerAPI.Models;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PortfolioManagerWASM.Models
@@ -10,5 +11,6 @@ namespace PortfolioManagerWASM.Models
         public DateTime? RegistrationDate { get; set; }
         public string Email { get; set; }
         public byte[] Avatar { get; set; }
+        public UserRoles Role { get; set; }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using PortfolioManagerWASM.Models;
-using PortfolioManagerWASM.Models.DTOs;
+using PortfolioManagerWASM.Models.UserDto;
 using PortfolioManagerWASM.Services.IService;
 
 namespace PortfolioManagerWASM.ViewModels

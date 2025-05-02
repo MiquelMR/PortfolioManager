@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace PortfolioManagerWASM.Models.DTOs
+namespace PortfolioManagerWASM.Models.UserDto
 {
     public class UserUpdateDto
     {

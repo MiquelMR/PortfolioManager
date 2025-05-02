@@ -1,4 +1,5 @@
 ﻿@using PortfolioManagerAPI.Helpers
+@using PortfolioManagerAPI.Models
 @using PortfolioManagerWASM.Services.IService
 @using Syncfusion.Blazor.SplitButtons
 
@@ -45,6 +46,10 @@
                 <li><h6 class="dropdown-header">@ActiveUser.Name</h6></li>
                 <li><hr class="dropdown-divider"></li>
                 <li><button class="dropdown-item" @onclick="@ToActiveUserProfile">Profile</button></li>
+                @if (ActiveUser.Role == UserRoles.Admin)
+                {
+                    <li><button class="dropdown-item" @onclick="@ToAdmin">Admin</button></li>
+                }
                 <li><button class="dropdown-item" @onclick="@Logout">Log out</button></li>
             </ul>
         </div>
