@@ -11,8 +11,6 @@ namespace PortfolioManagerWASM.ViewModels
         public UserLoginDto UserLoginDto { get; set; } = new UserLoginDto();
         public UserRegisterDto UserRegisterDto { get; set; } = new UserRegisterDto();
         public AuthResponse AuthResponse { get; set; } = new AuthResponse();
-        public Func<UserLoginDto, Task> LoginUserAsyncDelegate { get; private set; }
-        public Func<UserRegisterDto, Task> RegisterUserAsyncDelegate { get; private set; }
         public bool AlreadyLogged { get; set; }
 
         public void Init()

@@ -19,16 +19,22 @@ namespace PortfolioManagerAPI.Service
 
         public async Task<List<AssetDto>> GetAssetsAsync()
         {
-            var assets = await _assetRepository.GetAssetsAsync() ?? [];
+            var assets = await _assetRepository.GetAssetsAsync();
+            if (assets == null) { return null; }
 
             var assetsDto = new List<AssetDto>();
             foreach (var asset in assets)
             {
                 var assetDto = _mapper.Map<AssetDto>(asset);
-
-                var iconFullpath = Path.Combine(resourcePath, asset.IconFilename);
-                assetDto.Icon = ImageHelper.ImagePathToImage(iconFullpath) ?? [];
-
+                if (asset.IconFilename != null)
+                {
+                    var iconFullpath = Path.Combine(resourcePath, asset.IconFilename);
+                    try
+                    {
+                        assetDto.Icon = ImageHelper.ImagePathToImage(iconFullpath);
+                    }
+                    catch (Exception) { assetDto.Icon = null; }
+                }
                 assetsDto.Add(assetDto);
             }
             return assetsDto;
@@ -47,18 +53,31 @@ namespace PortfolioManagerAPI.Service
                         p.SetValue(assetDto, null);
                     }
                 });
-            var iconFilename = Guid.NewGuid().ToString() + ImageHelper.GetImageExtension(assetDto.Icon);
-            string iconFullpath = resourcePath + iconFilename;
-
             var asset = _mapper.Map<Asset>(assetDto);
-            asset.IconFilename = iconFilename;
-            var success = await _assetRepository.CreateAssetAsync(asset);
 
-            if (success)
+            string iconFilename = null;
+            string iconFullpath = null;
+            if (assetDto.Icon != null)
             {
-                File.WriteAllBytes(iconFullpath, assetDto.Icon);
+                try
+                {
+                    iconFilename = Guid.NewGuid().ToString() + ImageHelper.GetImageExtension(assetDto.Icon);
+                    iconFullpath = Path.Combine(resourcePath, iconFilename);
+                }
+                catch
+                {
+                    iconFilename = null;
+                }
             }
+            asset.IconFilename = iconFilename;
 
+            var success = await _assetRepository.CreateAssetAsync(asset);
+            if (!success) { return null; }
+
+            if (assetDto.Icon != null)
+            {
+                ImageHelper.SaveImage(iconFullpath, assetDto.Icon);
+            }
             return assetDto;
         }
 
@@ -68,27 +87,47 @@ namespace PortfolioManagerAPI.Service
                 .Where(p => p.PropertyType == typeof(string))
                 .ToList()
                 .ForEach(p =>
-            {
-                var value = (string)p.GetValue(assetDto);
-                if (string.IsNullOrWhiteSpace(value))
                 {
-                    p.SetValue(assetDto, null);
-                }
-            });
+                    var value = (string)p.GetValue(assetDto);
+                    if (string.IsNullOrWhiteSpace(value))
+                    {
+                        p.SetValue(assetDto, null);
+                    }
+                });
 
             var asset = await _assetRepository.GetAssetByIdAsync(assetDto.AssetId);
-            var oldImgFullpath = Path.Combine(resourcePath, asset.IconFilename);
+            if (asset == null) { return null; }
+            string oldIconFilename = asset.IconFilename;
+
             _mapper.Map(assetDto, asset);
 
-            string iconFilename = Guid.NewGuid().ToString() + ImageHelper.GetImageExtension(assetDto.Icon);
-            asset.IconFilename = iconFilename;
-            var success = await _assetRepository.UpdateAssetAsync(asset);
-
-            if (success && File.Exists(oldImgFullpath))
+            string iconFilename = null;
+            bool validIcon = false;
+            if (assetDto.Icon != null)
             {
-                var fullPath = Path.Combine(resourcePath + iconFilename);
-                ImageHelper.SaveImage(fullPath, assetDto.Icon);
-                File.Delete(oldImgFullpath);
+                try
+                {
+                    iconFilename = Guid.NewGuid().ToString() + ImageHelper.GetImageExtension(assetDto.Icon);
+                    validIcon = true;
+                }
+                catch
+                {
+                    iconFilename = oldIconFilename;
+                }
+                asset.IconFilename = iconFilename;
+
+                var success = await _assetRepository.UpdateAssetAsync(asset);
+                if (!success) { return null; }
+
+                if (validIcon)
+                {
+                    var iconFullpath = Path.Combine(resourcePath, iconFilename); ;
+                    if (ImageHelper.SaveImage(iconFullpath, assetDto.Icon))
+                    {
+                        var oldAvatarFullpath = Path.Combine(resourcePath, oldIconFilename ?? "");
+                        if (File.Exists(oldAvatarFullpath)) { File.Delete(oldAvatarFullpath); }
+                    }
+                }
             }
 
             return assetDto;
@@ -97,11 +136,12 @@ namespace PortfolioManagerAPI.Service
         public async Task<bool> DeleteAssetByIdAsync(int assetId)
         {
             var asset = await _assetRepository.GetAssetByIdAsync(assetId);
+            if (asset == null) { return false; }
             var success = await _assetRepository.DeleteAssetByIdAsync(assetId);
+            if (!success) { return false; }
 
             var iconFullPath = resourcePath + asset.IconFilename;
-            if (success && File.Exists(iconFullPath))
-                File.Delete(iconFullPath);
+            if (File.Exists(iconFullPath)) { File.Delete(iconFullPath); }
             return success;
         }
 

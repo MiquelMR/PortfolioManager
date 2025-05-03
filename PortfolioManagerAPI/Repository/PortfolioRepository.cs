@@ -31,7 +31,7 @@ namespace PortfolioManagerAPI.Repository
 
             if (userId == 0)
             {
-                return [];
+                return null;
             }
 
             try
@@ -43,7 +43,7 @@ namespace PortfolioManagerAPI.Repository
             }
             catch (Exception)
             {
-                return [];
+                return null;
             }
         }
     }

@@ -29,7 +29,7 @@ namespace PortfolioManagerAPI.Repository
             }
             catch (Exception)
             {
-                return [];
+                return null;
             }
         }
         public async Task<bool> CreateAssetAsync(Asset asset)

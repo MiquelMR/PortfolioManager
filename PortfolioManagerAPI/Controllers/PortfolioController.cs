@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PortfolioManagerAPI.Models;
+using PortfolioManagerAPI.Models.DTOs;
 using PortfolioManagerAPI.Service.IService;
 
 namespace PortfolioManagerAPI.Controllers
@@ -13,17 +15,27 @@ namespace PortfolioManagerAPI.Controllers
         [HttpGet("byPortfolioId/{portfolioId}")]
         public async Task<IActionResult> GetPortfolioById(int portfolioId)
         {
-            if (portfolioId == 0) { BadRequest(); }
-            var portfolioDto = await _portfolioService.GetPortfolioById(portfolioId) ?? new();
-            return Ok(portfolioDto);
+            if (portfolioId == 0)
+                return BadRequest(new ResponseAPI<object>(400, "Invalid request: portfolioId is 0", null));
+
+            var portfolioDto = await _portfolioService.GetPortfolioById(portfolioId);
+            if (portfolioDto == null)
+                return StatusCode(500, new ResponseAPI<object>(500, "Internal server error", null));
+
+            return Ok(new ResponseAPI<PortfolioDto>(200, "Success", portfolioDto));
         }
 
         [HttpGet("basicPortfolioInfoByUserEmail/{userEmail}")]
         public async Task<IActionResult> GetPortfoliosBasicInfoByUserEmail(string userEmail)
         {
-            if (userEmail == null) { BadRequest(); }
-            var portfolioDtoList = await _portfolioService.GetPortfoliosBasicInfoByUserEmailAsync(userEmail) ?? [];
-            return Ok(portfolioDtoList);
+            if (userEmail == null)
+                return BadRequest(new ResponseAPI<object>(400, "Invalid request: user email is null", null));
+
+            var portfolioDtoList = await _portfolioService.GetPortfoliosBasicInfoByUserEmailAsync(userEmail);
+            if (portfolioDtoList == null)
+                return StatusCode(500, new ResponseAPI<object>(500, "Internal server error", null));
+
+            return Ok(new ResponseAPI<List<PortfolioDto>>(200, "Success", portfolioDtoList));
         }
     }
 }

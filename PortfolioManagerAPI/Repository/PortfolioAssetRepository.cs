@@ -22,7 +22,7 @@ namespace PortfolioManagerAPI.Repository
             }
             catch (Exception)
             {
-                return [];
+                return null;
             }
         }
     }

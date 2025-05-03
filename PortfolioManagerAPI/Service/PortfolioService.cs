@@ -17,10 +17,13 @@ namespace PortfolioManagerAPI.Service
 
         public async Task<PortfolioDto> GetPortfolioById(int portfolioId)
         {
-            var portfolio = await _portfolioRepository.GetPortfolioByIdAsync(portfolioId) ?? new();
+            var portfolio = await _portfolioRepository.GetPortfolioByIdAsync(portfolioId);
+            if (portfolio == null) { return null; }
             var portfolioDto = _mapper.Map<PortfolioDto>(portfolio);
 
             var portfolioAssets = await _portfolioAssetRepository.GetPortfolioAssetsByPortfolioIdAsync(portfolioDto.PortfolioId) ?? [];
+            if (portfolioAssets == null) { return null; }
+
             var portfolioAssetsDto = new List<PortfolioAssetDto>();
             portfolioAssetsDto = portfolioAssets.Select(portfolioAsset =>
             {
@@ -28,8 +31,15 @@ namespace PortfolioManagerAPI.Service
                 portfolioAssetDto.Asset = _mapper.Map<AssetDto>(portfolioAsset.Asset);
                 if (portfolioAsset.Asset.IconFilename != null)
                 {
-                    var assetIconFullPath = Path.Combine(assetsResourcePath, portfolioAsset.Asset.IconFilename);
-                    portfolioAssetDto.Asset.Icon = ImageHelper.ImagePathToImage(assetIconFullPath) ?? [];
+                    try
+                    {
+                        var assetIconFullPath = Path.Combine(assetsResourcePath, portfolioAsset.Asset.IconFilename);
+                        portfolioAssetDto.Asset.Icon = ImageHelper.ImagePathToImage(assetIconFullPath);
+                    }
+                    catch
+                    {
+                        portfolioAssetDto.Asset.Icon = null;
+                    }
                 }
                 return portfolioAssetDto;
             }).ToList();
@@ -37,10 +47,16 @@ namespace PortfolioManagerAPI.Service
 
             if (portfolio.IconPath != null)
             {
-                var portfolioIconFullpath = Path.Combine(portfolioResourcePath, portfolio.IconPath);
-                portfolioDto.Icon = ImageHelper.ImagePathToImage(portfolioIconFullpath) ?? [];
+                try
+                {
+                    var portfolioIconFullpath = Path.Combine(portfolioResourcePath, portfolio.IconPath);
+                    portfolioDto.Icon = ImageHelper.ImagePathToImage(portfolioIconFullpath);
+                }
+                catch
+                {
+                    portfolioDto.Icon = null;
+                }
             }
-
             return portfolioDto;
         }
 
@@ -48,20 +64,28 @@ namespace PortfolioManagerAPI.Service
         {
 
             var portfolios = await _portfolioRepository.GetPortfoliosByUserEmailAsync(userEmail) ?? [];
+            if (portfolios == null) { return null; }
+
             var portfoliosDto = portfolios.Select(portfolio =>
             {
                 var portfolioDto = _mapper.Map<PortfolioDto>(portfolio);
                 if (portfolio.IconPath != null)
                 {
-                    var portfolioIconFullpath = Path.Combine(portfolioResourcePath, portfolio.IconPath);
-                    portfolioDto.Icon = ImageHelper.ImagePathToImage(portfolioIconFullpath) ?? [];
+                    try
+                    {
+                        var portfolioIconFullpath = Path.Combine(portfolioResourcePath, portfolio.IconPath);
+                        portfolioDto.Icon = ImageHelper.ImagePathToImage(portfolioIconFullpath);
+                    }
+                    catch
+                    {
+                        portfolioDto.Icon = null;
+                    }
                 }
                 return portfolioDto;
             }).ToList();
 
             return portfoliosDto;
         }
-
     }
 }
 

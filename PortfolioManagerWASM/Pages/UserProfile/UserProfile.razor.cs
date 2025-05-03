@@ -23,13 +23,13 @@ namespace PortfolioManagerWASM.Pages.UserProfile
 
             UpdatePublicProfileAsyncDelegate = async (userUpdateDto) =>
             {
-                await UserProfileViewModel.UpdatePublicProfileAsyncDelegate.Invoke(userUpdateDto);
+                await UserProfileViewModel.UpdatePublicProfileAsync(userUpdateDto);
                 NavigationManager.NavigateTo("/home", true);
             };
 
             DeleteUserAsyncDelegate = async () =>
             {
-                await UserProfileViewModel.DeleteUserAsyncDelegate.Invoke();
+                await UserProfileViewModel.DeleteUserAsync();
                 NavigationManager.NavigateTo("/login", true);
             };
         }

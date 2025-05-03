@@ -18,7 +18,7 @@ namespace PortfolioManagerAPI.Repository
             }
             catch (Exception)
             {
-                return new();
+                return null;
             }
         }
         public async Task<bool> CreateUserAsync(User user)
