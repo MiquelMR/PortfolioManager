@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using PortfolioManagerAPI.Models;
 using PortfolioManagerWASM.Helpers;
 using PortfolioManagerWASM.Models;
 using PortfolioManagerWASM.Services.IService;
@@ -9,11 +10,13 @@ namespace PortfolioManagerWASM.Services
     {
         private readonly HttpClient _httpClient = httpClient;
 
-        public async Task<ICollection<Portfolio>> GetPortfoliosBasicInfoByUserAsync(string userEmail)
+        public async Task<List<Portfolio>> GetPortfoliosBasicInfoByUserAsync(string userEmail)
         {
             var response = await _httpClient.GetAsync($"{Initialize.UrlBaseApi}api/portfolios/basicPortfolioInfoByUserEmail/{userEmail}");
             var content = await response.Content.ReadAsStringAsync();
-            var portfolios = JsonConvert.DeserializeObject<ICollection<Portfolio>>(content);
+            var responseAPI = JsonConvert.DeserializeObject<ResponseAPI<List<Portfolio>>>(content);
+            var portfolios = responseAPI.Data;
+
             return portfolios;
         }
 
@@ -21,7 +24,9 @@ namespace PortfolioManagerWASM.Services
         {
             var response = await _httpClient.GetAsync($"{Initialize.UrlBaseApi}api/portfolios/byPortfolioId/{portfolioId}");
             var content = await response.Content.ReadAsStringAsync();
-            var portfolio = JsonConvert.DeserializeObject<Portfolio>(content);
+            var responseAPI = JsonConvert.DeserializeObject<ResponseAPI<Portfolio>>(content);
+            var portfolio = responseAPI.Data;
+
             return portfolio;
         }
     }

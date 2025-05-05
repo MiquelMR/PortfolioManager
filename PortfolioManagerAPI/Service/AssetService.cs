@@ -129,8 +129,12 @@ namespace PortfolioManagerAPI.Service
                     }
                 }
             }
+            else
+            {
+                var success = await _assetRepository.UpdateAssetAsync(asset);
+            }
 
-            return assetDto;
+                return assetDto;
         }
 
         public async Task<bool> DeleteAssetByIdAsync(int assetId)

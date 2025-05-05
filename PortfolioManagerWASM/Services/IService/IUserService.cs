@@ -9,7 +9,7 @@ namespace PortfolioManagerWASM.Services.IService
         public Task<User> GetUserByEmail(string Email);
         public Task<AuthResponse> LoginUser(UserLoginDto userLoginDto);
         public Task Logout();
-        public Task<bool> RegisterUser(UserRegisterDto registerUserDto);
+        public Task<User> RegisterUser(UserRegisterDto registerUserDto);
         public Task<User> UpdatePublicProfile(UserUpdateDto userUpdateDto);
         public Task<bool> DeleteUserAsync();
         public Task InitializeAsync();

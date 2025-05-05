@@ -86,6 +86,11 @@ namespace PortfolioManagerAPI.Service
 
             return portfoliosDto;
         }
+
+        public async Task<bool> ExistsByIdAsync(int portfolioId)
+        {
+            return await _portfolioRepository.ExistsByIdAsync(portfolioId);
+        }
     }
 }
 

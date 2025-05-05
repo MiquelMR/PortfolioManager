@@ -7,5 +7,6 @@ namespace PortfolioManagerAPI.Service.IService
     {
         Task<PortfolioDto> GetPortfolioById(int portfolioId);
         Task<List<PortfolioDto>> GetPortfoliosBasicInfoByUserEmailAsync(string userEmail);
+        Task<bool> ExistsByIdAsync(int portfolioId);
     }
 }

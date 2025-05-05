@@ -10,7 +10,6 @@ namespace PortfolioManagerAPI.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Required]
         public int AssetId { get; set; }
-
         [Required]
         [MaxLength(48)]
         public string Name { get; set; }

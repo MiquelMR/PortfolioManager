@@ -1,8 +1,12 @@
-﻿namespace PortfolioManagerAPI.Models.DTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PortfolioManagerAPI.Models.DTOs
 {
     public class AssetDto
     {
         public int AssetId { get; set; }
+        [Required]
+        [MaxLength(48)]
         public string Name { get; set; }
         public byte[] Icon { get; set; }
     }

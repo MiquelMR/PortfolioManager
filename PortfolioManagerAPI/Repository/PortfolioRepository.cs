@@ -46,5 +46,18 @@ namespace PortfolioManagerAPI.Repository
                 return null;
             }
         }
+
+        public async Task<bool> ExistsByIdAsync(int portfolioId)
+        {
+            try
+            {
+                return await _db.Portfolios.AnyAsync(p => p.PortfolioId == portfolioId);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+        }
     }
 }

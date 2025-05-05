@@ -17,6 +17,9 @@ namespace PortfolioManagerAPI.Controllers
         {
             if (portfolioId == 0)
                 return BadRequest(new ResponseAPI<object>(400, "Invalid request: portfolioId is 0", null));
+            var exists = await _portfolioService.ExistsByIdAsync(portfolioId);
+            if (!exists)
+                return NotFound(new ResponseAPI<object>(404, "Asset not found", null));
 
             var portfolioDto = await _portfolioService.GetPortfolioById(portfolioId);
             if (portfolioDto == null)
@@ -28,7 +31,7 @@ namespace PortfolioManagerAPI.Controllers
         [HttpGet("basicPortfolioInfoByUserEmail/{userEmail}")]
         public async Task<IActionResult> GetPortfoliosBasicInfoByUserEmail(string userEmail)
         {
-            if (userEmail == null)
+            if (string.IsNullOrEmpty(userEmail))
                 return BadRequest(new ResponseAPI<object>(400, "Invalid request: user email is null", null));
 
             var portfolioDtoList = await _portfolioService.GetPortfoliosBasicInfoByUserEmailAsync(userEmail);

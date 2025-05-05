@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using PortfolioManagerAPI.Models;
 using PortfolioManagerWASM.Helpers;
 using PortfolioManagerWASM.Models;
 using PortfolioManagerWASM.Services.IService;
@@ -13,8 +14,10 @@ namespace PortfolioManagerWASM.Services
         public async Task<List<Asset>> GetAssetsAsync()
         {
             var response = await _httpClient.GetAsync($"{Initialize.UrlBaseApi}api/assets");
-            var content = await response.Content.ReadAsStringAsync();
-            var assets = JsonConvert.DeserializeObject<List<Asset>>(content);
+            var contentTemp = await response.Content.ReadAsStringAsync();
+            var responseAPI = JsonConvert.DeserializeObject<ResponseAPI<List<Asset>>>(contentTemp);
+            var assets = responseAPI.Data;
+
             return assets;
         }
 
@@ -24,8 +27,10 @@ namespace PortfolioManagerWASM.Services
             var bodyContent = new StringContent(body, Encoding.UTF8, "Application/json");
             var response = await _httpClient.PostAsync($"{Initialize.UrlBaseApi}api/assets", bodyContent);
             var contentTemp = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<Asset>(contentTemp);
-            return result;
+            var responseAPI = JsonConvert.DeserializeObject<ResponseAPI<Asset>>(contentTemp);
+            var _asset = responseAPI.Data;
+
+            return _asset;
         }
 
         public async Task<Asset> UpdateAssetAsync(Asset asset)
@@ -46,8 +51,9 @@ namespace PortfolioManagerWASM.Services
 
             var response = await _httpClient.PatchAsync($"{Initialize.UrlBaseApi}api/assets", bodyContent);
             var contentTemp = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<Asset>(contentTemp);
-            return result;
+            var responseAPI = JsonConvert.DeserializeObject<ResponseAPI<Asset>>(contentTemp);
+            var _asset = responseAPI.Data;
+            return _asset;
         }
 
         public async Task<bool> DeleteAssetAsync(Asset asset)

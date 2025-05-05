@@ -15,8 +15,6 @@ namespace PortfolioManagerWASM.ViewModels
 
         public void Init()
         {
-            LoginUserAsyncDelegate = AuthenticateUser;
-            RegisterUserAsyncDelegate = RegisterUserAsync;
             AlreadyLogged = _userService.ActiveUser.Email != null;
         }
         public async Task AuthenticateUser(UserLoginDto userLoginDTO)

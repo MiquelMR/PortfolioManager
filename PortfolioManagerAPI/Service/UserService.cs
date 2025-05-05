@@ -68,7 +68,7 @@ namespace PortfolioManagerAPI.Service
                 try
                 {
                     avatarFilename = Guid.NewGuid().ToString() + ImageHelper.GetImageExtension(userUpdateDto.Avatar);
-                    validAvatar = true
+                    validAvatar = true;
                 }
                 catch
                 {
@@ -88,6 +88,10 @@ namespace PortfolioManagerAPI.Service
                         if (File.Exists(oldAvatarFullpath)) { File.Delete(oldAvatarFullpath); }
                     }
                 }
+            }
+            else
+            {
+                var success = await _userRepository.UpdateUserAsync(user);
             }
 
             var userDto = _mapper.Map<UserDto>(userUpdateDto);

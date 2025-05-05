@@ -13,8 +13,6 @@ namespace PortfolioManagerWASM.ViewModels
         public void Init()
         {
             ActiveUser = _userService.ActiveUser;
-            UpdatePublicProfileAsyncDelegate = UpdatePublicProfileAsync;
-            DeleteUserAsyncDelegate = DeleteUserAsync;
         }
 
         public async Task UpdatePublicProfileAsync(UserUpdateDto userUpdateDto)

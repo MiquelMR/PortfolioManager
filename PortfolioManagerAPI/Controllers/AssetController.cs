@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PortfolioManagerAPI.Models;
 using PortfolioManagerAPI.Models.DTOs;
-using PortfolioManagerAPI.Models.DTOs.UserDto;
 using PortfolioManagerAPI.Service.IService;
 using System.Net;
 
@@ -31,8 +29,6 @@ namespace PortfolioManagerAPI.Controllers
         {
             if (assetDto == null)
                 return BadRequest(new ResponseAPI<object>(400, "Invalid request: assetDto is null", null));
-            if (!ModelState.IsValid)
-                return BadRequest(new ResponseAPI<object>(400, "Invalid request: Model state is not valid", null));
 
             var createdAsset = await _assetService.CreateAssetAsync(assetDto);
             if (createdAsset == null)
@@ -47,8 +43,9 @@ namespace PortfolioManagerAPI.Controllers
         {
             if (assetDto == null)
                 return BadRequest(new ResponseAPI<object>(400, "Invalid request: assetDto is null", null));
-            if (!ModelState.IsValid)
-                return BadRequest(new ResponseAPI<object>(400, "Invalid request: Model state is not valid", null));
+            var exists = await _assetService.ExistsByIdAsync(assetDto.AssetId);
+            if (!exists)
+                return NotFound(new ResponseAPI<object>(404, "Asset not found", null));
 
             var updatedAsset = await _assetService.UpdateAssetAsync(assetDto);
             if (updatedAsset == null)
@@ -63,6 +60,9 @@ namespace PortfolioManagerAPI.Controllers
         {
             if (assetId == 0)
                 return BadRequest(new ResponseAPI<object>(400, "Invalid request: assetId is 0", null));
+            var exists = await _assetService.ExistsByIdAsync(assetId);
+            if (!exists)
+                return NotFound(new ResponseAPI<object>(404, "Asset not found", null));
 
             var success = await _assetService.DeleteAssetByIdAsync(assetId);
             if (!success)

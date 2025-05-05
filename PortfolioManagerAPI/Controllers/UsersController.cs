@@ -15,13 +15,16 @@ namespace PortfolioManagerAPI.Controllers
         private readonly IUserService _userService = userService;
 
         // [Authorize]
-        [HttpGet("by-email/{email}")]
-        public async Task<IActionResult> GetUserByEmail(string email)
+        [HttpGet("by-email/{userEmail}")]
+        public async Task<IActionResult> GetUserByEmail(string userEmail)
         {
-            if (email == null)
+            if (string.IsNullOrEmpty(userEmail))
                 return BadRequest(new ResponseAPI<object>(400, "Invalid request: user email is null", null));
+            var exists = await _userService.ExistsByEmailAsync(userEmail);
+            if (!exists)
+                return NotFound(new ResponseAPI<object>(404, "Asset not found", null));
 
-            var userDto = await _userService.GetUserByEmailAsync(email) ?? new();
+            var userDto = await _userService.GetUserByEmailAsync(userEmail);
             if (userDto == null)
                 return StatusCode(500, new ResponseAPI<object>(500, "Internal server error", null));
 
@@ -34,8 +37,7 @@ namespace PortfolioManagerAPI.Controllers
         {
             if (userUpdateDto == null)
                 return BadRequest(new ResponseAPI<object>(400, "Invalid request: userUpdateDto is null", null));
-            if (!ModelState.IsValid)
-                return BadRequest(new ResponseAPI<object>(400, "Invalid request: Model state is not valid", null));
+
 
             var userExists = await _userService.ExistsByEmailAsync(userUpdateDto.Email);
             if (!userExists)
@@ -49,16 +51,16 @@ namespace PortfolioManagerAPI.Controllers
         }
 
         // [Authorize]
-        [HttpDelete("{email}")]
-        public async Task<IActionResult> DeleteByEmail(string email)
+        [HttpDelete("{userEmail}")]
+        public async Task<IActionResult> DeleteByEmail(string userEmail)
         {
-            if (email == null)
+            if (string.IsNullOrEmpty(userEmail))
                 return BadRequest(new ResponseAPI<object>(400, "Invalid request: email is null", null));
-            var userExists = await _userService.ExistsByEmailAsync(email));
+            var userExists = await _userService.ExistsByEmailAsync(userEmail);
             if (!userExists)
                 return StatusCode(404, new ResponseAPI<object>(404, "User not found", null));
 
-            var success = await _userService.DeleteUserByEmailAsync(email);
+            var success = await _userService.DeleteUserByEmailAsync(userEmail);
             if (!success)
                 return StatusCode(500, new ResponseAPI<object>(500, "Internal server error: User deletion failed", null));
 
@@ -71,12 +73,10 @@ namespace PortfolioManagerAPI.Controllers
         {
             if (userRegisterDto == null)
                 return BadRequest(new ResponseAPI<object>(400, "Invalid request: userRegisterDto is null", null));
-            if (!ModelState.IsValid)
-                return BadRequest(new ResponseAPI<object>(400, "Invalid request: Model state is not valid", null));
 
             var userExists = await _userService.ExistsByEmailAsync(userRegisterDto.Email);
-            if (!userExists)
-                return StatusCode(404, new ResponseAPI<object>(404, "User not found", null));
+            if (userExists)
+                return StatusCode(404, new ResponseAPI<object>(404, "User already exists", null));
 
             var userDto = await _userService.RegisterUserAsync(userRegisterDto);
             if (userDto == null)
@@ -91,8 +91,6 @@ namespace PortfolioManagerAPI.Controllers
         {
             if (userLoginDto == null)
                 return BadRequest(new ResponseAPI<object>(400, "Invalid request: userLoginDto is null", null));
-            if (!ModelState.IsValid)
-                return BadRequest(new ResponseAPI<object>(400, "Invalid request: Model state is not valid", null));
 
             var responseLogin = await _userService.LoginUserAsync(userLoginDto);
             if (responseLogin == null)
