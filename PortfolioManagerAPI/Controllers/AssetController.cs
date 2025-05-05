@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PortfolioManagerAPI.Models;
 using PortfolioManagerAPI.Models.DTOs;
-using PortfolioManagerAPI.Models.DTOs.UserDto;
 using PortfolioManagerAPI.Service.IService;
 using System.Net;
 
@@ -13,78 +12,63 @@ namespace PortfolioManagerAPI.Controllers
     public class AssetController(IAssetService assetService) : ControllerBase
     {
         private readonly IAssetService _assetService = assetService;
-        protected ResponseAPI _responseApi = new();
 
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAssets()
         {
             var assetDtoList = await _assetService.GetAssetsAsync();
-            if (assetDtoList == null) { return NotFound(); }
-            return Ok(assetDtoList);
+            if (assetDtoList == null)
+                return StatusCode(500, new ResponseAPI<object>(500, "Internal server error", null));
+
+            return Ok(new ResponseAPI<List<AssetDto>>(200, "Success", assetDtoList));
         }
 
         // [Authorize]
-        [HttpPost("create")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpPost]
         public async Task<IActionResult> CreateAsset([FromBody] AssetDto assetDto)
         {
-            var assetTemp = await _assetService.CreateAssetAsync(assetDto);
-            if (assetTemp == null)
-            {
-                _responseApi.StatusCode = HttpStatusCode.InternalServerError;
-                _responseApi.IsSuccess = false;
-                _responseApi.ErrorMessages.Add("Error during updadte");
-                return StatusCode((int)HttpStatusCode.InternalServerError, _responseApi);
-            }
+            if (assetDto == null)
+                return BadRequest(new ResponseAPI<object>(400, "Invalid request: assetDto is null", null));
 
-            return Ok(assetTemp);
+            var createdAsset = await _assetService.CreateAssetAsync(assetDto);
+            if (createdAsset == null)
+                return StatusCode(500, new ResponseAPI<object>(500, "Internal server error: Asset creation failed", null));
+
+            return Ok(new ResponseAPI<AssetDto>(200, "Asset created successfully", createdAsset));
         }
 
         // [Authorize]
-        [HttpPatch("updateAsset")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpPatch]
         public async Task<IActionResult> UpdateAsset([FromBody] AssetDto assetDto)
         {
-            var assetTemp = await _assetService.UpdateAssetAsync(assetDto);
-            if (assetTemp == null)
-            {
-                _responseApi.StatusCode = HttpStatusCode.InternalServerError;
-                _responseApi.IsSuccess = false;
-                _responseApi.ErrorMessages.Add("Error during updadte");
-                return StatusCode((int)HttpStatusCode.InternalServerError, _responseApi);
-            }
+            if (assetDto == null)
+                return BadRequest(new ResponseAPI<object>(400, "Invalid request: assetDto is null", null));
+            var exists = await _assetService.ExistsByIdAsync(assetDto.AssetId);
+            if (!exists)
+                return NotFound(new ResponseAPI<object>(404, "Asset not found", null));
 
-            return Ok(assetTemp);
+            var updatedAsset = await _assetService.UpdateAssetAsync(assetDto);
+            if (updatedAsset == null)
+                return StatusCode(500, new ResponseAPI<object>(500, "Internal server error: Asset update failed", null));
+
+            return Ok(new ResponseAPI<AssetDto>(200, "Asset updated successfully", updatedAsset));
         }
 
         // [Authorize]
         [HttpDelete("{assetId}")]
         public async Task<IActionResult> DeleteAssetById(int assetId)
         {
-            if (!await _assetService.ExistsByIdAsync(assetId))
-            {
-                _responseApi.StatusCode = HttpStatusCode.NotFound;
-                _responseApi.IsSuccess = false;
-                _responseApi.ErrorMessages.Add("Asset not found with the given email");
-                return BadRequest(_responseApi);
-            }
+            if (assetId == 0)
+                return BadRequest(new ResponseAPI<object>(400, "Invalid request: assetId is 0", null));
+            var exists = await _assetService.ExistsByIdAsync(assetId);
+            if (!exists)
+                return NotFound(new ResponseAPI<object>(404, "Asset not found", null));
 
             var success = await _assetService.DeleteAssetByIdAsync(assetId);
             if (!success)
-            {
-                _responseApi.StatusCode = HttpStatusCode.InternalServerError;
-                _responseApi.IsSuccess = false;
-                _responseApi.ErrorMessages.Add("Server error");
-                return BadRequest(_responseApi);
-            }
+                return StatusCode(500, new ResponseAPI<object>(500, "Internal server error: Asset deletion failed", null));
 
-            return Ok(success);
+            return Ok(new ResponseAPI<AssetDto>(200, "Asset deleted successfully", null));
         }
     }
 

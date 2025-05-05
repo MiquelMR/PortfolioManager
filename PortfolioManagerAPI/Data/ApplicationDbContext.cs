@@ -17,7 +17,6 @@ namespace PortfolioManagerAPI.Data
             modelBuilder.Entity<PortfolioAsset>()
                 .HasKey(pa => new { pa.PortfolioId, pa.AssetId });
             modelBuilder.Ignore<AssetDto>();
-            modelBuilder.Ignore<ResponseAPI>();
             base.OnModelCreating(modelBuilder);
         }
     }

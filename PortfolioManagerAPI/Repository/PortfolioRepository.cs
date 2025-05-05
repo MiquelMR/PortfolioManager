@@ -22,7 +22,7 @@ namespace PortfolioManagerAPI.Repository
             }
         }
 
-        public async Task<ICollection<Portfolio>> GetPortfoliosByUserEmailAsync(string userEmail)
+        public async Task<List<Portfolio>> GetPortfoliosByUserEmailAsync(string userEmail)
         {
             var userId = await _db.Users
                 .Where(user => user.Email == userEmail)
@@ -31,7 +31,7 @@ namespace PortfolioManagerAPI.Repository
 
             if (userId == 0)
             {
-                return [];
+                return null;
             }
 
             try
@@ -43,8 +43,21 @@ namespace PortfolioManagerAPI.Repository
             }
             catch (Exception)
             {
-                return [];
+                return null;
             }
+        }
+
+        public async Task<bool> ExistsByIdAsync(int portfolioId)
+        {
+            try
+            {
+                return await _db.Portfolios.AnyAsync(p => p.PortfolioId == portfolioId);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
         }
     }
 }

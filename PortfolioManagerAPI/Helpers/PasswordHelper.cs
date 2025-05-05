@@ -14,9 +14,7 @@ namespace PortfolioManagerAPI.Helpers
                 rng.GetBytes(saltBytes);
             }
             string salt = Convert.ToBase64String(saltBytes);
-
             string saltedPassword = password + salt;
-
             var hashedPassword = Argon2.Hash(saltedPassword);
 
             return (hashedPassword, salt);
@@ -25,7 +23,6 @@ namespace PortfolioManagerAPI.Helpers
         public static bool VerifyPassword(string enteredPassword, string storedSalt, string storedHash)
         {
             string saltedPassword = enteredPassword + storedSalt;
-
             return Argon2.Verify(storedHash, saltedPassword);
         }
     }

@@ -10,12 +10,11 @@ namespace PortfolioManagerAPI.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Required]
         public int AssetId { get; set; }
-
         [Required]
         [MaxLength(48)]
         public string Name { get; set; }
 
         [MaxLength(48)]
-        public string IconPath { get; set; }
+        public string IconFilename { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using PortfolioManagerAPI.Helpers;
 using PortfolioManagerAPI.Models;
+using PortfolioManagerAPI.Models.DTOs;
 using PortfolioManagerAPI.Models.DTOs.UserDto;
 using PortfolioManagerAPI.Repository.IRepository;
 using PortfolioManagerAPI.Service.IService;
@@ -15,23 +16,32 @@ namespace PortfolioManagerAPI.Service
     {
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IMapper _mapper = mapper;
-        private readonly string secretKey = config.GetValue<string>("ApiSettings:Secret");
 
-        public async Task<UserDto> GetByEmailAsync(string email)
+        private readonly string secretKey = config.GetValue<string>("ApiSettings:Secret");
+        private readonly string resourcePath = config.GetValue<string>("ResourcesPaths:UserAvatar");
+
+        public async Task<UserDto> GetUserByEmailAsync(string email)
         {
             var user = await _userRepository.GetUserByEmailAsync(email);
+            if (user == null) { return null; }
             var userDto = _mapper.Map<UserDto>(user);
-            if (userDto != null)
-            {
-                userDto.Avatar = user.AvatarPath != null
-                    ? TypeConverter.UserAvatarPathToAvatar(user.AvatarPath)
-                    : null;
-            }
 
+            if (user.AvatarFilename != null)
+            {
+                try
+                {
+                    var portfolioIconFullpath = Path.Combine(resourcePath, user.AvatarFilename);
+                    userDto.Avatar = ImageHelper.ImagePathToImage(portfolioIconFullpath);
+                }
+                catch
+                {
+                    userDto.Avatar = null;
+                }
+            }
             return userDto;
         }
 
-        public async Task<UserDto> UpdateAsync(UserUpdateDto userUpdateDto)
+        public async Task<UserDto> UpdateUserAsync(UserUpdateDto userUpdateDto)
         {
             userUpdateDto.GetType().GetProperties()
                 .Where(p => p.PropertyType == typeof(string))
@@ -44,57 +54,102 @@ namespace PortfolioManagerAPI.Service
                         p.SetValue(userUpdateDto, null);
                     }
                 });
+
             var user = await _userRepository.GetUserByEmailAsync(userUpdateDto.Email);
+            if (user == null) { return null; }
+            string oldAvatarFilename = user.AvatarFilename;
+
             _mapper.Map(userUpdateDto, user);
-            user.AvatarPath = userUpdateDto.AvatarFileName;
-            await _userRepository.UpdateUserAsync(user);
-            // Avatar
+
+            string avatarFilename = null;
+            bool validAvatar = false;
             if (userUpdateDto.Avatar != null)
             {
-                string filePath = "Resources/UserAvatars/" + userUpdateDto.AvatarFileName;
-                File.WriteAllBytes(filePath, userUpdateDto.Avatar);
+                try
+                {
+                    avatarFilename = Guid.NewGuid().ToString() + ImageHelper.GetImageExtension(userUpdateDto.Avatar);
+                    validAvatar = true;
+                }
+                catch
+                {
+                    avatarFilename = null;
+                }
+                user.AvatarFilename = avatarFilename;
 
+                var success = await _userRepository.UpdateUserAsync(user);
+                if (!success) { return null; }
+
+                if (validAvatar)
+                {
+                    var avatarFullpath = Path.Combine(resourcePath, avatarFilename); ;
+                    if (ImageHelper.SaveImage(avatarFullpath, userUpdateDto.Avatar))
+                    {
+                        var oldAvatarFullpath = Path.Combine(resourcePath, oldAvatarFilename ?? "");
+                        if (File.Exists(oldAvatarFullpath)) { File.Delete(oldAvatarFullpath); }
+                    }
+                }
             }
-            var userDto = _mapper.Map<UserDto>(user);
+            else
+            {
+                var success = await _userRepository.UpdateUserAsync(user);
+            }
+
+            var userDto = _mapper.Map<UserDto>(userUpdateDto);
             return userDto;
         }
 
-        public async Task<bool> DeleteByEmailAsync(string email)
+        public async Task<bool> DeleteUserByEmailAsync(string email)
         {
             var user = await _userRepository.GetUserByEmailAsync(email);
+            if (user == null) { return false; }
             var success = await _userRepository.DeleteUserByEmailAsync(email);
-            if (success)
-            {
-                string fullPath = Path.Combine("Resources/UserAvatars/", user.AvatarPath);
-                if (File.Exists(fullPath))
-                {
-                    File.Delete(fullPath);
-                }
-            }
+            if (!success) { return false; }
+
+            var avatarFullpath = resourcePath + user.AvatarFilename;
+            if (File.Exists(avatarFullpath)) { File.Delete(avatarFullpath); }
+
             return success;
         }
 
-        public async Task<bool> RegisterAsync(UserRegisterDto userRegisterDto)
+        public async Task<UserDto> RegisterUserAsync(UserRegisterDto userRegisterDto)
         {
-
             var (hashedPassword, salt) = PasswordHelper.HashPassword(userRegisterDto.Password);
+
             var user = _mapper.Map<User>(userRegisterDto);
             user.Password = hashedPassword;
             user.Salt = salt;
             user.RegistrationDate = DateTime.Now;
+            user.Role = UserRole.User;
 
-            // Avatar
+            string avatarFullpath = null;
+            string avatarFilename = null;
             if (userRegisterDto.Avatar != null)
             {
-                string filePath = "Resources/UserAvatars/" + userRegisterDto.AvatarFileName;
-                File.WriteAllBytes(filePath, userRegisterDto.Avatar);
-
+                try
+                {
+                    avatarFilename = Guid.NewGuid().ToString() + ImageHelper.GetImageExtension(userRegisterDto.Avatar);
+                    avatarFullpath = Path.Combine(resourcePath, avatarFilename);
+                }
+                catch
+                {
+                    avatarFilename = null;
+                }
+                user.AvatarFilename = avatarFilename;
             }
-            user.AvatarPath = userRegisterDto.AvatarFileName;
-            user.Role = UserRoles.User;
-            return await _userRepository.CreateUserAsync(user);
+
+            var success = await _userRepository.CreateUserAsync(user);
+            if (!success) { return null; }
+
+            if (userRegisterDto.Avatar != null)
+            {
+                ImageHelper.SaveImage(avatarFullpath, userRegisterDto.Avatar);
+            }
+
+            var userDto = _mapper.Map<UserDto>(userRegisterDto);
+            return userDto;
         }
-        public async Task<UserLoginResponseDto> LoginAsync(UserLoginDto userLoginDto)
+
+        public async Task<UserLoginResponseDto> LoginUserAsync(UserLoginDto userLoginDto)
         {
             var user = await _userRepository.GetUserByEmailAsync(userLoginDto.Email);
             if (user == null || !PasswordHelper.VerifyPassword(userLoginDto.Password, user.Salt, user.Password))

@@ -9,7 +9,7 @@ namespace PortfolioManagerAPI.Repository
     {
         private readonly ApplicationDbContext _db = db;
 
-        public async Task<Asset> GetByIdAsync(int assetId)
+        public async Task<Asset> GetAssetByIdAsync(int assetId)
         {
             try
             {
@@ -21,7 +21,7 @@ namespace PortfolioManagerAPI.Repository
             }
         }
 
-        public async Task<ICollection<Asset>> GetAssetsAsync()
+        public async Task<List<Asset>> GetAssetsAsync()
         {
             try
             {
@@ -29,34 +29,32 @@ namespace PortfolioManagerAPI.Repository
             }
             catch (Exception)
             {
-                return [];
+                return null;
             }
         }
-        public async Task<Asset> CreateAssetAsync(Asset asset)
+        public async Task<bool> CreateAssetAsync(Asset asset)
         {
             try
             {
-                var _asset = await _db.Assets.AddAsync(asset);
-                await _db.SaveChangesAsync();
-                return _asset.Entity;
+                await _db.Assets.AddAsync(asset);
+                return await _db.SaveChangesAsync() > 0;
             }
             catch (Exception)
             {
-                return null;
+                return false;
             }
         }
 
-        public async Task<Asset> UpdateAsync(Asset asset)
+        public async Task<bool> UpdateAssetAsync(Asset asset)
         {
             try
             {
-                var _asset = _db.Assets.Update(asset);
-                await _db.SaveChangesAsync();
-                return _asset.Entity;
+                _db.Assets.Update(asset);
+                return await _db.SaveChangesAsync() > 0;
             }
             catch (Exception)
             {
-                return null;
+                return false;
             }
         }
 
@@ -66,7 +64,6 @@ namespace PortfolioManagerAPI.Repository
             {
                 var asset = await _db.Assets.FirstOrDefaultAsync(asset => asset.AssetId == assetId);
                 if (asset == null) return false;
-
                 _db.Assets.Remove(asset);
                 return await _db.SaveChangesAsync() > 0;
             }

@@ -4,6 +4,6 @@ namespace PortfolioManagerAPI.Repository.IRepository
 {
     public interface IPortfolioAssetRepository
     {
-        Task<ICollection<PortfolioAsset>> GetPortfolioAssetsByPortfolioIdAsync(int portfolioId);
+        Task<List<PortfolioAsset>> GetPortfolioAssetsByPortfolioIdAsync(int portfolioId);
     }
 }
