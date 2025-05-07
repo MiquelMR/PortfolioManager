@@ -7,5 +7,10 @@ namespace PortfolioManagerWASM.Components.Admin
     {
         // Properties
         [Parameter] public List<FinancialAsset> FinancialAssets { get; set; } = [];
+
+        private void OnUpdateSubmit(FinancialAsset asset)
+        {
+
+        }
     }
 }
