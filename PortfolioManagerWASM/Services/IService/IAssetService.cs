@@ -4,9 +4,9 @@ namespace PortfolioManagerWASM.Services.IService
 {
     public interface IAssetService
     {
-        public Task<List<Asset>> GetAssetsAsync();
-        public Task<Asset> CreateAssetAsync(Asset asset);
-        public Task<Asset> UpdateAssetAsync(Asset asset);
-        public Task<bool> DeleteAssetAsync(Asset asset);
+        public Task<List<FinancialAsset>> GetAssetsAsync();
+        public Task<FinancialAsset> CreateAssetAsync(FinancialAsset asset);
+        public Task<FinancialAsset> UpdateAssetAsync(FinancialAsset asset);
+        public Task<bool> DeleteAssetAsync(FinancialAsset asset);
     }
 }

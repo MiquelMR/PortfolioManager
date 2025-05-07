@@ -40,5 +40,18 @@ namespace PortfolioManagerAPI.Controllers
 
             return Ok(new ResponseAPI<List<PortfolioDto>>(200, "Success", portfolioDtoList));
         }
+
+        [HttpPost]
+        public async Task<IActionResult> CreatePortfolio([FromBody] PortfolioDto portfolioDto)
+        {
+            if (portfolioDto == null)
+                return BadRequest(new ResponseAPI<object>(400, "Invalid request: portfolioDto is null", null));
+
+            var createdPortfolio = await _portfolioService.CreatePortfolioAsync(portfolioDto);
+            if (createdPortfolio == null)
+                return StatusCode(500, new ResponseAPI<object>(500, "Internal server error: Asset creation failed", null));
+
+            return Ok(new ResponseAPI<PortfolioDto>(200, "Portfolio created successfully", createdPortfolio));
+        }
     }
 }

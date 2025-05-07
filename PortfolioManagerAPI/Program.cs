@@ -122,13 +122,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// Esto habrá que cambiarlo
-app.UseStaticFiles(new StaticFileOptions()
-{
-    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Resources/AssetIcons")),
-    RequestPath = new PathString("/Resources/AssetIcons")
-});
-
 app.UseAuthentication();
 app.UseAuthorization();
 

@@ -29,34 +29,10 @@ namespace PortfolioManagerAPI.Service
             {
                 var portfolioAssetDto = _mapper.Map<PortfolioAssetDto>(portfolioAsset);
                 portfolioAssetDto.Asset = _mapper.Map<AssetDto>(portfolioAsset.Asset);
-                if (portfolioAsset.Asset.IconFilename != null)
-                {
-                    try
-                    {
-                        var assetIconFullPath = Path.Combine(assetsResourcePath, portfolioAsset.Asset.IconFilename);
-                        portfolioAssetDto.Asset.Icon = ImageHelper.ImagePathToImage(assetIconFullPath);
-                    }
-                    catch
-                    {
-                        portfolioAssetDto.Asset.Icon = null;
-                    }
-                }
                 return portfolioAssetDto;
             }).ToList();
             portfolioDto.PortfolioAssets = portfolioAssetsDto;
 
-            if (portfolio.IconPath != null)
-            {
-                try
-                {
-                    var portfolioIconFullpath = Path.Combine(portfolioResourcePath, portfolio.IconPath);
-                    portfolioDto.Icon = ImageHelper.ImagePathToImage(portfolioIconFullpath);
-                }
-                catch
-                {
-                    portfolioDto.Icon = null;
-                }
-            }
             return portfolioDto;
         }
 
@@ -66,25 +42,14 @@ namespace PortfolioManagerAPI.Service
             var portfolios = await _portfolioRepository.GetPortfoliosByUserEmailAsync(userEmail) ?? [];
             if (portfolios == null) { return null; }
 
-            var portfoliosDto = portfolios.Select(portfolio =>
-            {
-                var portfolioDto = _mapper.Map<PortfolioDto>(portfolio);
-                if (portfolio.IconPath != null)
-                {
-                    try
-                    {
-                        var portfolioIconFullpath = Path.Combine(portfolioResourcePath, portfolio.IconPath);
-                        portfolioDto.Icon = ImageHelper.ImagePathToImage(portfolioIconFullpath);
-                    }
-                    catch
-                    {
-                        portfolioDto.Icon = null;
-                    }
-                }
-                return portfolioDto;
-            }).ToList();
-
+            var portfoliosDto = _mapper.Map<List<PortfolioDto>>(portfolios);
             return portfoliosDto;
+        }
+
+        public async Task<PortfolioDto> CreatePortfolioAsync(PortfolioDto portfolioDto)
+        {
+            var portfolio = _mapper.Map<Portfolio>(portfolioDto);
+            return null;
         }
 
         public async Task<bool> ExistsByIdAsync(int portfolioId)

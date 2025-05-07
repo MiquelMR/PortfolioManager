@@ -1,0 +1,50 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using PortfolioManagerAPI.Helpers
+@using PortfolioManagerWASM.Components.Admin
+@using PortfolioManagerWASM.Models
+@using PortfolioManagerWASM.Services.IService
+@inject IUserService userService
+@inject IAssetService assetService
+@attribute [Authorize]
+
+@page "/admin"
+<PageTitle>Community</PageTitle>
+
+<div class="container">
+
+    <div class="row justify-content-center">
+        <ul class="nav col-auto">
+            <li class="nav-item">
+                <button class="nav-link" @onclick="() => OnTabClick(AdminView.Overview)">Overview</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" @onclick="() => OnTabClick(AdminView.FinancialAssets)">Financial Assets</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" @onclick="() => OnTabClick(AdminView.Users)">Users</button>
+            </li>
+        </ul>
+    </div>
+
+    <div class="row justify-content-center">
+
+        <!--Admin Component-->
+        @switch (_adminView)
+        {
+            case AdminView.Overview:
+                <OverviewComp />
+                break;
+            case AdminView.FinancialAssets:
+                <FinancialAssetsComp FinancialAssets="FinancialAssets" />
+                break;
+            case AdminView.Users:
+                <UsersComp />
+                break;
+            default:
+                <p>Server is currently under maintenance</p>
+                break;
+        }
+    </div>
+</div>
+
+

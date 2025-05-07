@@ -12,7 +12,7 @@ namespace PortfolioManagerWASM.ViewModels
         public User ActiveUser { get; set; } = new();
         public List<Portfolio> PortfoliosBasicInfo { get; set; } = [];
         public Portfolio ActivePortfolio { get; set; } = new();
-        public List<Asset> FinancialAssets { get; set; } = new();
+        public List<FinancialAsset> FinancialAssets { get; set; } = new();
 
         public async Task InitAsync()
         {

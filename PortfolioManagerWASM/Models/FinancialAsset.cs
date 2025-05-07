@@ -2,10 +2,10 @@
 
 namespace PortfolioManagerWASM.Models
 {
-    public class Asset
+    public class FinancialAsset
     {
         public int AssetId { get; set; }
         public string Name { get; set; }
-        public byte[] Icon { get; set; }
+        public string IconPath { get; set; }
     }
 }

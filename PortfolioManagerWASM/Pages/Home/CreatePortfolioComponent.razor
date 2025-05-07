@@ -21,7 +21,7 @@
 
                     <ul class="dropdown-menu">
                         <!--Financial Asset List-->
-                        @foreach (Asset financialAsset in FinancialAssets)
+                        @foreach (FinancialAsset financialAsset in FinancialAssets)
                         {
                             <button @onclick="()=>AddFinancialAsset(financialAsset)" type="button" class="list-group-item list-group-item-action d-flex justify-content-between">@financialAsset.Name</button>
                         }
@@ -35,9 +35,9 @@
                         {
                             <li class="d-flex align-items-center mb-3">
                                 <p class="m-2">@portfolioAsset.Asset.Name</p>
-                                @if (portfolioAsset.Asset.Icon != null && portfolioAsset.Asset.Icon.Length > 0)
+                                @if (portfolioAsset.Asset.IconPath != null && portfolioAsset.Asset.IconPath.Length > 0)
                                 {
-                                    <img src="@TypeConverter.GetBase64String(@portfolioAsset.Asset.Icon)" alt="Icon" class="img-fluid asset-icon">
+                                    <img src="(@portfolioAsset.Asset.IconPath)" alt="Icon" class="img-fluid asset-icon">
                                 }
                                 else
                                 {

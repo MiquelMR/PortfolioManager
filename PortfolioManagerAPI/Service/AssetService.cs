@@ -22,21 +22,7 @@ namespace PortfolioManagerAPI.Service
             var assets = await _assetRepository.GetAssetsAsync();
             if (assets == null) { return null; }
 
-            var assetsDto = new List<AssetDto>();
-            foreach (var asset in assets)
-            {
-                var assetDto = _mapper.Map<AssetDto>(asset);
-                if (asset.IconFilename != null)
-                {
-                    var iconFullpath = Path.Combine(resourcePath, asset.IconFilename);
-                    try
-                    {
-                        assetDto.Icon = ImageHelper.ImagePathToImage(iconFullpath);
-                    }
-                    catch (Exception) { assetDto.Icon = null; }
-                }
-                assetsDto.Add(assetDto);
-            }
+            var assetsDto = _mapper.Map<List<AssetDto>>(assets);
             return assetsDto;
         }
 
@@ -55,29 +41,9 @@ namespace PortfolioManagerAPI.Service
                 });
             var asset = _mapper.Map<Asset>(assetDto);
 
-            string iconFilename = null;
-            string iconFullpath = null;
-            if (assetDto.Icon != null)
-            {
-                try
-                {
-                    iconFilename = Guid.NewGuid().ToString() + ImageHelper.GetImageExtension(assetDto.Icon);
-                    iconFullpath = Path.Combine(resourcePath, iconFilename);
-                }
-                catch
-                {
-                    iconFilename = null;
-                }
-            }
-            asset.IconFilename = iconFilename;
-
             var success = await _assetRepository.CreateAssetAsync(asset);
             if (!success) { return null; }
 
-            if (assetDto.Icon != null)
-            {
-                ImageHelper.SaveImage(iconFullpath, assetDto.Icon);
-            }
             return assetDto;
         }
 
@@ -97,55 +63,23 @@ namespace PortfolioManagerAPI.Service
 
             var asset = await _assetRepository.GetAssetByIdAsync(assetDto.AssetId);
             if (asset == null) { return null; }
-            string oldIconFilename = asset.IconFilename;
 
             _mapper.Map(assetDto, asset);
+            var success = await _assetRepository.UpdateAssetAsync(asset);
+            if (!success) { return null; }
 
-            string iconFilename = null;
-            bool validIcon = false;
-            if (assetDto.Icon != null)
-            {
-                try
-                {
-                    iconFilename = Guid.NewGuid().ToString() + ImageHelper.GetImageExtension(assetDto.Icon);
-                    validIcon = true;
-                }
-                catch
-                {
-                    iconFilename = oldIconFilename;
-                }
-                asset.IconFilename = iconFilename;
-
-                var success = await _assetRepository.UpdateAssetAsync(asset);
-                if (!success) { return null; }
-
-                if (validIcon)
-                {
-                    var iconFullpath = Path.Combine(resourcePath, iconFilename); ;
-                    if (ImageHelper.SaveImage(iconFullpath, assetDto.Icon))
-                    {
-                        var oldAvatarFullpath = Path.Combine(resourcePath, oldIconFilename ?? "");
-                        if (File.Exists(oldAvatarFullpath)) { File.Delete(oldAvatarFullpath); }
-                    }
-                }
-            }
-            else
-            {
-                var success = await _assetRepository.UpdateAssetAsync(asset);
-            }
-
-                return assetDto;
+            return assetDto;
         }
 
         public async Task<bool> DeleteAssetByIdAsync(int assetId)
         {
             var asset = await _assetRepository.GetAssetByIdAsync(assetId);
-            if (asset == null) { return false; }
+            if (asset == null)
+                return false;
             var success = await _assetRepository.DeleteAssetByIdAsync(assetId);
-            if (!success) { return false; }
+            if (!success)
+                return false;
 
-            var iconFullPath = resourcePath + asset.IconFilename;
-            if (File.Exists(iconFullPath)) { File.Delete(iconFullPath); }
             return success;
         }
 

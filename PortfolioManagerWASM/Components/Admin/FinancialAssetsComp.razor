@@ -1,0 +1,34 @@
+﻿@using PortfolioManagerWASM.Models
+<div class="h3">Financial Assets</div>
+
+
+
+<!--Financial Assets Table-->
+<table class="table table-sm">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Icon</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (FinancialAsset asset in FinancialAssets)
+        {
+            <tr>
+                <td>@asset.Name</td>
+                <td><img class="rounded-icon" src="@asset.IconPath" alt="Financial Asset Icon"></td>
+                <td>Description</td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+
+<div class="row">
+    <div class="col-auto">
+        <button class="btn btn-primary">Save</button>
+    </div>
+</div>
+

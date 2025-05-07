@@ -8,6 +8,6 @@ namespace PortfolioManagerAPI.Models.DTOs
         [Required]
         [MaxLength(48)]
         public string Name { get; set; }
-        public byte[] Icon { get; set; }
+        public string IconFilename { get; set; }
     }
 }

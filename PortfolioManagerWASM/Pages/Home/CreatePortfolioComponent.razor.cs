@@ -6,7 +6,7 @@ namespace PortfolioManagerWASM.Pages.Home
     public partial class CreatePortfolioComponent
     {
         [Parameter]
-        public List<Asset> FinancialAssets { get; set; } = [];
+        public List<FinancialAsset> FinancialAssets { get; set; } = [];
         [Parameter]
         public EventCallback<Portfolio> OnPortfolioSubmit { get; set; }
         private readonly Portfolio newPortfolio = new();
@@ -16,7 +16,7 @@ namespace PortfolioManagerWASM.Pages.Home
             OnPortfolioSubmit.InvokeAsync(newPortfolio);
         }
 
-        private void AddFinancialAsset(Asset financialAsset)
+        private void AddFinancialAsset(FinancialAsset financialAsset)
         {
             var portfolioAsset = new PortfolioAsset()
             {
