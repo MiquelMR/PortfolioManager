@@ -23,9 +23,9 @@ namespace PortfolioManagerWASM.ViewModels
             AuthResponse.IsSuccess = result.IsSuccess;
         }
 
-        public async Task RegisterUserAsync(UserRegisterDto userRegisterDto)
+        public async Task<User> RegisterUserAsync(UserRegisterDto userRegisterDto)
         {
-            await _userService.RegisterUser(userRegisterDto);
+            return await _userService.RegisterUser(userRegisterDto);
         }
     }
 }

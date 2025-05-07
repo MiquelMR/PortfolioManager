@@ -1,0 +1,27 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using PortfolioManagerAPI.Helpers
+@using PortfolioManagerWASM.Components
+@using PortfolioManagerWASM.Helpers
+@using PortfolioManagerWASM.Models
+@using PortfolioManagerWASM.Services.IService
+@attribute [Authorize]
+
+@layout MainLayout
+@page "/"
+@page "/home"
+<PageTitle>Home</PageTitle>
+
+@switch (CurrentHomeView)
+{
+    case HomeView.CreatePortfolio:
+        <CreatePortfolioComponent></CreatePortfolioComponent>
+        break;
+    case HomeView.ViewPortfolio:
+        <ViewPortfoliosComponent ActivePortfolio="@ActivePortfolio"
+                                 UserPortfolios="@UserPortfolios"
+                                 SelectPortfolioDelegate="@SelectPortfolioDelegate"
+                                 ChangeCurrentHomeViewDelegate="@ChangeCurrentHomeView"></ViewPortfoliosComponent>
+        break;
+    default:
+        break;
+}

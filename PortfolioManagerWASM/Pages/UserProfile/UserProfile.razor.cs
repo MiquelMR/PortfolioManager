@@ -23,8 +23,9 @@ namespace PortfolioManagerWASM.Pages.UserProfile
 
             UpdatePublicProfileAsyncDelegate = async (userUpdateDto) =>
             {
-                await UserProfileViewModel.UpdatePublicProfileAsync(userUpdateDto);
-                NavigationManager.NavigateTo("/home", true);
+                var user = await UserProfileViewModel.UpdatePublicProfileAsync(userUpdateDto);
+                if (user != null)
+                    NavigationManager.NavigateTo("/home", true);
             };
 
             DeleteUserAsyncDelegate = async () =>

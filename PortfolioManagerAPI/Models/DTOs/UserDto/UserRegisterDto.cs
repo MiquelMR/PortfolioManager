@@ -9,7 +9,6 @@ namespace PortfolioManagerAPI.Models.DTOs.UserDto
         [MaxLength(48)]
         public string Name { get; set; }
         [Required]
-        [EmailAddress]
         [MaxLength(48)]
         public string Password { get; set; }
         [Required]

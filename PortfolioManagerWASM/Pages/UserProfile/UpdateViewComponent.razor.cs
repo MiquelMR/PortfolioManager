@@ -20,7 +20,6 @@ namespace PortfolioManagerWASM.Pages.UserProfile
         private async Task FileUploadAsync(InputFileChangeEventArgs e)
         {
             var file = e.File;
-            publicProfileUpdated.AvatarFileName = Path.GetRandomFileName() + Path.GetExtension(file.Name);
             var buffer = new byte[file.Size];
 
             using var stream = file.OpenReadStream();

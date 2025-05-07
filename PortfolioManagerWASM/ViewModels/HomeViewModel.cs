@@ -1,4 +1,5 @@
-﻿using PortfolioManagerWASM.Models;
+﻿using Microsoft.AspNetCore.Components;
+using PortfolioManagerWASM.Models;
 using PortfolioManagerWASM.Services.IService;
 
 namespace PortfolioManagerWASM.ViewModels
@@ -16,13 +17,14 @@ namespace PortfolioManagerWASM.ViewModels
         {
             await _userService.InitializeAsync();
             ActiveUser = _userService.ActiveUser;
-            PortfoliosBasicInfo = (await _portfolioService.GetPortfoliosBasicInfoByUserAsync(ActiveUser.Email)).ToList();
+            PortfoliosBasicInfo = (await _portfolioService.GetPortfoliosBasicInfoByUserAsync(ActiveUser.Email));
             ActivePortfolio = PortfoliosBasicInfo.Count > 0 ? await _portfolioService.GetPortfolioByIdAsync(PortfoliosBasicInfo[0].PortfolioId) : new();
         }
 
-        public async Task SelectPortfolio(int index)
+        public async Task SelectPortfolioAsync(int index)
         {
-            ActivePortfolio = await _portfolioService.GetPortfolioByIdAsync(PortfoliosBasicInfo[index].PortfolioId);
+            var portfolioId = PortfoliosBasicInfo[index].PortfolioId;
+            ActivePortfolio = await _portfolioService.GetPortfolioByIdAsync(portfolioId);
         }
 
         public void CleanData()

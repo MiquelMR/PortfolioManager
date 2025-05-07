@@ -130,7 +130,7 @@ namespace PortfolioManagerWASM.Services
                 });
             var body = JsonConvert.SerializeObject(userUpdateDto);
             var bodyContent = new StringContent(body, Encoding.UTF8, "Application/json");
-            var response = await _httpClient.PatchAsync($"{Initialize.UrlBaseApi}api/users/updatePublicProfile", bodyContent);
+            var response = await _httpClient.PatchAsync($"{Initialize.UrlBaseApi}api/users", bodyContent);
             var contentTemp = await response.Content.ReadAsStringAsync();
             var responseAPI = JsonConvert.DeserializeObject<ResponseAPI<User>>(contentTemp);
             var user = responseAPI.Data;
@@ -152,7 +152,9 @@ namespace PortfolioManagerWASM.Services
             var activeUserEmail = await _localStorage.GetItemAsync<string>(Initialize.User_Local_Data);
             if (activeUserEmail == null || activeUserEmail == string.Empty)
             {
-                return new();
+                await _localStorage.RemoveItemAsync(Initialize.Token_Local);
+                await _localStorage.RemoveItemAsync(Initialize.User_Local_Data);
+                return null;
             }
             return await GetUserByEmail(activeUserEmail);
         }

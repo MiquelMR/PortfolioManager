@@ -27,12 +27,17 @@ namespace PortfolioManagerWASM.Pages.Login
             };
             RegisterUserAsyncDelegate = async (userRegisterDto) =>
             {
-                await LoginViewModel.RegisterUserAsync(userRegisterDto);
-                UserLoginDto userLogin = new();
-                userLogin.Email = userRegisterDto.Email;
-                userLogin.Password = userRegisterDto.Password;
-                await LoginViewModel.AuthenticateUser(userLogin);
-                NavigationManager.NavigateTo("/home", true);
+                var user = await LoginViewModel.RegisterUserAsync(userRegisterDto);
+                if (user != null)
+                {
+                    UserLoginDto userLogin = new()
+                    {
+                        Email = userRegisterDto.Email,
+                        Password = userRegisterDto.Password
+                    };
+                    await LoginViewModel.AuthenticateUser(userLogin);
+                    NavigationManager.NavigateTo("/home", true);
+                }
             };
         }
 
