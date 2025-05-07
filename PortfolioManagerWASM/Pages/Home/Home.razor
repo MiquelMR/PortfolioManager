@@ -14,7 +14,8 @@
 @switch (CurrentHomeView)
 {
     case HomeView.CreatePortfolio:
-        <CreatePortfolioComponent></CreatePortfolioComponent>
+        <CreatePortfolioComponent FinancialAssets="@FinancialAssets"
+                                  OnPortfolioSubmit="@OnPortfolioSubmitDelegate"></CreatePortfolioComponent>
         break;
     case HomeView.ViewPortfolio:
         <ViewPortfoliosComponent ActivePortfolio="@ActivePortfolio"

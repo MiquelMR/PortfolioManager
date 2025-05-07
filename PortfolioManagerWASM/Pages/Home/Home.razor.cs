@@ -16,9 +16,11 @@ namespace PortfolioManagerWASM.Pages.Home
         private Task<AuthenticationState> AuthState { get; set; }
         public User ActiveUser { get; set; } = new();
         public List<Portfolio> UserPortfolios { get; set; } = [];
+        public List<Asset> FinancialAssets { get; set; } = new();
         public Portfolio ActivePortfolio { get; set; }
         private HomeView CurrentHomeView { get; set; } = HomeView.ViewPortfolio;
         public Func<int, Task> SelectPortfolioDelegate { get; set; }
+        public Action<Portfolio> OnPortfolioSubmitDelegate { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
@@ -32,8 +34,10 @@ namespace PortfolioManagerWASM.Pages.Home
                 NavigationManager.NavigateTo("login", true);
 
             UserPortfolios = HomeViewModel.PortfoliosBasicInfo;
+            FinancialAssets = HomeViewModel.FinancialAssets;
             ActivePortfolio = HomeViewModel.ActivePortfolio;
             SelectPortfolioDelegate = SelectPortfolio;
+            OnPortfolioSubmitDelegate = OnPortfolioSubmit;
         }
 
         private async Task SelectPortfolio(int index)
@@ -46,6 +50,11 @@ namespace PortfolioManagerWASM.Pages.Home
         private void ChangeCurrentHomeView(HomeView homeView)
         {
             CurrentHomeView = homeView;
+        }
+
+        public void OnPortfolioSubmit(Portfolio portfolio)
+        {
+            HomeViewModel.RegisterPortfolio(portfolio);
         }
     }
 
