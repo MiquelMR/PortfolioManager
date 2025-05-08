@@ -15,8 +15,6 @@ namespace PortfolioManagerAPI.Service
         private readonly IAssetRepository _assetRepository = assetRepository;
         private readonly IMapper _mapper = mapper;
 
-        private readonly string resourcePath = config.GetValue<string>("ResourcesPaths:AssetIcons");
-
         public async Task<List<AssetDto>> GetAssetsAsync()
         {
             var assets = await _assetRepository.GetAssetsAsync();

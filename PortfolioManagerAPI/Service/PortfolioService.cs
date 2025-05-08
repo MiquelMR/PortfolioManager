@@ -12,9 +12,6 @@ namespace PortfolioManagerAPI.Service
         private readonly IPortfolioAssetRepository _portfolioAssetRepository = portfolioAssetsRepository;
         private readonly IMapper _mapper = mapper;
 
-        private readonly string portfolioResourcePath = config.GetValue<string>("ResourcesPaths:PortfolioIcons");
-        private readonly string assetsResourcePath = config.GetValue<string>("ResourcesPaths:AssetIcons");
-
         public async Task<PortfolioDto> GetPortfolioById(int portfolioId)
         {
             var portfolio = await _portfolioRepository.GetPortfolioByIdAsync(portfolioId);
