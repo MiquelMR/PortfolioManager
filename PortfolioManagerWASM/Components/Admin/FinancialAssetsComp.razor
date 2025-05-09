@@ -1,0 +1,140 @@
+﻿@using PortfolioManagerWASM.Models
+<div class="h3">Financial Assets</div>
+
+
+
+<!--Financial Assets Table-->
+<table class="table table-sm">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Icon</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (FinancialAsset financialAsset in FinancialAssets)
+        {
+            <tr>
+                <td>@financialAsset.Name</td>
+                <td><img class="rounded-icon" src="@financialAsset.IconPath" alt="Financial Asset Icon"></td>
+                <td>Description</td>
+                <td class="text-center">
+                    <button class="btn collapsed btn-primary"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#collapse-@financialAsset.AssetId"
+                            aria-expanded="false"
+                            aria-controls="collapse-@financialAsset.AssetId">
+                        Edit
+                    </button>
+                </td>
+                <td class="text-center">
+                    <button class="btn btn-primary" @onclick="()=>OnDeleteFinancialAsset(financialAsset)">Delete</button>
+                </td>
+            </tr>
+            <tr>
+                <td class="w-100">
+                    <!-- Edit Form -->
+                    <div class="collapse w-100" id="collapse-@financialAsset.AssetId">
+                        <div class="accordion-body">
+
+                            <EditForm Model="@financialAsset">
+
+                                <!--Edit name-->
+                                <td>
+                                    <InputText @bind-Value="financialAsset.Name" />
+                                </td>
+
+                                <!--Edit icon-->
+                                <td>
+                                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                        <img class="rounded-icon" src="@financialAsset.IconPath" alt="Financial Asset Icon">
+                                    </button>
+
+                                    <ul class="dropdown-menu">
+                                        @foreach (var icon in GetIconPaths())
+                                        {
+                                            <li class="icon-item" style="width:auto; display:inline-block; padding:0;margin:0">
+                                                <button class="dropdown-item">
+                                                    <img src="@icon" class="rounded-icon" alt="Icon" @onclick="() => OnSelectIcon(icon, financialAsset)">
+                                                </button>
+                                            </li>
+                                        }
+                                    </ul>
+                                </td>
+
+                                <!--Description-->
+                                <td>
+                                    <InputText @bind-Value="financialAsset.Description" />
+                                </td>
+
+                                <button class="btn btn-success mt-2" @onclick="() => OnUpdateFinancialAsset(financialAsset)">Save Changes</button>
+                            </EditForm>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+
+<div class="row">
+    <div class="col mb-4">
+        <button class="btn collapsed btn-primary"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapse-createNewFinancialAsset"
+                aria-expanded="false"
+                aria-controls="collapse-createNewFinancialAsset">
+            Create
+        </button>
+    </div>
+
+    <div class="collapse" id="collapse-createNewFinancialAsset">
+        <div class="accordion-body">
+
+            <!-- Create Form -->
+            <EditForm Model="@newFinancialAsset">
+
+                <!--Name-->
+                <div>
+                    <label>Name:</label>
+                    <InputText @bind-Value="newFinancialAsset.Name" />
+                </div>
+
+                <!--Icon-->
+                <div>
+                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <img class="rounded-icon" src="@newFinancialAsset.IconPath" alt="Financial Asset Icon">
+                    </button>
+
+                    <ul class="dropdown-menu">
+                        @foreach (var icon in GetIconPaths())
+                        {
+                            <li class="icon-item" style="width:auto; display:inline-block; padding:0;margin:0">
+                                <button class="dropdown-item">
+                                    <img src="@icon" class="rounded-icon" alt="Icon" @onclick="() => OnSelectIcon(icon, newFinancialAsset)">
+                                </button>
+                            </li>
+                        }
+                    </ul>
+                </div>
+
+                <!--Description-->
+                <div>
+                    <div>
+                        <label>Description:</label>
+                    </div>
+                    <div>
+                        <InputTextArea @bind-Value="newFinancialAsset.Description" />
+                    </div>
+                </div>
+
+                <button class="btn btn-success mt-2" @onclick="() => OnSubmitFinancialAsset(newFinancialAsset)">Submit</button>
+            </EditForm>
+        </div>
+    </div>
+</div>

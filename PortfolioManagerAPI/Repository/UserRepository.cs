@@ -16,7 +16,19 @@ namespace PortfolioManagerAPI.Repository
             {
                 return await _db.Users.FirstOrDefaultAsync(user => user.Email == email);
             }
-            catch (Exception)
+            catch
+            {
+                return null;
+            }
+        }
+
+        public async Task<List<User>> GetUsersAsync()
+        {
+            try
+            {
+                return await _db.Users.OrderBy(user => user.Name).ToListAsync();
+            }
+            catch
             {
                 return null;
             }
@@ -28,7 +40,7 @@ namespace PortfolioManagerAPI.Repository
                 await _db.AddAsync(user);
                 return await _db.SaveChangesAsync() > 0;
             }
-            catch (Exception)
+            catch
             {
                 return false;
             }
@@ -41,7 +53,7 @@ namespace PortfolioManagerAPI.Repository
                 _db.Update(user);
                 return await _db.SaveChangesAsync() > 0;
             }
-            catch (Exception)
+            catch
             {
                 return false;
             }
@@ -57,7 +69,7 @@ namespace PortfolioManagerAPI.Repository
                 _db.Remove(user);
                 return await _db.SaveChangesAsync() > 0;
             }
-            catch (Exception)
+            catch
             {
                 return false;
             }

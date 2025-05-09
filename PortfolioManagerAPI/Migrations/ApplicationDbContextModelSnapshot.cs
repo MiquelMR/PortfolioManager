@@ -22,13 +22,16 @@ namespace PortfolioManagerAPI.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("PortfolioManagerAPI.Models.Asset", b =>
+            modelBuilder.Entity("PortfolioManagerAPI.Models.FinancialAsset", b =>
                 {
                     b.Property<int>("AssetId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("AssetId"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext");
 
                     b.Property<string>("IconFilename")
                         .HasMaxLength(48)
@@ -135,7 +138,7 @@ namespace PortfolioManagerAPI.Migrations
 
             modelBuilder.Entity("PortfolioManagerAPI.Models.PortfolioAsset", b =>
                 {
-                    b.HasOne("PortfolioManagerAPI.Models.Asset", "Asset")
+                    b.HasOne("PortfolioManagerAPI.Models.FinancialAsset", "Asset")
                         .WithMany()
                         .HasForeignKey("AssetId")
                         .OnDelete(DeleteBehavior.Cascade)

@@ -12,7 +12,7 @@ namespace PortfolioManagerAPI.Models
         [MaxLength(48)]
         public string Author { get; set; }
         public string Description { get; set; }
-        public byte[] Icon { get; set; }
-        public ICollection<PortfolioAssetDto> PortfolioAssets { get; set; }
+        public string IconFilename { get; set; }
+        public List<PortfolioAssetDto> PortfolioAssets { get; set; }
     }
 }

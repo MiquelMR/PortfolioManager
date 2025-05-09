@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using Microsoft.Extensions.FileProviders;
 using PortfolioManagerAPI.Service;
 using PortfolioManagerAPI.Service.IService;
 
@@ -121,13 +120,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-// Esto habrá que cambiarlo
-app.UseStaticFiles(new StaticFileOptions()
-{
-    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Resources/AssetIcons")),
-    RequestPath = new PathString("/Resources/AssetIcons")
-});
 
 app.UseAuthentication();
 app.UseAuthorization();

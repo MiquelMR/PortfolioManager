@@ -1,12 +1,18 @@
 using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using PortfolioManagerWASM;
+using PortfolioManagerWASM.Helpers;
+using PortfolioManagerWASM.Mappers;
 using PortfolioManagerWASM.Services;
 using PortfolioManagerWASM.Services.IService;
 using PortfolioManagerWASM.ViewModels;
 using Syncfusion.Blazor;
+using System.IO;
+using static System.Net.WebRequestMethods;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -19,6 +25,18 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAssetService, AssetService>();
 builder.Services.AddScoped<IPortfolioService, PortfolioService>();
+
+// Configuration
+using var tempHttp = new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) };
+using var configStream = await tempHttp.GetStreamAsync("appsettings.json");
+var config = new ConfigurationBuilder()
+    .AddJsonStream(configStream)
+    .Build();
+AppConfig.Configuration = config;
+builder.Services.AddSingleton<IConfiguration>(config);
+
+// Auto-Mapper
+builder.Services.AddAutoMapper(typeof(PortfolioManagerMapper));
 
 // Inject ViewModels
 builder.Services.AddScoped<LoginViewModel>();

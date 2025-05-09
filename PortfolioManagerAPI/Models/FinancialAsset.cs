@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace PortfolioManagerAPI.Models
 {
     [Table("assets")]
-    public class Asset
+    public class FinancialAsset
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -16,5 +16,6 @@ namespace PortfolioManagerAPI.Models
 
         [MaxLength(48)]
         public string IconFilename { get; set; }
+        public string Description { get; set; }
     }
 }

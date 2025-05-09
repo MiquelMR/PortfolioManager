@@ -22,7 +22,6 @@ namespace PortfolioManagerWASM.Pages.Login
         private async Task FileUploadAsync(InputFileChangeEventArgs e)
         {
             var file = e.File;
-            newUser.AvatarFileName = Path.GetRandomFileName() + Path.GetExtension(file.Name);
             var buffer = new byte[file.Size];
 
             using var stream = file.OpenReadStream();

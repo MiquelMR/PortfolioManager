@@ -15,15 +15,16 @@ namespace PortfolioManagerWASM.ViewModels
             ActiveUser = _userService.ActiveUser;
         }
 
-        public async Task UpdatePublicProfileAsync(UserUpdateDto userUpdateDto)
+        public async Task<User> UpdatePublicProfileAsync(UserUpdateDto userUpdateDto)
         {
             userUpdateDto.Email = ActiveUser.Email;
-            await _userService.UpdatePublicProfile(userUpdateDto);
+            return await _userService.UpdatePublicProfile(userUpdateDto);
         }
 
         internal async Task<bool> DeleteUserAsync()
         {
-            return await _userService.DeleteUserAsync();
+            var activeUser = _userService.ActiveUser;
+            return await _userService.DeleteUserAsync(activeUser);
         }
     }
 }

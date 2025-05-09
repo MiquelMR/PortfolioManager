@@ -5,7 +5,7 @@ namespace PortfolioManagerWASM.Models
 {
     public class PortfolioAsset
     {
-        public Asset Asset { get; set; }
+        public FinancialAsset Asset { get; set; }
         public float AllocationPercentage { get; set; }
     }
 }

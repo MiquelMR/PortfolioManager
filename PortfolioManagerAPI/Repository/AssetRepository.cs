@@ -9,7 +9,7 @@ namespace PortfolioManagerAPI.Repository
     {
         private readonly ApplicationDbContext _db = db;
 
-        public async Task<Asset> GetAssetByIdAsync(int assetId)
+        public async Task<FinancialAsset> GetAssetByIdAsync(int assetId)
         {
             try
             {
@@ -21,7 +21,7 @@ namespace PortfolioManagerAPI.Repository
             }
         }
 
-        public async Task<List<Asset>> GetAssetsAsync()
+        public async Task<List<FinancialAsset>> GetAssetsAsync()
         {
             try
             {
@@ -32,7 +32,7 @@ namespace PortfolioManagerAPI.Repository
                 return null;
             }
         }
-        public async Task<bool> CreateAssetAsync(Asset asset)
+        public async Task<bool> CreateAssetAsync(FinancialAsset asset)
         {
             try
             {
@@ -45,7 +45,7 @@ namespace PortfolioManagerAPI.Repository
             }
         }
 
-        public async Task<bool> UpdateAssetAsync(Asset asset)
+        public async Task<bool> UpdateAssetAsync(FinancialAsset asset)
         {
             try
             {

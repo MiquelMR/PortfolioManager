@@ -41,6 +41,15 @@ namespace PortfolioManagerAPI.Service
             return userDto;
         }
 
+        public async Task<List<UserDto>> GetUsersAsync()
+        {
+            var users = await _userRepository.GetUsersAsync();
+            if (users == null) { return null; }
+            var usersDto = _mapper.Map<List<UserDto>>(users);
+
+            return usersDto;
+        }
+
         public async Task<UserDto> UpdateUserAsync(UserUpdateDto userUpdateDto)
         {
             userUpdateDto.GetType().GetProperties()

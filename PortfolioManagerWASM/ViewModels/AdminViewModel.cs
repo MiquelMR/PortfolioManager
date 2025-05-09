@@ -3,30 +3,38 @@ using PortfolioManagerWASM.Services.IService;
 
 namespace PortfolioManagerWASM.ViewModels
 {
-    public class AdminViewModel(IAssetService assetService)
+    public class AdminViewModel(IAssetService assetService, IUserService userService)
     {
         private readonly IAssetService _assetService = assetService;
+        private readonly IUserService _userService = userService;
 
-        public List<Asset> Assets { get; set; }
+        public List<FinancialAsset> FinancialAssets { get; set; }
+        public List<User> Users { get; set; }
 
         public async Task InitAsync()
         {
-            Assets = (await _assetService.GetAssetsAsync()).ToList();
+            FinancialAssets = (await _assetService.GetFinancialAssetsAsync()).ToList();
+            Users = (await _userService.GetUsers());
         }
 
-        public async Task<Asset> CreateAssetAsync(Asset asset)
+        public async Task<FinancialAsset> CreateFinancialAssetAsync(FinancialAsset financialAsset)
         {
-            return await _assetService.CreateAssetAsync(asset);
+            return await _assetService.CreateFinancialAssetAsync(financialAsset);
         }
 
-        public async Task<Asset> UpdatePublicProfileAsync(Asset updateAsset)
+        public async Task<FinancialAsset> UpdateFinancialAssetAsync(FinancialAsset financialAsset)
         {
-            return await _assetService.UpdateAssetAsync(updateAsset);
+            return await _assetService.UpdateFinancialAssetAsync(financialAsset);
         }
 
-        public async Task<bool> DeleteAssetAsync(Asset asset)
+        public async Task<bool> DeleteFinancialAssetAsync(FinancialAsset financialAsset)
         {
-            return await _assetService.DeleteAssetAsync(asset);
+            return await _assetService.DeleteFinancialAssetAsync(financialAsset);
+        }
+
+        public async Task<bool> DeleteUserAsync(User user)
+        {
+            return await _userService.DeleteUserAsync(user);
         }
     }
 }

@@ -1,16 +1,5 @@
-﻿@using Microsoft.AspNetCore.Authorization
-@using PortfolioManagerAPI.Helpers
-@using PortfolioManagerWASM.Components
-@using PortfolioManagerWASM.Helpers
+﻿@using PortfolioManagerAPI.Helpers
 @using PortfolioManagerWASM.Models
-@using PortfolioManagerWASM.Services.IService
-@attribute [Authorize]
-
-@layout MainLayout
-@page "/"
-@page "/home"
-<PageTitle>Home</PageTitle>
-
 <div class="container">
     @if (UserPortfolios.Count > 0)
     {
@@ -31,9 +20,9 @@
                             </div>
                             <div class="d-flex align-items-center">
                                 <span class="badge bg-body-secondary">
-                                    @if (portfolio.Icon != null && portfolio.Icon.Length > 0)
+                                    @if (portfolio.IconPath != null && portfolio.IconPath.Length > 0)
                                     {
-                                        <img src="@TypeConverter.GetBase64String(portfolio.Icon)" alt="Icon">
+                                        <img src="@(portfolio.IconPath)" alt="Icon">
                                     }
                                     else
                                     {
@@ -44,6 +33,8 @@
                         </button>
                     }
                 </div>
+                <!--Create new portfolio-->
+                <button class="btn btn-primary" @onclick="() =>ChangeCurrentHomeView(HomeView.CreatePortfolio)">Create Portfolio</button>
             </aside>
 
             <!--Main Page-->
@@ -55,18 +46,18 @@
                     <div class="accordion-item" id="header-1">
                         <h2 class="accordion-header">
                             <button class="accordion-button"
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#element-1"
-                            aria-expanded="true"
-                            aria-controls="element-1">
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#element-1"
+                                    aria-expanded="true"
+                                    aria-controls="element-1">
                                 Description
                             </button>
                         </h2>
                         <div id="element-1"
-                        class="accordion-collapse collapse"
-                        aria-labelledby="encabezado-1"
-                        data-bs-parent="#header-1">
+                             class="accordion-collapse collapse"
+                             aria-labelledby="encabezado-1"
+                             data-bs-parent="#header-1">
                             <div class="accordion-body">
                                 <p>@ActivePortfolio.Description</p>
                             </div>
@@ -81,9 +72,9 @@
                         {
                             <li class="d-flex align-items-center mb-3">
                                 <p class="m-2">@portfolioAsset.Asset.Name</p>
-                                @if (portfolioAsset.Asset.Icon != null && portfolioAsset.Asset.Icon.Length > 0)
+                                @if (portfolioAsset.Asset.IconPath != null && portfolioAsset.Asset.IconPath.Length > 0)
                                 {
-                                    <img src="@TypeConverter.GetBase64String(@portfolioAsset.Asset.Icon)" alt="Icon" class="img-fluid asset-icon">
+                                    <img src="@(@portfolioAsset.Asset.IconPath)" alt="Icon" class="img-fluid asset-icon">
                                 }
                                 else
                                 {
@@ -104,3 +95,5 @@
         <p>Still no portfolio</p>
     }
 </div>
+
+

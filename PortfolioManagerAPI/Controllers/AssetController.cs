@@ -20,12 +20,12 @@ namespace PortfolioManagerAPI.Controllers
             if (assetDtoList == null)
                 return StatusCode(500, new ResponseAPI<object>(500, "Internal server error", null));
 
-            return Ok(new ResponseAPI<List<AssetDto>>(200, "Success", assetDtoList));
+            return Ok(new ResponseAPI<List<FinancialAssetDto>>(200, "Success", assetDtoList));
         }
 
         // [Authorize]
         [HttpPost]
-        public async Task<IActionResult> CreateAsset([FromBody] AssetDto assetDto)
+        public async Task<IActionResult> CreateAsset([FromBody] FinancialAssetDto assetDto)
         {
             if (assetDto == null)
                 return BadRequest(new ResponseAPI<object>(400, "Invalid request: assetDto is null", null));
@@ -34,12 +34,12 @@ namespace PortfolioManagerAPI.Controllers
             if (createdAsset == null)
                 return StatusCode(500, new ResponseAPI<object>(500, "Internal server error: Asset creation failed", null));
 
-            return Ok(new ResponseAPI<AssetDto>(200, "Asset created successfully", createdAsset));
+            return Ok(new ResponseAPI<FinancialAssetDto>(200, "Asset created successfully", createdAsset));
         }
 
         // [Authorize]
         [HttpPatch]
-        public async Task<IActionResult> UpdateAsset([FromBody] AssetDto assetDto)
+        public async Task<IActionResult> UpdateAsset([FromBody] FinancialAssetDto assetDto)
         {
             if (assetDto == null)
                 return BadRequest(new ResponseAPI<object>(400, "Invalid request: assetDto is null", null));
@@ -51,7 +51,7 @@ namespace PortfolioManagerAPI.Controllers
             if (updatedAsset == null)
                 return StatusCode(500, new ResponseAPI<object>(500, "Internal server error: Asset update failed", null));
 
-            return Ok(new ResponseAPI<AssetDto>(200, "Asset updated successfully", updatedAsset));
+            return Ok(new ResponseAPI<FinancialAssetDto>(200, "Asset updated successfully", updatedAsset));
         }
 
         // [Authorize]
@@ -68,7 +68,7 @@ namespace PortfolioManagerAPI.Controllers
             if (!success)
                 return StatusCode(500, new ResponseAPI<object>(500, "Internal server error: Asset deletion failed", null));
 
-            return Ok(new ResponseAPI<AssetDto>(200, "Asset deleted successfully", null));
+            return Ok(new ResponseAPI<FinancialAssetDto>(200, "Asset deleted successfully", null));
         }
     }
 

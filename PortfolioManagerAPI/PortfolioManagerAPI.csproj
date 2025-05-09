@@ -8,8 +8,7 @@
 
 	<ItemGroup>
 		<Folder Include="Migrations\" />
-		<Folder Include="Resources\AssetIcons\" />
-		<Folder Include="Resources\PortfolioIcons\" />
+		<Folder Include="Resources\UserAvatars\" />
 	</ItemGroup>
 
 	<ItemGroup>
