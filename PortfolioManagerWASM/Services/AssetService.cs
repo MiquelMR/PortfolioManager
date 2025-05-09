@@ -15,7 +15,7 @@ namespace PortfolioManagerWASM.Services
         private readonly HttpClient _httpClient = httpClient;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<List<FinancialAsset>> GetAssetsAsync()
+        public async Task<List<FinancialAsset>> GetFinancialAssetsAsync()
         {
             var response = await _httpClient.GetAsync($"{Initialize.UrlBaseApi}api/assets");
             var contentTemp = await response.Content.ReadAsStringAsync();
@@ -28,16 +28,17 @@ namespace PortfolioManagerWASM.Services
         }
 
         // TODO
-        public async Task<FinancialAsset> CreateAssetAsync(FinancialAsset financialAsset)
+        public async Task<FinancialAsset> CreateFinancialAssetAsync(FinancialAsset financialAsset)
         {
-            var body = JsonConvert.SerializeObject(financialAsset);
+            var financialAssetDto = _mapper.Map<FinancialAssetDto>(financialAsset);
+            var body = JsonConvert.SerializeObject(financialAssetDto);
             var bodyContent = new StringContent(body, Encoding.UTF8, "Application/json");
             var response = await _httpClient.PostAsync($"{Initialize.UrlBaseApi}api/assets", bodyContent);
             var contentTemp = await response.Content.ReadAsStringAsync();
-            var responseAPI = JsonConvert.DeserializeObject<ResponseAPI<FinancialAsset>>(contentTemp);
-            var _asset = responseAPI.Data;
+            var responseAPI = JsonConvert.DeserializeObject<ResponseAPI<FinancialAssetDto>>(contentTemp);
+            var _financialAsset = _mapper.Map<FinancialAsset>(responseAPI.Data);
 
-            return _asset;
+            return _financialAsset;
         }
 
         public async Task<FinancialAsset> UpdateFinancialAssetAsync(FinancialAsset financialAsset)
@@ -67,7 +68,7 @@ namespace PortfolioManagerWASM.Services
         }
 
         // TODO
-        public async Task<bool> DeleteAssetAsync(FinancialAsset financialAsset)
+        public async Task<bool> DeleteFinancialAssetAsync(FinancialAsset financialAsset)
         {
             var response = await _httpClient.DeleteAsync($"{Initialize.UrlBaseApi}api/assets/{financialAsset.AssetId}");
             var contentTemp = await response.Content.ReadAsStringAsync();

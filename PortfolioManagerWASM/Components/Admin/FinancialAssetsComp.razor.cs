@@ -11,18 +11,26 @@ namespace PortfolioManagerWASM.Components.Admin
 
         // Delegates
         [Parameter] public Action<FinancialAsset> OnUpdateFinancialAssetDelegate { get; set; }
+        [Parameter] public Action<FinancialAsset> OnCreateFinancialAssetDelegate { get; set; }
+        [Parameter] public Action<FinancialAsset> OnDeleteFinancialAssetDelegate { get; set; }
+
+        [Inject] HttpClient HttpClient { get; set; }
 
         // Private fields
-        private readonly FinancialAsset newFinancialAsset = new() { IconPath = AppConfig.GetDefaultIcon("AssetIcons") };
+        private readonly FinancialAsset newFinancialAsset = new() { IconPath = AppConfig.GetResourcePath("AssetIcons") + "/default.svg" };
 
-        private void OnCreateSubmit(FinancialAsset financialAsset)
+        private void OnSubmitFinancialAsset(FinancialAsset financialAsset)
         {
-            //OnCreateFinancialAssetDelegate.Invoke(financialAsset);
+            OnCreateFinancialAssetDelegate.Invoke(financialAsset);
         }
 
-        private void OnUpdateSubmit(FinancialAsset financialAsset)
+        private void OnUpdateFinancialAsset(FinancialAsset financialAsset)
         {
             OnUpdateFinancialAssetDelegate.Invoke(financialAsset);
+        }
+        private void OnDeleteFinancialAsset(FinancialAsset financialAsset)
+        {
+            OnDeleteFinancialAssetDelegate.Invoke(financialAsset);
         }
 
         private void OnSelectIcon(string iconPath, FinancialAsset financialAsset)
@@ -34,14 +42,16 @@ namespace PortfolioManagerWASM.Components.Admin
                 newFinancialAsset.IconPath = iconPath;
         }
 
-        // Borrar esta putisima mierda
-        private List<string> GetIconPaths()
+        // TODO : Pendiente de centralizar 
+        private static List<string> GetIconPaths()
         {
-            return new List<string>
+            return new List<string>()
             {
-                "icons/assets/default.svg",
-                "icons/assets/gold.svg"
-            };
+                "default.svg",
+                "gold.svg"
+            }
+            .Select(item => Path.Combine(AppConfig.GetResourcePath("AssetIcons"), item))
+            .ToList();
         }
     }
 }

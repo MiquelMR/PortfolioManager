@@ -11,12 +11,12 @@ namespace PortfolioManagerWASM.ViewModels
 
         public async Task InitAsync()
         {
-            Assets = (await _assetService.GetAssetsAsync()).ToList();
+            Assets = (await _assetService.GetFinancialAssetsAsync()).ToList();
         }
 
-        public async Task<FinancialAsset> CreateAssetAsync(FinancialAsset asset)
+        public async Task<FinancialAsset> CreateFinancialAssetAsync(FinancialAsset financialAsset)
         {
-            return await _assetService.CreateAssetAsync(asset);
+            return await _assetService.CreateFinancialAssetAsync(financialAsset);
         }
 
         public async Task<FinancialAsset> UpdateFinancialAssetAsync(FinancialAsset financialAsset)
@@ -24,9 +24,9 @@ namespace PortfolioManagerWASM.ViewModels
             return await _assetService.UpdateFinancialAssetAsync(financialAsset);
         }
 
-        public async Task<bool> DeleteAssetAsync(FinancialAsset asset)
+        public async Task<bool> DeleteFinancialAssetAsync(FinancialAsset financialAsset)
         {
-            return await _assetService.DeleteAssetAsync(asset);
+            return await _assetService.DeleteFinancialAssetAsync(financialAsset);
         }
     }
 }

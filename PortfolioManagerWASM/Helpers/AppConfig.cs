@@ -8,11 +8,6 @@
         {
             return Configuration["ResourcesPaths:" + resource];
         }
-
-        public static string GetDefaultIcon(string resource)
-        {
-            return Configuration["ResourcesPaths:" + resource] + "/default.svg";
-        }
     }
 
 }

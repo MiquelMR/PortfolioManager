@@ -10,6 +10,7 @@ namespace PortfolioManagerWASM.Mappers
         public PortfolioManagerMapper()
         {
             var iconsDirectory = AppConfig.GetResourcePath("AssetIcons");
+
             // FinancialAssetDto -> FinancialAsset
             CreateMap<FinancialAssetDto, FinancialAsset>()
                 .ForMember(dest => dest.IconPath, opt => opt.MapFrom(src => Path.Combine(iconsDirectory, src.IconFilename)));

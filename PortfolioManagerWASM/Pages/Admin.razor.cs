@@ -12,6 +12,8 @@ namespace PortfolioManagerWASM.Pages
 
         // Delegates
         public Action<FinancialAsset> OnUpdateFinancialAssetDelegate { get; set; }
+        public Action<FinancialAsset> OnCreateFinancialAssetDelegate { get; set; }
+        public Action<FinancialAsset> OnDeleteFinancialAssetDelegate { get; set; }
 
         // Properties
         public List<FinancialAsset> FinancialAssets { get; set; } = [];
@@ -25,15 +27,26 @@ namespace PortfolioManagerWASM.Pages
 
             FinancialAssets = AdminViewModel.Assets;
             OnUpdateFinancialAssetDelegate = OnUpdateFinancialAsset;
+            OnCreateFinancialAssetDelegate = OnCreateFinancialAsset;
+            OnDeleteFinancialAssetDelegate = OnDeleteFinancialAsset;
         }
 
-        private void OnTabClick(AdminView adminView)
+        public async void OnCreateFinancialAsset(FinancialAsset financialAsset)
         {
-            _adminView = adminView;
+            await AdminViewModel.CreateFinancialAssetAsync(financialAsset);
         }
+
         public async void OnUpdateFinancialAsset(FinancialAsset financialAsset)
         {
             await AdminViewModel.UpdateFinancialAssetAsync(financialAsset);
+        }
+        public async void OnDeleteFinancialAsset(FinancialAsset financialAsset)
+        {
+            await AdminViewModel.DeleteFinancialAssetAsync(financialAsset);
+        }
+        private void OnTabClick(AdminView adminView)
+        {
+            _adminView = adminView;
         }
     }
 
