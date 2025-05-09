@@ -23,7 +23,8 @@ namespace PortfolioManagerWASM.ViewModels
 
         internal async Task<bool> DeleteUserAsync()
         {
-            return await _userService.DeleteUserAsync();
+            var activeUser = _userService.ActiveUser;
+            return await _userService.DeleteUserAsync(activeUser);
         }
     }
 }

@@ -8,6 +8,11 @@
         {
             return Configuration["ResourcesPaths:" + resource];
         }
+
+        public static string GetAuthorizedEmail()
+        {
+            return Configuration["AuthorizatedEmail"];
+        }
     }
 
 }

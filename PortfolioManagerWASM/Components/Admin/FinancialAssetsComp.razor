@@ -35,44 +35,46 @@
                 </td>
             </tr>
             <tr>
-                <!-- Edit Form -->
-                <div class="row collapse" id="collapse-@financialAsset.AssetId">
-                    <div class="accordion-body">
+                <td class="w-100">
+                    <!-- Edit Form -->
+                    <div class="collapse w-100" id="collapse-@financialAsset.AssetId">
+                        <div class="accordion-body">
 
-                        <EditForm Model="@financialAsset">
+                            <EditForm Model="@financialAsset">
 
-                            <!--Edit name-->
-                            <td>
-                                <InputText @bind-Value="financialAsset.Name" />
-                            </td>
+                                <!--Edit name-->
+                                <td>
+                                    <InputText @bind-Value="financialAsset.Name" />
+                                </td>
 
-                            <!--Edit icon-->
-                            <td>
-                                <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                    <img class="rounded-icon" src="@financialAsset.IconPath" alt="Financial Asset Icon">
-                                </button>
+                                <!--Edit icon-->
+                                <td>
+                                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                        <img class="rounded-icon" src="@financialAsset.IconPath" alt="Financial Asset Icon">
+                                    </button>
 
-                                <ul class="dropdown-menu">
-                                    @foreach (var icon in GetIconPaths())
-                                    {
-                                        <li class="icon-item" style="width:auto; display:inline-block; padding:0;margin:0">
-                                            <button class="dropdown-item">
-                                                <img src="@icon" class="rounded-icon" alt="Icon" @onclick="() => OnSelectIcon(icon, financialAsset)">
-                                            </button>
-                                        </li>
-                                    }
-                                </ul>
-                            </td>
+                                    <ul class="dropdown-menu">
+                                        @foreach (var icon in GetIconPaths())
+                                        {
+                                            <li class="icon-item" style="width:auto; display:inline-block; padding:0;margin:0">
+                                                <button class="dropdown-item">
+                                                    <img src="@icon" class="rounded-icon" alt="Icon" @onclick="() => OnSelectIcon(icon, financialAsset)">
+                                                </button>
+                                            </li>
+                                        }
+                                    </ul>
+                                </td>
 
-                            <!--Description-->
-                            <td>
-                                <InputText @bind-Value="financialAsset.Description" />
-                            </td>
+                                <!--Description-->
+                                <td>
+                                    <InputText @bind-Value="financialAsset.Description" />
+                                </td>
 
-                            <button class="btn btn-success mt-2" @onclick="() => OnUpdateFinancialAsset(financialAsset)">Save Changes</button>
-                        </EditForm>
+                                <button class="btn btn-success mt-2" @onclick="() => OnUpdateFinancialAsset(financialAsset)">Save Changes</button>
+                            </EditForm>
+                        </div>
                     </div>
-                </div>
+                </td>
             </tr>
         }
 
@@ -80,7 +82,7 @@
 </table>
 
 <div class="row">
-    <div class="col-auto mb-4">
+    <div class="col mb-4">
         <button class="btn collapsed btn-primary"
                 type="button"
                 data-bs-toggle="collapse"

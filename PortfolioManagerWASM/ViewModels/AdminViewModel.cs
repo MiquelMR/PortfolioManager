@@ -3,15 +3,18 @@ using PortfolioManagerWASM.Services.IService;
 
 namespace PortfolioManagerWASM.ViewModels
 {
-    public class AdminViewModel(IAssetService assetService)
+    public class AdminViewModel(IAssetService assetService, IUserService userService)
     {
         private readonly IAssetService _assetService = assetService;
+        private readonly IUserService _userService = userService;
 
-        public List<FinancialAsset> Assets { get; set; }
+        public List<FinancialAsset> FinancialAssets { get; set; }
+        public List<User> Users { get; set; }
 
         public async Task InitAsync()
         {
-            Assets = (await _assetService.GetFinancialAssetsAsync()).ToList();
+            FinancialAssets = (await _assetService.GetFinancialAssetsAsync()).ToList();
+            Users = (await _userService.GetUsers());
         }
 
         public async Task<FinancialAsset> CreateFinancialAssetAsync(FinancialAsset financialAsset)
@@ -27,6 +30,11 @@ namespace PortfolioManagerWASM.ViewModels
         public async Task<bool> DeleteFinancialAssetAsync(FinancialAsset financialAsset)
         {
             return await _assetService.DeleteFinancialAssetAsync(financialAsset);
+        }
+
+        public async Task<bool> DeleteUserAsync(User user)
+        {
+            return await _userService.DeleteUserAsync(user);
         }
     }
 }

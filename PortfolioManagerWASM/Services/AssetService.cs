@@ -73,6 +73,7 @@ namespace PortfolioManagerWASM.Services
             var response = await _httpClient.DeleteAsync($"{Initialize.UrlBaseApi}api/assets/{financialAsset.AssetId}");
             var contentTemp = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<bool>(contentTemp);
+
             return result;
         }
     }

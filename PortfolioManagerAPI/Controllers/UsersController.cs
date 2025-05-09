@@ -32,6 +32,18 @@ namespace PortfolioManagerAPI.Controllers
         }
 
         // [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> GetUsers()
+        {
+
+            var usersDto = await _userService.GetUsersAsync();
+            if (usersDto == null)
+                return StatusCode(500, new ResponseAPI<object>(500, "Internal server error", null));
+
+            return Ok(new ResponseAPI<List<UserDto>>(200, "User created successfully", usersDto));
+        }
+
+        // [Authorize]
         [HttpPatch]
         public async Task<IActionResult> UpdatePublicProfile([FromBody] UserUpdateDto userUpdateDto)
         {

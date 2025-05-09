@@ -40,6 +40,23 @@ namespace PortfolioManagerWASM.Services
             return null;
         }
 
+        public async Task<List<User>> GetUsers()
+        {
+            var authorized = ActiveUser.Email.Equals(AppConfig.GetAuthorizedEmail());
+            if (!authorized || ActiveUser.Role != UserRoles.Admin) { return null; }
+            var response = await _httpClient.GetAsync($"{Initialize.UrlBaseApi}api/users");
+            var contentTemp = await response.Content.ReadAsStringAsync();
+            var responseAPI = JsonConvert.DeserializeObject<ResponseAPI<List<User>>>(contentTemp);
+            var user = responseAPI.Data;
+
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine(responseAPI.Message);
+                return user;
+            }
+            return null;
+        }
+
         public async Task<AuthResponse> LoginUser(UserLoginDto userLoginDto)
         {
             var content = JsonConvert.SerializeObject(userLoginDto);
@@ -95,9 +112,9 @@ namespace PortfolioManagerWASM.Services
             }
         }
 
-        public async Task<bool> DeleteUserAsync()
+        public async Task<bool> DeleteUserAsync(User user)
         {
-            var email = ActiveUser.Email;
+            var email = user.Email;
             var response = await _httpClient.DeleteAsync($"{Initialize.UrlBaseApi}api/users/{email}");
             var contentTemp = await response.Content.ReadAsStringAsync();
             var responseAPI = JsonConvert.DeserializeObject<ResponseAPI<User>>(contentTemp);

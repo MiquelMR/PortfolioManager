@@ -41,7 +41,8 @@
                                      OnDeleteFinancialAssetDelegate="@OnDeleteFinancialAssetDelegate" />
                 break;
             case AdminView.Users:
-                <UsersComp />
+                <UsersComp Users="@Users"
+                           OnDeleteUserDelegate="@OnDeleteUserDelegate" />
                 break;
             default:
                 <p>Server is currently under maintenance</p>
