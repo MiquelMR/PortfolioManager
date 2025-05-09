@@ -4,10 +4,10 @@ namespace PortfolioManagerAPI.Repository.IRepository
 {
     public interface IAssetRepository
     {
-        Task<Asset> GetAssetByIdAsync(int assetId);
-        Task<List<Asset>> GetAssetsAsync();
-        Task<bool> CreateAssetAsync(Asset asset);
-        Task<bool> UpdateAssetAsync(Asset asset);
+        Task<FinancialAsset> GetAssetByIdAsync(int assetId);
+        Task<List<FinancialAsset>> GetAssetsAsync();
+        Task<bool> CreateAssetAsync(FinancialAsset asset);
+        Task<bool> UpdateAssetAsync(FinancialAsset asset);
         Task<bool> DeleteAssetByIdAsync(int assetId);
         Task<bool> ExistsByIdAsync(int assetId);
     }

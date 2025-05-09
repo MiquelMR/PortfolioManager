@@ -3,7 +3,6 @@ using PortfolioManagerAPI.Models;
 using PortfolioManagerAPI.Models.DTOs;
 using PortfolioManagerAPI.Repository.IRepository;
 using PortfolioManagerAPI.Service.IService;
-using XAct;
 
 namespace PortfolioManagerAPI.Service
 {
@@ -12,16 +11,16 @@ namespace PortfolioManagerAPI.Service
         private readonly IAssetRepository _assetRepository = assetRepository;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<List<AssetDto>> GetAssetsAsync()
+        public async Task<List<FinancialAssetDto>> GetAssetsAsync()
         {
             var assets = await _assetRepository.GetAssetsAsync();
             if (assets == null) { return null; }
 
-            var assetsDto = _mapper.Map<List<AssetDto>>(assets);
+            var assetsDto = _mapper.Map<List<FinancialAssetDto>>(assets);
             return assetsDto;
         }
 
-        public async Task<AssetDto> CreateAssetAsync(AssetDto assetDto)
+        public async Task<FinancialAssetDto> CreateAssetAsync(FinancialAssetDto assetDto)
         {
             assetDto.GetType().GetProperties()
                 .Where(p => p.PropertyType == typeof(string))
@@ -34,7 +33,7 @@ namespace PortfolioManagerAPI.Service
                         p.SetValue(assetDto, null);
                     }
                 });
-            var asset = _mapper.Map<Asset>(assetDto);
+            var asset = _mapper.Map<FinancialAsset>(assetDto);
 
             var success = await _assetRepository.CreateAssetAsync(asset);
             if (!success) { return null; }
@@ -42,7 +41,7 @@ namespace PortfolioManagerAPI.Service
             return assetDto;
         }
 
-        public async Task<AssetDto> UpdateAssetAsync(AssetDto assetDto)
+        public async Task<FinancialAssetDto> UpdateAssetAsync(FinancialAssetDto assetDto)
         {
             assetDto.GetType().GetProperties()
                 .Where(p => p.PropertyType == typeof(string))

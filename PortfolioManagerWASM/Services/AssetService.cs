@@ -27,6 +27,7 @@ namespace PortfolioManagerWASM.Services
             return financialAssets;
         }
 
+        // TODO
         public async Task<FinancialAsset> CreateAssetAsync(FinancialAsset financialAsset)
         {
             var body = JsonConvert.SerializeObject(financialAsset);
@@ -65,6 +66,7 @@ namespace PortfolioManagerWASM.Services
             return _mapper.Map<FinancialAsset>(financialAsset);
         }
 
+        // TODO
         public async Task<bool> DeleteAssetAsync(FinancialAsset financialAsset)
         {
             var response = await _httpClient.DeleteAsync($"{Initialize.UrlBaseApi}api/assets/{financialAsset.AssetId}");

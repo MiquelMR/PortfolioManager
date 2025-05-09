@@ -25,7 +25,7 @@ namespace PortfolioManagerAPI.Service
             portfolioAssetsDto = portfolioAssets.Select(portfolioAsset =>
             {
                 var portfolioAssetDto = _mapper.Map<PortfolioAssetDto>(portfolioAsset);
-                portfolioAssetDto.Asset = _mapper.Map<AssetDto>(portfolioAsset.Asset);
+                portfolioAssetDto.Asset = _mapper.Map<FinancialAssetDto>(portfolioAsset.Asset);
                 return portfolioAssetDto;
             }).ToList();
             portfolioDto.PortfolioAssets = portfolioAssetsDto;
