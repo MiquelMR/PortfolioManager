@@ -1,38 +1,30 @@
-﻿using Newtonsoft.Json;
+﻿using AutoMapper;
+using Newtonsoft.Json;
 using PortfolioManagerAPI.Models;
 using PortfolioManagerWASM.Helpers;
 using PortfolioManagerWASM.Models;
+using PortfolioManagerWASM.Models.DTOs;
 using PortfolioManagerWASM.Services.IService;
 using System.Text;
 
 namespace PortfolioManagerWASM.Services
 {
-    public class AssetService(HttpClient httpClient) : IAssetService
+    public class AssetService(HttpClient httpClient, IMapper mapper) : IAssetService
     {
         // Services
         private readonly HttpClient _httpClient = httpClient;
-
-        // Constants
-        private const string assetIconsDir = "icons/assets";
-        private const string defaultIcon = "default.svg";
+        private readonly IMapper _mapper = mapper;
 
         public async Task<List<FinancialAsset>> GetAssetsAsync()
         {
             var response = await _httpClient.GetAsync($"{Initialize.UrlBaseApi}api/assets");
             var contentTemp = await response.Content.ReadAsStringAsync();
-            var responseAPI = JsonConvert.DeserializeObject<ResponseAPI<List<FinancialAsset>>>(contentTemp);
-            var assets = responseAPI.Data;
-            foreach (var asset in assets)
-            {
-                var fullPath = Path.Combine(assetIconsDir, $"{asset.IconPath}.svg");
-                var iconPath = File.Exists(fullPath)
-                    ? fullPath
-                    : Path.Combine(assetIconsDir, defaultIcon); ;
+            var responseAPI = JsonConvert.DeserializeObject<ResponseAPI<List<FinancialAssetDto>>>(contentTemp);
+            var financialAssetsDto = responseAPI.Data;
+            financialAssetsDto.ForEach(financialAssetsDto => { financialAssetsDto.IconFilename = financialAssetsDto.IconFilename ?? "default.svg"; });
+            var financialAssets = _mapper.Map<List<FinancialAsset>>(financialAssetsDto);
 
-                asset.IconPath = iconPath;
-            }
-
-            return assets;
+            return financialAssets;
         }
 
         public async Task<FinancialAsset> CreateAssetAsync(FinancialAsset financialAsset)
@@ -60,14 +52,17 @@ namespace PortfolioManagerWASM.Services
                         p.SetValue(financialAsset, null);
                     }
                 });
-            var body = JsonConvert.SerializeObject(financialAsset);
+            var financialAssetDto = _mapper.Map<FinancialAssetDto>(financialAsset);
+
+            var body = JsonConvert.SerializeObject(financialAssetDto);
             var bodyContent = new StringContent(body, Encoding.UTF8, "Application/json");
 
             var response = await _httpClient.PatchAsync($"{Initialize.UrlBaseApi}api/assets", bodyContent);
             var contentTemp = await response.Content.ReadAsStringAsync();
             var responseAPI = JsonConvert.DeserializeObject<ResponseAPI<FinancialAsset>>(contentTemp);
             var _asset = responseAPI.Data;
-            return _asset;
+
+            return _mapper.Map<FinancialAsset>(financialAsset);
         }
 
         public async Task<bool> DeleteAssetAsync(FinancialAsset financialAsset)

@@ -1,9 +1,6 @@
 ﻿using AutoMapper;
-using PortfolioManagerAPI.Helpers;
 using PortfolioManagerAPI.Models;
 using PortfolioManagerAPI.Models.DTOs;
-using PortfolioManagerAPI.Models.DTOs.UserDto;
-using PortfolioManagerAPI.Repository;
 using PortfolioManagerAPI.Repository.IRepository;
 using PortfolioManagerAPI.Service.IService;
 using XAct;
