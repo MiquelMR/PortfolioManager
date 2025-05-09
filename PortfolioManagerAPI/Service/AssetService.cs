@@ -10,7 +10,7 @@ using XAct;
 
 namespace PortfolioManagerAPI.Service
 {
-    public class AssetService(IAssetRepository assetRepository, IMapper mapper, IConfiguration config) : IAssetService
+    public class AssetService(IAssetRepository assetRepository, IMapper mapper) : IAssetService
     {
         private readonly IAssetRepository _assetRepository = assetRepository;
         private readonly IMapper _mapper = mapper;

@@ -6,7 +6,7 @@ using PortfolioManagerAPI.Repository.IRepository;
 using PortfolioManagerAPI.Service.IService;
 namespace PortfolioManagerAPI.Service
 {
-    public class PortfolioService(IPortfolioRepository portfolioRepository, IPortfolioAssetRepository portfolioAssetsRepository, IMapper mapper, IConfiguration config) : IPortfolioService
+    public class PortfolioService(IPortfolioRepository portfolioRepository, IPortfolioAssetRepository portfolioAssetsRepository, IMapper mapper) : IPortfolioService
     {
         private readonly IPortfolioRepository _portfolioRepository = portfolioRepository;
         private readonly IPortfolioAssetRepository _portfolioAssetRepository = portfolioAssetsRepository;

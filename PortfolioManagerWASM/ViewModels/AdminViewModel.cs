@@ -19,9 +19,9 @@ namespace PortfolioManagerWASM.ViewModels
             return await _assetService.CreateAssetAsync(asset);
         }
 
-        public async Task<FinancialAsset> UpdatePublicProfileAsync(FinancialAsset updateAsset)
+        public async Task<FinancialAsset> UpdateFinancialAssetAsync(FinancialAsset financialAsset)
         {
-            return await _assetService.UpdateAssetAsync(updateAsset);
+            return await _assetService.UpdateFinancialAssetAsync(financialAsset);
         }
 
         public async Task<bool> DeleteAssetAsync(FinancialAsset asset)

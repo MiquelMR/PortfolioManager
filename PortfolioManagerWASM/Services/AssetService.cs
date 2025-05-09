@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using PortfolioManagerAPI.Models;
 using PortfolioManagerWASM.Helpers;
 using PortfolioManagerWASM.Models;
@@ -36,9 +35,9 @@ namespace PortfolioManagerWASM.Services
             return assets;
         }
 
-        public async Task<FinancialAsset> CreateAssetAsync(FinancialAsset asset)
+        public async Task<FinancialAsset> CreateAssetAsync(FinancialAsset financialAsset)
         {
-            var body = JsonConvert.SerializeObject(asset);
+            var body = JsonConvert.SerializeObject(financialAsset);
             var bodyContent = new StringContent(body, Encoding.UTF8, "Application/json");
             var response = await _httpClient.PostAsync($"{Initialize.UrlBaseApi}api/assets", bodyContent);
             var contentTemp = await response.Content.ReadAsStringAsync();
@@ -48,20 +47,20 @@ namespace PortfolioManagerWASM.Services
             return _asset;
         }
 
-        public async Task<FinancialAsset> UpdateAssetAsync(FinancialAsset asset)
+        public async Task<FinancialAsset> UpdateFinancialAssetAsync(FinancialAsset financialAsset)
         {
-            asset.GetType().GetProperties()
+            financialAsset.GetType().GetProperties()
                 .Where(p => p.PropertyType == typeof(string))
                 .ToList()
                 .ForEach(p =>
                 {
-                    var value = (string)p.GetValue(asset);
+                    var value = (string)p.GetValue(financialAsset);
                     if (string.IsNullOrWhiteSpace(value))
                     {
-                        p.SetValue(asset, null);
+                        p.SetValue(financialAsset, null);
                     }
                 });
-            var body = JsonConvert.SerializeObject(asset);
+            var body = JsonConvert.SerializeObject(financialAsset);
             var bodyContent = new StringContent(body, Encoding.UTF8, "Application/json");
 
             var response = await _httpClient.PatchAsync($"{Initialize.UrlBaseApi}api/assets", bodyContent);
@@ -71,9 +70,9 @@ namespace PortfolioManagerWASM.Services
             return _asset;
         }
 
-        public async Task<bool> DeleteAssetAsync(FinancialAsset asset)
+        public async Task<bool> DeleteAssetAsync(FinancialAsset financialAsset)
         {
-            var response = await _httpClient.DeleteAsync($"{Initialize.UrlBaseApi}api/assets/{asset.AssetId}");
+            var response = await _httpClient.DeleteAsync($"{Initialize.UrlBaseApi}api/assets/{financialAsset.AssetId}");
             var contentTemp = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<bool>(contentTemp);
             return result;

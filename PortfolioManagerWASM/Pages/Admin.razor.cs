@@ -10,6 +10,9 @@ namespace PortfolioManagerWASM.Pages
         [Inject] private AdminViewModel AdminViewModel { get; set; }
         [Inject] public NavigationManager NavigationManager { get; set; }
 
+        // Delegates
+        public Action<FinancialAsset> OnUpdateFinancialAssetDelegate { get; set; }
+
         // Properties
         public List<FinancialAsset> FinancialAssets { get; set; } = [];
 
@@ -21,11 +24,16 @@ namespace PortfolioManagerWASM.Pages
             await AdminViewModel.InitAsync();
 
             FinancialAssets = AdminViewModel.Assets;
+            OnUpdateFinancialAssetDelegate = OnUpdateFinancialAsset;
         }
 
         private void OnTabClick(AdminView adminView)
         {
             _adminView = adminView;
+        }
+        public async void OnUpdateFinancialAsset(FinancialAsset financialAsset)
+        {
+            await AdminViewModel.UpdateFinancialAssetAsync(financialAsset);
         }
     }
 

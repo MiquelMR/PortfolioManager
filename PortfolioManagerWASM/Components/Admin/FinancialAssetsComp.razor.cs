@@ -8,9 +8,12 @@ namespace PortfolioManagerWASM.Components.Admin
         // Properties
         [Parameter] public List<FinancialAsset> FinancialAssets { get; set; } = [];
 
+        // Delegates
+        [Parameter] public Action<FinancialAsset> OnUpdateFinancialAssetDelegate { get; set; }
+
         private void OnUpdateSubmit(FinancialAsset financialAsset)
         {
-
+            OnUpdateFinancialAssetDelegate.Invoke(financialAsset);
         }
 
         private void OnSelectIcon(string iconPath, FinancialAsset financialAsset)
