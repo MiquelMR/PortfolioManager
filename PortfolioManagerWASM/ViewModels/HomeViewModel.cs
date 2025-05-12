@@ -12,7 +12,7 @@ namespace PortfolioManagerWASM.ViewModels
         public User ActiveUser { get; set; } = new();
         public List<Portfolio> PortfoliosBasicInfo { get; set; } = [];
         public Portfolio ActivePortfolio { get; set; } = new();
-        public List<FinancialAsset> FinancialAssets { get; set; } = new();
+        public List<FinancialAsset> FinancialAssets { get; set; } = [];
 
         public async Task InitAsync()
         {
@@ -29,11 +29,16 @@ namespace PortfolioManagerWASM.ViewModels
             ActivePortfolio = await _portfolioService.GetPortfolioByIdAsync(portfolioId);
         }
 
-        public Portfolio RegisterPortfolio(Portfolio portfolio)
+        public async Task<Portfolio> RegisterPortfolioAsync(Portfolio newPortfolio)
         {
-            // var registeredPortfolio = _portfolioService.RegisterPortfolio(portfolio);
-            return null;
+            newPortfolio.Author = ActiveUser.Name;
+            return await _portfolioService.CreatePortfolioAsync(newPortfolio);
         }
+
+        public async Task DeleteActivePortfolioAsync()
+        {
+            _portfolioService.DeletePortfolioAsync(ActivePortfolio.PortfolioId);
+        } 
 
         public void CleanData()
         {

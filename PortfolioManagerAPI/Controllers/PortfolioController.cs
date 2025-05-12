@@ -41,6 +41,7 @@ namespace PortfolioManagerAPI.Controllers
             return Ok(new ResponseAPI<List<PortfolioDto>>(200, "Success", portfolioDtoList));
         }
 
+        // [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreatePortfolio([FromBody] PortfolioDto portfolioDto)
         {
@@ -52,6 +53,23 @@ namespace PortfolioManagerAPI.Controllers
                 return StatusCode(500, new ResponseAPI<object>(500, "Internal server error: Asset creation failed", null));
 
             return Ok(new ResponseAPI<PortfolioDto>(200, "Portfolio created successfully", createdPortfolio));
+        }
+
+        // [Authorize]
+        [HttpDelete("{portfolioId}")]
+        public async Task<IActionResult> DeletePortfolioById(int portfolioId)
+        {
+            if (portfolioId == 0)
+                return BadRequest(new ResponseAPI<object>(400, "Invalid request: portfolioId is 0", null));
+            var exists = await _portfolioService.ExistsByIdAsync(portfolioId);
+            if (!exists)
+                return NotFound(new ResponseAPI<object>(404, "Portfolio not found", null));
+
+            var success = await _portfolioService.DeletePortfolioByIdAsync(portfolioId);
+            if (!success)
+                return StatusCode(500, new ResponseAPI<object>(500, "Internal server error: Portfolio deletion failed", null));
+
+            return Ok(new ResponseAPI<PortfolioDto>(200, "Asset deleted successfully", null));
         }
     }
 }

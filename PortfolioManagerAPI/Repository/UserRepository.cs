@@ -22,6 +22,19 @@ namespace PortfolioManagerAPI.Repository
             }
         }
 
+        public async Task<int> GetUserIdByNameAsync(string name)
+        {
+            try
+            {
+                var user = await _db.Users.FirstOrDefaultAsync(user => user.Name == name);
+                return user.UserId;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
         public async Task<List<User>> GetUsersAsync()
         {
             try

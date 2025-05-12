@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PortfolioManagerAPI.Data;
 using PortfolioManagerAPI.Models;
+using PortfolioManagerAPI.Models.DTOs;
 using PortfolioManagerAPI.Repository.IRepository;
 using System.Xml.Linq;
 
@@ -16,7 +17,7 @@ namespace PortfolioManagerAPI.Repository
             {
                 return await _db.Portfolios.FirstOrDefaultAsync(portfolio => portfolio.PortfolioId == portfolioId);
             }
-            catch (Exception)
+            catch
             {
                 return null;
             }
@@ -41,9 +42,37 @@ namespace PortfolioManagerAPI.Repository
                     .OrderBy(portfolio => portfolio.PortfolioId)
                     .ToListAsync();
             }
-            catch (Exception)
+            catch
             {
                 return null;
+            }
+        }
+
+        public async Task<bool> CreatePortfolioAsync(Portfolio newPortfolio)
+        {
+            try
+            {
+                await _db.Portfolios.AddAsync(newPortfolio);
+                return await _db.SaveChangesAsync() > 0;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> DeletePortfolioByIdAsync(int portfolioId)
+        {
+            try
+            {
+                var portfolio = await _db.Portfolios.FirstOrDefaultAsync(portfolio => portfolio.PortfolioId == portfolioId);
+                if (portfolio == null) return false;
+                _db.Portfolios.Remove(portfolio);
+                return await _db.SaveChangesAsync() > 0;
+            }
+            catch (Exception)
+            {
+                return false;
             }
         }
 
@@ -53,7 +82,7 @@ namespace PortfolioManagerAPI.Repository
             {
                 return await _db.Portfolios.AnyAsync(p => p.PortfolioId == portfolioId);
             }
-            catch (Exception)
+            catch
             {
                 return false;
             }

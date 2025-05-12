@@ -21,8 +21,14 @@
         <ViewPortfoliosComponent ActivePortfolio="@ActivePortfolio"
                                  UserPortfolios="@UserPortfolios"
                                  SelectPortfolioDelegate="@SelectPortfolioDelegate"
+                                 OnDeleteActivePortfolioDelegate="@OnDeleteActivePortfolio"
                                  ChangeCurrentHomeViewDelegate="@ChangeCurrentHomeView"></ViewPortfoliosComponent>
         break;
     default:
         break;
+}
+<!--Create new portfolio-->
+@if (CurrentHomeView != HomeView.CreatePortfolio)
+{
+    <button class="btn btn-primary" @onclick="() =>ChangeCurrentHomeView(HomeView.CreatePortfolio)">Create Portfolio</button>
 }

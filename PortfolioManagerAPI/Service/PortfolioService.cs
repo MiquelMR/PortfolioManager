@@ -1,15 +1,18 @@
 ﻿using AutoMapper;
-using PortfolioManagerAPI.Helpers;
 using PortfolioManagerAPI.Models;
 using PortfolioManagerAPI.Models.DTOs;
 using PortfolioManagerAPI.Repository.IRepository;
 using PortfolioManagerAPI.Service.IService;
 namespace PortfolioManagerAPI.Service
 {
-    public class PortfolioService(IPortfolioRepository portfolioRepository, IPortfolioAssetRepository portfolioAssetsRepository, IMapper mapper) : IPortfolioService
+    public class PortfolioService(IPortfolioRepository portfolioRepository, IAssetRepository assetRepository, IPortfolioAssetRepository portfolioAssetsRepository, IMapper mapper, IUserRepository userRepository) : IPortfolioService
     {
+        // Repositories
         private readonly IPortfolioRepository _portfolioRepository = portfolioRepository;
         private readonly IPortfolioAssetRepository _portfolioAssetRepository = portfolioAssetsRepository;
+        private readonly IAssetRepository _assetRepository = assetRepository;
+        private readonly IUserRepository _userRepository = userRepository;
+
         private readonly IMapper _mapper = mapper;
 
         public async Task<PortfolioDto> GetPortfolioById(int portfolioId)
@@ -25,10 +28,10 @@ namespace PortfolioManagerAPI.Service
             portfolioAssetsDto = portfolioAssets.Select(portfolioAsset =>
             {
                 var portfolioAssetDto = _mapper.Map<PortfolioAssetDto>(portfolioAsset);
-                portfolioAssetDto.Asset = _mapper.Map<FinancialAssetDto>(portfolioAsset.Asset);
+                portfolioAssetDto.FinancialAssetDto = _mapper.Map<FinancialAssetDto>(portfolioAsset.FinancialAsset);
                 return portfolioAssetDto;
             }).ToList();
-            portfolioDto.PortfolioAssets = portfolioAssetsDto;
+            portfolioDto.PortfolioAssetsDto = portfolioAssetsDto;
 
             return portfolioDto;
         }
@@ -43,10 +46,37 @@ namespace PortfolioManagerAPI.Service
             return portfoliosDto;
         }
 
-        public async Task<PortfolioDto> CreatePortfolioAsync(PortfolioDto portfolioDto)
+        public async Task<PortfolioDto> CreatePortfolioAsync(PortfolioDto newPortfolioDto)
         {
-            var portfolio = _mapper.Map<Portfolio>(portfolioDto);
-            return null;
+            var newPortfolio = _mapper.Map<Portfolio>(newPortfolioDto);
+            newPortfolio.UserId = await _userRepository.GetUserIdByNameAsync(newPortfolio.Author);
+            var success = await _portfolioRepository.CreatePortfolioAsync(newPortfolio);
+            if (!success) { return null; }
+
+            foreach (var portfolioAssetDto in newPortfolioDto.PortfolioAssetsDto)
+            {
+                //var portfolioAsset = _mapper.Map<PortfolioAsset>(portfolioAssetDto);
+                PortfolioAsset portfolioAsset = new()
+                {
+                    AllocationPercentage = portfolioAssetDto.AllocationPercentage,
+                    PortfolioId = newPortfolio.PortfolioId,
+                    AssetId = await _assetRepository.GetFinancialAssetIdByNameAsync(portfolioAssetDto.FinancialAssetDto.Name)
+                };
+                await _portfolioAssetRepository.CreatePortfolioAssetAsync(portfolioAsset);
+            }
+
+            return _mapper.Map<PortfolioDto>(newPortfolioDto);
+        }
+        public async Task<bool> DeletePortfolioByIdAsync(int portfolioId)
+        {
+            var asset = await _portfolioRepository.GetPortfolioByIdAsync(portfolioId);
+            if (asset == null)
+                return false;
+            var success = await _portfolioRepository.DeletePortfolioByIdAsync(portfolioId);
+            if (!success)
+                return false;
+
+            return success;
         }
 
         public async Task<bool> ExistsByIdAsync(int portfolioId)

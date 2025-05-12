@@ -73,6 +73,19 @@ namespace PortfolioManagerAPI.Repository
             }
         }
 
+        public async Task<int> GetFinancialAssetIdByNameAsync(string name)
+        {
+            try
+            {
+                var financialAsset = await _db.Assets.FirstOrDefaultAsync(financialAsset => financialAsset.Name == name);
+                return financialAsset.AssetId;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
         public async Task<bool> ExistsByIdAsync(int assetId)
         {
             try

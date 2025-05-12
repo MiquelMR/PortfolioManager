@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace PortfolioManagerWASM.Models
+namespace PortfolioManagerWASM.Models.DTOs
 {
-    public class PortfolioAsset
+    public class PortfolioAssetDto
     {
-        public FinancialAsset FinancialAsset { get; set; }
+        public FinancialAssetDto FinancialAssetDto { get; set; }
         public float AllocationPercentage { get; set; }
     }
 }

@@ -9,7 +9,7 @@ namespace PortfolioManagerWASM.Pages.Home
         public List<FinancialAsset> FinancialAssets { get; set; } = [];
         [Parameter]
         public EventCallback<Portfolio> OnPortfolioSubmit { get; set; }
-        private readonly Portfolio newPortfolio = new();
+        private readonly Portfolio newPortfolio = new() { Name = "My new Portfolio" };
 
         private void SubmitNewPortfolio()
         {
@@ -20,11 +20,17 @@ namespace PortfolioManagerWASM.Pages.Home
         {
             var portfolioAsset = new PortfolioAsset()
             {
-                Asset = financialAsset,
-                AllocationPercentage = 10
+                FinancialAsset = financialAsset,
+                AllocationPercentage = 0
             };
             newPortfolio.PortfolioAssets.Add(portfolioAsset);
         }
+        private void OnRemoveFinancialAsset(PortfolioAsset portfolioAsset)
+        {
+            newPortfolio.PortfolioAssets.Remove(portfolioAsset);
+        }
+
+
 
 
     }

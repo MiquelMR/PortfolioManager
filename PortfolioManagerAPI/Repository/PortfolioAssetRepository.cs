@@ -16,13 +16,26 @@ namespace PortfolioManagerAPI.Repository
             try
             {
                 return await _db.PortfolioAssets
-                    .Include(pa => pa.Asset)
+                    .Include(pa => pa.FinancialAsset)
                     .Where(pa => pa.PortfolioId == portfolioId)
                     .ToListAsync();
             }
             catch (Exception)
             {
                 return null;
+            }
+        }
+
+        public async Task<bool> CreatePortfolioAssetAsync(PortfolioAsset newPortfolioAsset)
+        {
+            try
+            {
+                await _db.PortfolioAssets.AddAsync(newPortfolioAsset);
+                return await _db.SaveChangesAsync() > 0;
+            }
+            catch
+            {
+                return false;
             }
         }
     }
