@@ -85,8 +85,9 @@ namespace PortfolioManagerAPI.Service
                 }
                 user.AvatarFilename = avatarFilename;
 
-                var success = await _userRepository.UpdateUserAsync(user);
-                if (!success) { return null; }
+                var userUpdated = await _userRepository.UpdateUserAsync(user);
+                if (userUpdated == null)
+                    return null;
 
                 if (validAvatar)
                 {
@@ -146,8 +147,9 @@ namespace PortfolioManagerAPI.Service
                 user.AvatarFilename = avatarFilename;
             }
 
-            var success = await _userRepository.CreateUserAsync(user);
-            if (!success) { return null; }
+            var userCreated = await _userRepository.CreateUserAsync(user);
+            if (userCreated == null)
+                return null;
 
             if (userRegisterDto.Avatar != null)
             {

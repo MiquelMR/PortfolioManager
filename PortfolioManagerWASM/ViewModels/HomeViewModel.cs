@@ -3,11 +3,11 @@ using PortfolioManagerWASM.Services.IService;
 
 namespace PortfolioManagerWASM.ViewModels
 {
-    public class HomeViewModel(IPortfolioService PortfolioService, IUserService UserService, IAssetService AssetService)
+    public class HomeViewModel(IPortfolioService PortfolioService, IUserService UserService, IFinancialAssetService AssetService)
     {
         private readonly IPortfolioService _portfolioService = PortfolioService;
         private readonly IUserService _userService = UserService;
-        private readonly IAssetService _assetService = AssetService;
+        private readonly IFinancialAssetService _assetService = AssetService;
 
         public User ActiveUser { get; set; } = new();
         public List<Portfolio> PortfoliosBasicInfo { get; set; } = [];

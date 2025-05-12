@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using PortfolioManagerWASM.Models;
 
-namespace PortfolioManagerWASM.Pages.Home
+namespace PortfolioManagerWASM.Components.Home
 {
     public partial class CreatePortfolioComponent
     {

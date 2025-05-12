@@ -3,7 +3,7 @@ using PortfolioManagerWASM.Models;
 using PortfolioManagerWASM.Models.UserDto;
 using PortfolioManagerWASM.ViewModels;
 
-namespace PortfolioManagerWASM.Pages.UserProfile
+namespace PortfolioManagerWASM.Pages
 {
     public partial class UserProfile
     {

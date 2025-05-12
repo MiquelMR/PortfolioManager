@@ -18,7 +18,7 @@ namespace PortfolioManagerWASM.ViewModels
         public async Task<User> UpdatePublicProfileAsync(UserUpdateDto userUpdateDto)
         {
             userUpdateDto.Email = ActiveUser.Email;
-            return await _userService.UpdatePublicProfile(userUpdateDto);
+            return await _userService.UpdateUserAsync(userUpdateDto);
         }
 
         internal async Task<bool> DeleteUserAsync()

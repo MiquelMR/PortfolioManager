@@ -9,14 +9,14 @@ namespace PortfolioManagerAPI.Controllers
     // [Authorize]
     [Route("api/assets")]
     [ApiController]
-    public class AssetController(IAssetService assetService) : ControllerBase
+    public class FinancialAssetController(IFinancialAssetService financialAssetService) : ControllerBase
     {
-        private readonly IAssetService _assetService = assetService;
+        private readonly IFinancialAssetService _financialAssetService = financialAssetService;
 
         [HttpGet]
         public async Task<IActionResult> GetAssets()
         {
-            var assetDtoList = await _assetService.GetAssetsAsync();
+            var assetDtoList = await _financialAssetService.GetFinancialAssetsAsync();
             if (assetDtoList == null)
                 return StatusCode(500, new ResponseAPI<object>(500, "Internal server error", null));
 
@@ -25,46 +25,46 @@ namespace PortfolioManagerAPI.Controllers
 
         // [Authorize]
         [HttpPost]
-        public async Task<IActionResult> CreateAsset([FromBody] FinancialAssetDto assetDto)
+        public async Task<IActionResult> CreateAsset([FromBody] FinancialAssetDto financialAssetDto)
         {
-            if (assetDto == null)
+            if (financialAssetDto == null)
                 return BadRequest(new ResponseAPI<object>(400, "Invalid request: assetDto is null", null));
 
-            var createdAsset = await _assetService.CreateAssetAsync(assetDto);
-            if (createdAsset == null)
+            var financialAssetCreated = await _financialAssetService.CreateFinancialAssetAsync(financialAssetDto);
+            if (financialAssetCreated == null)
                 return StatusCode(500, new ResponseAPI<object>(500, "Internal server error: Asset creation failed", null));
 
-            return Ok(new ResponseAPI<FinancialAssetDto>(200, "Asset created successfully", createdAsset));
+            return Ok(new ResponseAPI<FinancialAssetDto>(200, "Asset created successfully", financialAssetCreated));
         }
 
         // [Authorize]
         [HttpPatch]
-        public async Task<IActionResult> UpdateAsset([FromBody] FinancialAssetDto assetDto)
+        public async Task<IActionResult> UpdateAsset([FromBody] FinancialAssetDto financialAssetDto)
         {
-            if (assetDto == null)
+            if (financialAssetDto == null)
                 return BadRequest(new ResponseAPI<object>(400, "Invalid request: assetDto is null", null));
-            var exists = await _assetService.ExistsByIdAsync(assetDto.AssetId);
+            var exists = await _financialAssetService.ExistsByIdAsync(financialAssetDto.AssetId);
             if (!exists)
                 return NotFound(new ResponseAPI<object>(404, "Asset not found", null));
 
-            var updatedAsset = await _assetService.UpdateAssetAsync(assetDto);
-            if (updatedAsset == null)
+            var financialAssetUpdated = await _financialAssetService.UpdateFinancialAssetAsync(financialAssetDto);
+            if (financialAssetUpdated == null)
                 return StatusCode(500, new ResponseAPI<object>(500, "Internal server error: Asset update failed", null));
 
-            return Ok(new ResponseAPI<FinancialAssetDto>(200, "Asset updated successfully", updatedAsset));
+            return Ok(new ResponseAPI<FinancialAssetDto>(200, "Asset updated successfully", financialAssetUpdated));
         }
 
         // [Authorize]
         [HttpDelete("{assetId}")]
-        public async Task<IActionResult> DeleteAssetById(int assetId)
+        public async Task<IActionResult> DeleteAssetById(int financialAssetId)
         {
-            if (assetId == 0)
+            if (financialAssetId == 0)
                 return BadRequest(new ResponseAPI<object>(400, "Invalid request: assetId is 0", null));
-            var exists = await _assetService.ExistsByIdAsync(assetId);
+            var exists = await _financialAssetService.ExistsByIdAsync(financialAssetId);
             if (!exists)
                 return NotFound(new ResponseAPI<object>(404, "Asset not found", null));
 
-            var success = await _assetService.DeleteAssetByIdAsync(assetId);
+            var success = await _financialAssetService.DeleteAssetByIdAsync(financialAssetId);
             if (!success)
                 return StatusCode(500, new ResponseAPI<object>(500, "Internal server error: Asset deletion failed", null));
 

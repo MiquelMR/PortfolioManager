@@ -23,7 +23,7 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 
 // Inject Services
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IAssetService, AssetService>();
+builder.Services.AddScoped<IFinancialAssetService, FinancialAssetService>();
 builder.Services.AddScoped<IPortfolioService, PortfolioService>();
 
 // Configuration

@@ -9,9 +9,9 @@ using System.Text;
 
 namespace PortfolioManagerWASM.Services
 {
-    public class AssetService(HttpClient httpClient, IMapper mapper) : IAssetService
+    public class FinancialAssetService(HttpClient httpClient, IMapper mapper) : IFinancialAssetService
     {
-        // Services
+        // Dependencies
         private readonly HttpClient _httpClient = httpClient;
         private readonly IMapper _mapper = mapper;
 
@@ -27,7 +27,6 @@ namespace PortfolioManagerWASM.Services
             return financialAssets;
         }
 
-        // TODO
         public async Task<FinancialAsset> CreateFinancialAssetAsync(FinancialAsset financialAsset)
         {
             var financialAssetDto = _mapper.Map<FinancialAssetDto>(financialAsset);

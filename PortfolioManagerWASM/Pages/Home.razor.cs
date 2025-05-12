@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using PortfolioManagerWASM.Models;
 using PortfolioManagerWASM.ViewModels;
 
-namespace PortfolioManagerWASM.Pages.Home
+namespace PortfolioManagerWASM.Pages
 {
     public partial class Home
     {

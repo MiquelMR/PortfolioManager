@@ -11,6 +11,7 @@ namespace PortfolioManagerWASM.Services
 {
     public class PortfolioService(HttpClient httpClient, IMapper mapper) : IPortfolioService
     {
+        // Dependencies
         private readonly HttpClient _httpClient = httpClient;
         private readonly IMapper _mapper = mapper;
 

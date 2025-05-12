@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Components;
 using PortfolioManagerWASM.Models.UserDto;
 using PortfolioManagerWASM.ViewModels;
 
-namespace PortfolioManagerWASM.Pages.Login
+namespace PortfolioManagerWASM.Pages
 {
     public partial class Login
     {

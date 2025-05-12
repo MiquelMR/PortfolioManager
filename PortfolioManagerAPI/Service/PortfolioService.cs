@@ -5,12 +5,12 @@ using PortfolioManagerAPI.Repository.IRepository;
 using PortfolioManagerAPI.Service.IService;
 namespace PortfolioManagerAPI.Service
 {
-    public class PortfolioService(IPortfolioRepository portfolioRepository, IAssetRepository assetRepository, IPortfolioAssetRepository portfolioAssetsRepository, IMapper mapper, IUserRepository userRepository) : IPortfolioService
+    public class PortfolioService(IPortfolioRepository portfolioRepository, IFinancialAssetRepository assetRepository, IPortfolioAssetRepository portfolioAssetsRepository, IMapper mapper, IUserRepository userRepository) : IPortfolioService
     {
         // Repositories
         private readonly IPortfolioRepository _portfolioRepository = portfolioRepository;
         private readonly IPortfolioAssetRepository _portfolioAssetRepository = portfolioAssetsRepository;
-        private readonly IAssetRepository _assetRepository = assetRepository;
+        private readonly IFinancialAssetRepository _assetRepository = assetRepository;
         private readonly IUserRepository _userRepository = userRepository;
 
         private readonly IMapper _mapper = mapper;
@@ -49,9 +49,14 @@ namespace PortfolioManagerAPI.Service
         public async Task<PortfolioDto> CreatePortfolioAsync(PortfolioDto newPortfolioDto)
         {
             var newPortfolio = _mapper.Map<Portfolio>(newPortfolioDto);
-            newPortfolio.UserId = await _userRepository.GetUserIdByNameAsync(newPortfolio.Author);
-            var success = await _portfolioRepository.CreatePortfolioAsync(newPortfolio);
-            if (!success) { return null; }
+            var userId = await _userRepository.GetUserIdByNameAsync(newPortfolio.Author);
+            if (userId == 0)
+                return null;
+            newPortfolio.UserId = userId;
+
+            var portfolioCreated = await _portfolioRepository.CreatePortfolioAsync(newPortfolio);
+            if (portfolioCreated == null)
+                return null;
 
             foreach (var portfolioAssetDto in newPortfolioDto.PortfolioAssetsDto)
             {

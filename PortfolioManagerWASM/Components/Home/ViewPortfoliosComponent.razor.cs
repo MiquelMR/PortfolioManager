@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Components;
 using PortfolioManagerWASM.Models;
-using PortfolioManagerWASM.ViewModels;
+using PortfolioManagerWASM.Pages;
 
-namespace PortfolioManagerWASM.Pages.Home
+namespace PortfolioManagerWASM.Components.Home
 {
     public partial class ViewPortfoliosComponent
     {
