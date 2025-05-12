@@ -1,4 +1,4 @@
-﻿@using PortfolioManagerAPI.Helpers
+﻿@using PortfolioManagerWASM.Helpers
 @using PortfolioManagerWASM.Services.IService
 @using Syncfusion.Blazor.SplitButtons
 
@@ -10,7 +10,7 @@
             <div class="col userAvatar">
                 <img src="@(ActiveUser.Avatar == null
         ? $"https://avatar.iran.liara.run/public"
-        : $"{@TypeConverter.GetBase64String(ActiveUser.Avatar)}")" class="rounded img-fluid w-100" alt="avatar" />
+        : $"{@TypeHelper.GetBase64String(ActiveUser.Avatar)}")" class="rounded img-fluid w-100" alt="avatar" />
             </div>
         </div>
 

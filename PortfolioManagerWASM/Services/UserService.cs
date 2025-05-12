@@ -19,7 +19,7 @@ namespace PortfolioManagerWASM.Services
         private readonly HttpClient _httpClient = httpClient;
         private readonly ILocalStorageService _localStorage = localStorage;
         private readonly AuthenticationStateProvider _authenticationStateProvider = authenticationStateProvider;
-        
+
         // Properties
         public User ActiveUser { get; set; } = new();
 
@@ -41,9 +41,9 @@ namespace PortfolioManagerWASM.Services
             return await GetUserByEmailAsync(activeUserEmail);
         }
 
-        public async Task<User> GetUserByEmailAsync(string Email)
+        public async Task<User> GetUserByEmailAsync(string email)
         {
-            var response = await _httpClient.GetAsync($"{Initialize.UrlBaseApi}api/users/by-email/{Email}");
+            var response = await _httpClient.GetAsync($"{Initialize.UrlBaseApi}api/users/by-email/{email}");
             var contentTemp = await response.Content.ReadAsStringAsync();
             var responseAPI = JsonConvert.DeserializeObject<ResponseAPI<User>>(contentTemp);
             var user = responseAPI.Data;
@@ -59,7 +59,9 @@ namespace PortfolioManagerWASM.Services
         public async Task<List<User>> GetUsersAsync()
         {
             var authorized = ActiveUser.Email.Equals(AppConfig.GetAuthorizedEmail());
-            if (!authorized || ActiveUser.Role != UserRoles.Admin) { return null; }
+            if (!authorized || ActiveUser.Role != UserRoles.Admin)
+                return null;
+
             var response = await _httpClient.GetAsync($"{Initialize.UrlBaseApi}api/users");
             var contentTemp = await response.Content.ReadAsStringAsync();
             var responseAPI = JsonConvert.DeserializeObject<ResponseAPI<List<User>>>(contentTemp);
@@ -99,9 +101,9 @@ namespace PortfolioManagerWASM.Services
             }
         }
 
-        public async Task<User> RegisterUserAsync(UserRegisterDto registerUserDto)
+        public async Task<User> RegisterUserAsync(UserRegisterDto userRegisterDto)
         {
-            var body = JsonConvert.SerializeObject(registerUserDto);
+            var body = JsonConvert.SerializeObject(userRegisterDto);
             var bodyContent = new StringContent(body, Encoding.UTF8, "Application/json");
             var response = await _httpClient.PostAsync($"{Initialize.UrlBaseApi}api/users/register", bodyContent);
             var contentTemp = await response.Content.ReadAsStringAsync();
@@ -122,17 +124,7 @@ namespace PortfolioManagerWASM.Services
 
         public async Task<User> UpdateUserAsync(UserUpdateDto userUpdateDto)
         {
-            userUpdateDto.GetType().GetProperties()
-                .Where(p => p.PropertyType == typeof(string))
-                .ToList()
-                .ForEach(p =>
-                {
-                    var value = (string)p.GetValue(userUpdateDto);
-                    if (string.IsNullOrWhiteSpace(value))
-                    {
-                        p.SetValue(userUpdateDto, null);
-                    }
-                });
+            userUpdateDto = (UserUpdateDto)TypeHelper.EmptyStringPropertiesToNull(userUpdateDto);
             var body = JsonConvert.SerializeObject(userUpdateDto);
             var bodyContent = new StringContent(body, Encoding.UTF8, "Application/json");
             var response = await _httpClient.PatchAsync($"{Initialize.UrlBaseApi}api/users", bodyContent);

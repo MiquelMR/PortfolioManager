@@ -46,10 +46,10 @@ namespace PortfolioManagerWASM.Services
             var response = await _httpClient.PostAsync($"{Initialize.UrlBaseApi}api/portfolios", bodyContent);
             var contentTemp = await response.Content.ReadAsStringAsync();
             var responseAPI = JsonConvert.DeserializeObject<ResponseAPI<PortfolioDto>>(contentTemp);
-            var portfolioDtoTemp = responseAPI.Data;
+            var portfolioCreatedDto = responseAPI.Data;
 
-            var portfolio = _mapper.Map<Portfolio>(portfolioDtoTemp);
-            return portfolio;
+            var portfolioCreated = _mapper.Map<Portfolio>(portfolioCreatedDto);
+            return portfolioCreated;
         }
 
         public async Task<bool> DeletePortfolioAsync(int portfolioId)

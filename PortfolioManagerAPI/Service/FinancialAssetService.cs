@@ -24,19 +24,6 @@ namespace PortfolioManagerAPI.Service
 
         public async Task<FinancialAssetDto> CreateFinancialAssetAsync(FinancialAssetDto newFinancialAssetDto)
         {
-            //assetDto.GetType().GetProperties()
-            //    .Where(p => p.PropertyType == typeof(string))
-            //    .ToList()
-            //    .ForEach(p =>
-            //    {
-            //        var value = (string)p.GetValue(assetDto);
-            //        if (string.IsNullOrWhiteSpace(value))
-            //        {
-            //            p.SetValue(assetDto, null);
-            //        }
-            //    });
-
-            // Mira a ver si esto funciona,  
             newFinancialAssetDto = (FinancialAssetDto)TypeHelper.EmptyStringPropertiesToNull(newFinancialAssetDto);
             var financialAsset = _mapper.Map<FinancialAsset>(newFinancialAssetDto);
 
@@ -46,18 +33,8 @@ namespace PortfolioManagerAPI.Service
 
         public async Task<FinancialAssetDto> UpdateFinancialAssetAsync(FinancialAssetDto financialAssetUpdateDto)
         {
-            financialAssetUpdateDto.GetType().GetProperties()
-                .Where(p => p.PropertyType == typeof(string))
-                .ToList()
-                .ForEach(p =>
-                {
-                    var value = (string)p.GetValue(financialAssetUpdateDto);
-                    if (string.IsNullOrWhiteSpace(value))
-                    {
-                        p.SetValue(financialAssetUpdateDto, null);
-                    }
-                });
 
+            financialAssetUpdateDto = (FinancialAssetDto)TypeHelper.EmptyStringPropertiesToNull(financialAssetUpdateDto);
             var financialAsset = await _assetRepository.GetFinancialAssetByIdAsync(financialAssetUpdateDto.AssetId);
             if (financialAsset == null)
                 return null;

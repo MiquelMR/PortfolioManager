@@ -1,5 +1,5 @@
-﻿@using PortfolioManagerAPI.Helpers
-@using PortfolioManagerAPI.Models
+﻿@using PortfolioManagerAPI.Models
+@using PortfolioManagerWASM.Helpers
 @using PortfolioManagerWASM.Services.IService
 @using Syncfusion.Blazor.SplitButtons
 
@@ -40,7 +40,7 @@
             <button class="btn rounded-circle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <img class="rounded-icon" src="@(ActiveUser.Avatar == null
                 ? $"https://avatar.iran.liara.run/public"
-                : $"{@TypeConverter.GetBase64String(ActiveUser.Avatar)}")" alt="avatar" />
+                : $"{@TypeHelper.GetBase64String(ActiveUser.Avatar)}")" alt="avatar" />
             </button>
             <ul class="dropdown-menu">
                 <li><h6 class="dropdown-header">@ActiveUser.Name</h6></li>
