@@ -9,6 +9,7 @@ namespace PortfolioManagerAPI.Repository.IRepository
         Task<bool> CreateUserAsync(User user);
         Task<bool> UpdateUserAsync(User user);
         Task<bool> DeleteUserByEmailAsync(string email);
+        Task<int> GetUserIdByNameAsync(string name);
         Task<bool> ExistsByEmailAsync(string email);
     }
 }

@@ -41,6 +41,7 @@ namespace PortfolioManagerAPI.Controllers
             return Ok(new ResponseAPI<List<PortfolioDto>>(200, "Success", portfolioDtoList));
         }
 
+        // [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreatePortfolio([FromBody] PortfolioDto portfolioDto)
         {

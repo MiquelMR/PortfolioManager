@@ -1,5 +1,4 @@
-﻿using PortfolioManagerAPI.Models;
-using PortfolioManagerAPI.Models.DTOs;
+﻿using PortfolioManagerAPI.Models.DTOs;
 
 namespace PortfolioManagerAPI.Service.IService
 {

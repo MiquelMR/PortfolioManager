@@ -16,7 +16,7 @@ namespace PortfolioManagerWASM.Pages.Home
         private Task<AuthenticationState> AuthState { get; set; }
         public User ActiveUser { get; set; } = new();
         public List<Portfolio> UserPortfolios { get; set; } = [];
-        public List<FinancialAsset> FinancialAssets { get; set; } = new();
+        public List<FinancialAsset> FinancialAssets { get; set; } = [];
         public Portfolio ActivePortfolio { get; set; }
         private HomeView CurrentHomeView { get; set; } = HomeView.ViewPortfolio;
         public Func<int, Task> SelectPortfolioDelegate { get; set; }
@@ -52,9 +52,9 @@ namespace PortfolioManagerWASM.Pages.Home
             CurrentHomeView = homeView;
         }
 
-        public void OnPortfolioSubmit(Portfolio portfolio)
+        public async void OnPortfolioSubmit(Portfolio portfolio)
         {
-            HomeViewModel.RegisterPortfolio(portfolio);
+            var registeredPortfolio = await HomeViewModel.RegisterPortfolio(portfolio);
         }
     }
 

@@ -21,6 +21,14 @@ namespace PortfolioManagerAPI.Mappers
             CreateMap<FinancialAsset, FinancialAssetDto>().ReverseMap();
             CreateMap<PortfolioAsset, PortfolioAssetDto>().ReverseMap();
             CreateMap<Portfolio, PortfolioDto>().ReverseMap();
+
+            // PortfolioAsset -> PortfolioAssetDto
+            CreateMap<PortfolioAsset, PortfolioAssetDto>()
+                .ForMember(dest => dest.FinancialAssetDto, opt => opt.MapFrom(src => src.FinancialAsset));
+
+            // PortfolioAssetDto -> PortfolioAsset
+            CreateMap<PortfolioAssetDto, PortfolioAsset>()
+                .ForMember(dest => dest.FinancialAsset, opt => opt.MapFrom(src => src.FinancialAssetDto));
         }
     }
 }

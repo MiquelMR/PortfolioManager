@@ -6,6 +6,8 @@ namespace PortfolioManagerWASM.Components.Admin
 {
     public partial class FinancialAssetsComp
     {
+        // Services
+        [Inject] HttpClient HttpClient { get; set; }
         // Properties
         [Parameter] public List<FinancialAsset> FinancialAssets { get; set; } = [];
 
@@ -14,7 +16,6 @@ namespace PortfolioManagerWASM.Components.Admin
         [Parameter] public Action<FinancialAsset> OnCreateFinancialAssetDelegate { get; set; }
         [Parameter] public Action<FinancialAsset> OnDeleteFinancialAssetDelegate { get; set; }
 
-        [Inject] HttpClient HttpClient { get; set; }
 
         // Private fields
         private readonly FinancialAsset newFinancialAsset = new() { IconPath = AppConfig.GetResourcePath("AssetIcons") + "/default.svg" };

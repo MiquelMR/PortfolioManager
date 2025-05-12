@@ -18,6 +18,6 @@ namespace PortfolioManagerAPI.Models
         [MaxLength(48)]
         public string Author{ get; set; }
         public string Description { get; set; }
-        public string IconPath { get; set; }
+        public string IconFilename { get; set; }
     }
 }

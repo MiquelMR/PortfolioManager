@@ -9,6 +9,7 @@ namespace PortfolioManagerAPI.Repository.IRepository
         Task<bool> CreateAssetAsync(FinancialAsset asset);
         Task<bool> UpdateAssetAsync(FinancialAsset asset);
         Task<bool> DeleteAssetByIdAsync(int assetId);
+        Task<int> GetFinancialAssetIdByNameAsync(string name);
         Task<bool> ExistsByIdAsync(int assetId);
     }
 }

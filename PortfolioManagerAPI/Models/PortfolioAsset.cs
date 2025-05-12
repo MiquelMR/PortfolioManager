@@ -14,6 +14,6 @@ namespace PortfolioManagerAPI.Models
         public Portfolio Portfolio { get; set; }
 
         [ForeignKey(nameof(AssetId))]
-        public FinancialAsset Asset { get; set; }
+        public FinancialAsset FinancialAsset { get; set; }
     }
 }

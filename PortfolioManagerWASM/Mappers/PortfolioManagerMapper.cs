@@ -18,6 +18,22 @@ namespace PortfolioManagerWASM.Mappers
             // FinancialAsset -> FinancialAssetDto
             CreateMap<FinancialAsset, FinancialAssetDto>()
                 .ForMember(dest => dest.IconFilename, opt => opt.MapFrom(src => Path.GetFileName(src.IconPath)));
+
+            // PortfolioDto -> Portfolio
+            CreateMap<PortfolioDto, Portfolio>()
+                .ForMember(dest => dest.IconPath, opt => opt.MapFrom(src => Path.Combine(iconsDirectory, src.IconFilename)));
+
+            // Portfolio -> PortfolioDto
+            CreateMap<Portfolio, PortfolioDto>()
+                .ForMember(dest => dest.IconFilename, opt => opt.MapFrom(src => Path.GetFileName(src.IconPath)));
+
+            // PortfolioAsset -> PortfolioAssetDto
+            CreateMap<PortfolioAsset, PortfolioAssetDto>()
+                .ForMember(dest => dest.FinancialAssetDto, opt => opt.MapFrom(src => src.FinancialAsset));
+
+            // PortfolioAssetDto -> PortfolioAsset
+            CreateMap<PortfolioAssetDto, PortfolioAsset>()
+                .ForMember(dest => dest.FinancialAsset, opt => opt.MapFrom(src => src.FinancialAssetDto));
         }
     }
 }
