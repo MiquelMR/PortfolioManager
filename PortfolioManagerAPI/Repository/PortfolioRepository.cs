@@ -60,6 +60,22 @@ namespace PortfolioManagerAPI.Repository
                 return false;
             }
         }
+
+        public async Task<bool> DeletePortfolioByIdAsync(int portfolioId)
+        {
+            try
+            {
+                var portfolio = await _db.Portfolios.FirstOrDefaultAsync(portfolio => portfolio.PortfolioId == portfolioId);
+                if (portfolio == null) return false;
+                _db.Portfolios.Remove(portfolio);
+                return await _db.SaveChangesAsync() > 0;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
         public async Task<bool> ExistsByIdAsync(int portfolioId)
         {
             try

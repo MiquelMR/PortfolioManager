@@ -50,5 +50,14 @@ namespace PortfolioManagerWASM.Services
             var portfolio = _mapper.Map<Portfolio>(portfolioDtoTemp);
             return portfolio;
         }
+
+        public async Task<bool> DeletePortfolioAsync(int portfolioId)
+        {
+            var response = await _httpClient.DeleteAsync($"{Initialize.UrlBaseApi}api/portfolios/{portfolioId}");
+            var contentTemp = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<bool>(contentTemp);
+
+            return result;
+        }
     }
 }

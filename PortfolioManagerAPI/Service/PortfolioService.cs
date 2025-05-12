@@ -67,6 +67,17 @@ namespace PortfolioManagerAPI.Service
 
             return _mapper.Map<PortfolioDto>(newPortfolioDto);
         }
+        public async Task<bool> DeletePortfolioByIdAsync(int portfolioId)
+        {
+            var asset = await _portfolioRepository.GetPortfolioByIdAsync(portfolioId);
+            if (asset == null)
+                return false;
+            var success = await _portfolioRepository.DeletePortfolioByIdAsync(portfolioId);
+            if (!success)
+                return false;
+
+            return success;
+        }
 
         public async Task<bool> ExistsByIdAsync(int portfolioId)
         {

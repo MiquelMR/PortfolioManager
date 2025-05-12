@@ -29,11 +29,16 @@ namespace PortfolioManagerWASM.ViewModels
             ActivePortfolio = await _portfolioService.GetPortfolioByIdAsync(portfolioId);
         }
 
-        public async Task<Portfolio> RegisterPortfolio(Portfolio newPortfolio)
+        public async Task<Portfolio> RegisterPortfolioAsync(Portfolio newPortfolio)
         {
             newPortfolio.Author = ActiveUser.Name;
             return await _portfolioService.CreatePortfolioAsync(newPortfolio);
         }
+
+        public async Task DeleteActivePortfolioAsync()
+        {
+            _portfolioService.DeletePortfolioAsync(ActivePortfolio.PortfolioId);
+        } 
 
         public void CleanData()
         {

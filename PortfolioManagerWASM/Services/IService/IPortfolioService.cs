@@ -7,5 +7,6 @@ namespace PortfolioManagerWASM.Services.IService
         public Task<List<Portfolio>> GetPortfoliosBasicInfoByUserAsync(string userEmail);
         public Task<Portfolio> GetPortfolioByIdAsync(int id);
         public Task<Portfolio> CreatePortfolioAsync(Portfolio portfolio);
+        public Task<bool> DeletePortfolioAsync(int portfolioId);
     }
 }

@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using PortfolioManagerWASM.Models;
 using PortfolioManagerWASM.ViewModels;
-using System;
 
 namespace PortfolioManagerWASM.Pages.Home
 {
@@ -21,6 +20,7 @@ namespace PortfolioManagerWASM.Pages.Home
         private HomeView CurrentHomeView { get; set; } = HomeView.ViewPortfolio;
         public Func<int, Task> SelectPortfolioDelegate { get; set; }
         public Action<Portfolio> OnPortfolioSubmitDelegate { get; set; }
+        public Action OnDeleteActivePortfolioDelegate { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
@@ -38,6 +38,7 @@ namespace PortfolioManagerWASM.Pages.Home
             ActivePortfolio = HomeViewModel.ActivePortfolio;
             SelectPortfolioDelegate = SelectPortfolio;
             OnPortfolioSubmitDelegate = OnPortfolioSubmit;
+            OnDeleteActivePortfolioDelegate = OnDeleteActivePortfolio;
         }
 
         private async Task SelectPortfolio(int index)
@@ -54,7 +55,12 @@ namespace PortfolioManagerWASM.Pages.Home
 
         public async void OnPortfolioSubmit(Portfolio portfolio)
         {
-            var registeredPortfolio = await HomeViewModel.RegisterPortfolio(portfolio);
+            var registeredPortfolio = await HomeViewModel.RegisterPortfolioAsync(portfolio);
+        }
+
+        public async void OnDeleteActivePortfolio()
+        {
+            await HomeViewModel.DeleteActivePortfolioAsync();
         }
     }
 
