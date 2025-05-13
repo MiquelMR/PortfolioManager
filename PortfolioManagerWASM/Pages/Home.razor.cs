@@ -7,67 +7,70 @@ namespace PortfolioManagerWASM.Pages
 {
     public partial class Home
     {
-        [Inject]
-        private HomeViewModel HomeViewModel { get; set; }
-        [Inject]
-        public NavigationManager NavigationManager { get; set; }
-        [CascadingParameter]
-        private Task<AuthenticationState> AuthState { get; set; }
+        // Dependencies
+        [Inject] private HomeViewModel HomeViewModel { get; set; }
+        [CascadingParameter] private Task<AuthenticationState> authState { get; set; }
+
+        // Delegates 
+        public Func<int, Task> OnSelectPortfolioDelegate { get; set; }
+        public Action<Portfolio> OnPortfolioSubmitDelegate { get; set; }
+        public Action OnDeleteActivePortfolioDelegate { get; set; }
+        public Action<HomeView> OnBackToHomeOverviewDelegate { get; set; }
+
+        // Properties
         public User ActiveUser { get; set; } = new();
         public List<Portfolio> UserPortfolios { get; set; } = [];
         public List<FinancialAsset> FinancialAssets { get; set; } = [];
         public Portfolio ActivePortfolio { get; set; }
-        private HomeView CurrentHomeView { get; set; } = HomeView.ViewPortfolio;
-        public Func<int, Task> SelectPortfolioDelegate { get; set; }
-        public Action<Portfolio> OnPortfolioSubmitDelegate { get; set; }
-        public Action OnDeleteActivePortfolioDelegate { get; set; }
+
+        // Private fields
+        private HomeView CurrentHomeView { get; set; } = HomeView.Overview;
 
         protected override async Task OnInitializedAsync()
         {
-            var authState = await AuthState;
-            if (authState.User == null)
-                NavigationManager.NavigateTo("login", true);
-
             await HomeViewModel.InitAsync();
+            if (authState == null)
+                HomeViewModel.ToLogin();
+
             ActiveUser = HomeViewModel.ActiveUser;
-            if (ActiveUser == null)
-                NavigationManager.NavigateTo("login", true);
 
             UserPortfolios = HomeViewModel.PortfoliosBasicInfo;
             FinancialAssets = HomeViewModel.FinancialAssets;
             ActivePortfolio = HomeViewModel.ActivePortfolio;
-            SelectPortfolioDelegate = SelectPortfolio;
+            OnSelectPortfolioDelegate = OnSelectPortfolio;
             OnPortfolioSubmitDelegate = OnPortfolioSubmit;
             OnDeleteActivePortfolioDelegate = OnDeleteActivePortfolio;
+            OnBackToHomeOverviewDelegate = OnChangeCurrentHomeView;
         }
 
-        private async Task SelectPortfolio(int index)
+        // Events
+        private async Task OnSelectPortfolio(int index)
         {
-            await HomeViewModel.SelectPortfolioAsync(index);
+            await HomeViewModel.OnSelectPortfolioAsync(index);
             ActivePortfolio = HomeViewModel.ActivePortfolio;
             StateHasChanged();
         }
 
-        private void ChangeCurrentHomeView(HomeView homeView)
-        {
-            CurrentHomeView = homeView;
-        }
-
         public async void OnPortfolioSubmit(Portfolio portfolio)
         {
-            var registeredPortfolio = await HomeViewModel.RegisterPortfolioAsync(portfolio);
+            await HomeViewModel.RegisterPortfolioAsync(portfolio);
         }
 
         public async void OnDeleteActivePortfolio()
         {
             await HomeViewModel.DeleteActivePortfolioAsync();
         }
+
+        private void OnChangeCurrentHomeView(HomeView homeView)
+        {
+            CurrentHomeView = homeView;
+        }
     }
 
     public enum HomeView
     {
         CreatePortfolio,
-        ViewPortfolio
+        Overview
     }
 
 }

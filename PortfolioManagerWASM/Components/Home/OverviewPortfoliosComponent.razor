@@ -1,4 +1,5 @@
 ﻿@using PortfolioManagerWASM.Models
+@using PortfolioManagerWASM.Pages
 
 <div class="container">
     @if (UserPortfolios.Count > 0)
@@ -13,7 +14,7 @@
                     {
                         int index = i;
                         Portfolio portfolio = UserPortfolios[index];
-                        <button @onclick="()=>SelectPortfolio(index)" type="button" class="list-group-item list-group-item-action d-flex justify-content-between">
+                        <button @onclick="()=>OnSelectPortfolioActivePortfolio(index)" type="button" class="list-group-item list-group-item-action d-flex justify-content-between">
                             <div>
                                 <p class="mb-0">@portfolio.Name</p>
                                 <p class="mb-0"><small>@portfolio.Author</small></p>
@@ -89,7 +90,7 @@
                                                          DataSource="@ChartDataModel"
                                                          XName="AssetName"
                                                          YName="Allocation"
-                                InnerRadius="40%">
+                                                         InnerRadius="40%">
                                 </AccumulationChartSeries>
                                 <AccumulationChartTooltipSettings Enable="true">
 
@@ -100,7 +101,7 @@
                     </div>
                 </article>
 
-                <button class="btn btn-primary" @onclick="OnDeleteActivePortfolio">Delete Portfolio</button>
+                <button class="btn btn-primary" @onclick="OnDeleteActivePortfolio">Delete</button>
 
             </main>
 

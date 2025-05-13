@@ -1,21 +1,30 @@
-﻿using PortfolioManagerWASM.Models;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
+using PortfolioManagerWASM.Models;
 using PortfolioManagerWASM.Services.IService;
 
 namespace PortfolioManagerWASM.ViewModels
 {
     public class HomeViewModel(IPortfolioService PortfolioService, IUserService UserService, IFinancialAssetService AssetService)
     {
+        // Dependencies
         private readonly IPortfolioService _portfolioService = PortfolioService;
         private readonly IUserService _userService = UserService;
         private readonly IFinancialAssetService _assetService = AssetService;
+        public NavigationManager NavigationManager { get; set; }
 
+
+        // Properties
         public User ActiveUser { get; set; } = new();
-        public List<Portfolio> PortfoliosBasicInfo { get; set; } = [];
         public Portfolio ActivePortfolio { get; set; } = new();
+        public List<Portfolio> PortfoliosBasicInfo { get; set; } = [];
         public List<FinancialAsset> FinancialAssets { get; set; } = [];
 
         public async Task InitAsync()
         {
+            if (ActiveUser == null)
+                ToLogin();
+
             await _userService.InitializeAsync();
             ActiveUser = _userService.ActiveUser;
             PortfoliosBasicInfo = (await _portfolioService.GetPortfoliosBasicInfoByUserAsync(ActiveUser.Email));
@@ -23,7 +32,8 @@ namespace PortfolioManagerWASM.ViewModels
             FinancialAssets = await _assetService.GetFinancialAssetsAsync();
         }
 
-        public async Task SelectPortfolioAsync(int index)
+        // Events
+        public async Task OnSelectPortfolioAsync(int index)
         {
             var portfolioId = PortfoliosBasicInfo[index].PortfolioId;
             ActivePortfolio = await _portfolioService.GetPortfolioByIdAsync(portfolioId);
@@ -37,14 +47,19 @@ namespace PortfolioManagerWASM.ViewModels
 
         public async Task DeleteActivePortfolioAsync()
         {
-            _portfolioService.DeletePortfolioAsync(ActivePortfolio.PortfolioId);
-        } 
+            await _portfolioService.DeletePortfolioAsync(ActivePortfolio.PortfolioId);
+        }
 
         public void CleanData()
         {
             ActiveUser = new User();
             ActivePortfolio = new Portfolio();
             PortfoliosBasicInfo.Clear();
+        }
+
+        public void ToLogin()
+        {
+            NavigationManager.NavigateTo("login", true);
         }
     }
 }

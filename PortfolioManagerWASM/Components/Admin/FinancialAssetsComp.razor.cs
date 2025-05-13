@@ -16,13 +16,13 @@ namespace PortfolioManagerWASM.Components.Admin
         [Parameter] public Action<FinancialAsset> OnCreateFinancialAssetDelegate { get; set; }
         [Parameter] public Action<FinancialAsset> OnDeleteFinancialAssetDelegate { get; set; }
 
-
         // Private fields
         private readonly FinancialAsset newFinancialAsset = new() { IconPath = AppConfig.GetResourcePath("AssetIcons") + "/default.svg" };
 
-        private void OnSubmitFinancialAsset(FinancialAsset financialAsset)
+        private void OnSubmitFinancialAsset(FinancialAsset newFinancialAsset)
         {
-            OnCreateFinancialAssetDelegate.Invoke(financialAsset);
+            OnCreateFinancialAssetDelegate.Invoke(newFinancialAsset);
+            FinancialAssets.Add(newFinancialAsset);
         }
 
         private void OnUpdateFinancialAsset(FinancialAsset financialAsset)
@@ -32,6 +32,7 @@ namespace PortfolioManagerWASM.Components.Admin
         private void OnDeleteFinancialAsset(FinancialAsset financialAsset)
         {
             OnDeleteFinancialAssetDelegate.Invoke(financialAsset);
+            FinancialAssets.Remove(financialAsset);
         }
 
         private void OnSelectIcon(string iconPath, FinancialAsset financialAsset)
@@ -44,8 +45,9 @@ namespace PortfolioManagerWASM.Components.Admin
         }
 
         // TODO : Pendiente de centralizar 
-        private static List<string> GetIconPaths()
+        private List<string> GetIconPaths()
         {
+            var dir = HttpClient.GetStringAsync("icons/assets");
             return new List<string>()
             {
                 "default.svg",

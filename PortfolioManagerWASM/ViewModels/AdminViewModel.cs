@@ -9,6 +9,7 @@ namespace PortfolioManagerWASM.ViewModels
         private readonly IFinancialAssetService _assetService = assetService;
         private readonly IUserService _userService = userService;
 
+        // Properties
         public List<FinancialAsset> FinancialAssets { get; set; }
         public List<User> Users { get; set; }
 

@@ -65,9 +65,11 @@ namespace PortfolioManagerWASM.Services
         {
             var response = await _httpClient.DeleteAsync($"{Initialize.UrlBaseApi}api/portfolios/{portfolioId}");
             var contentTemp = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<bool>(contentTemp);
+            var responseAPI = JsonConvert.DeserializeObject<ResponseAPI<bool>>(contentTemp);
+            if (!response.IsSuccessStatusCode)
+                Console.WriteLine(responseAPI.Message);
 
-            return result;
+            return response.IsSuccessStatusCode;
         }
     }
 }

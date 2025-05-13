@@ -55,7 +55,7 @@ namespace PortfolioManagerAPI.Controllers
         }
 
         // [Authorize]
-        [HttpDelete("{assetId}")]
+        [HttpDelete("{financialAssetId}")]
         public async Task<IActionResult> DeleteAssetById(int financialAssetId)
         {
             if (financialAssetId == 0)

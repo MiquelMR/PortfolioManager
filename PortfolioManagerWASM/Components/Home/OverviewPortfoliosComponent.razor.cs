@@ -5,32 +5,31 @@ using PortfolioManagerWASM.Pages;
 
 namespace PortfolioManagerWASM.Components.Home
 {
-    public partial class ViewPortfoliosComponent
+    public partial class OverviewPortfoliosComponent
     {
-        [Parameter]
-        public List<Portfolio> UserPortfolios { get; set; }
-        [Parameter]
-        public Portfolio ActivePortfolio { get; set; }
-        [Parameter]
-        public Func<int, Task> SelectPortfolioDelegate { get; set; }
-        [Parameter] public EventCallback<HomeView> ChangeCurrentHomeViewDelegate { get; set; }
+        // Delegates
         [Parameter] public EventCallback OnDeleteActivePortfolioDelegate { get; set; }
+        [Parameter] public EventCallback OnEditActivePortfolioDelegate { get; set; }
+        [Parameter] public Func<int, Task> OnSelectPortfolioDelegate { get; set; }
+
+        // Properties
+        [Parameter] public Portfolio ActivePortfolio { get; set; }
+        [Parameter] public List<Portfolio> UserPortfolios { get; set; }
+
+        // Private fields
         private List<ChartDataModel> ChartDataModel { get; set; } = [];
 
+        // Events
         private async Task OnDeleteActivePortfolio()
         {
             await OnDeleteActivePortfolioDelegate.InvokeAsync();
+            await OnSelectPortfolioActivePortfolio(0);
         }
 
-        private async Task SelectPortfolio(int index)
+        private async Task OnSelectPortfolioActivePortfolio(int index)
         {
-            await SelectPortfolioDelegate.Invoke(index);
+            await OnSelectPortfolioDelegate.Invoke(index);
             ChartDataModel = PortfolioAssetsChartData();
-        }
-
-        private void ChangeCurrentHomeView(HomeView HomeView)
-        {
-            ChangeCurrentHomeViewDelegate.InvokeAsync(HomeView);
         }
 
         private List<ChartDataModel> PortfolioAssetsChartData()
