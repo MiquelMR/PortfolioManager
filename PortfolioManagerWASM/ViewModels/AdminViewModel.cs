@@ -5,6 +5,7 @@ namespace PortfolioManagerWASM.ViewModels
 {
     public class AdminViewModel(IFinancialAssetService assetService, IUserService userService)
     {
+        // Dependencies
         private readonly IFinancialAssetService _assetService = assetService;
         private readonly IUserService _userService = userService;
 

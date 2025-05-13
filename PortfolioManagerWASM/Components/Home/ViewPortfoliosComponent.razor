@@ -1,4 +1,5 @@
 ﻿@using PortfolioManagerWASM.Models
+
 <div class="container">
     @if (UserPortfolios.Count > 0)
     {
@@ -63,8 +64,8 @@
                 </div>
 
                 <!--Portfolio charts-->
-                <article class="row">
-                    <ul class="col-8">
+                <article class="row" style="height:300px">
+                    <ul class="col-auto">
                         @foreach (PortfolioAsset portfolioAsset in ActivePortfolio.PortfolioAssets)
                         {
                             <li class="d-flex align-items-center mb-3">
@@ -81,6 +82,22 @@
                             </li>
                         }
                     </ul>
+                    <div class="col d-none d-md-flex">
+                        <SfAccumulationChart Title="Asset composition">
+                            <AccumulationChartSeriesCollection>
+                                <AccumulationChartSeries Type="AccumulationType.Pie"
+                                                         DataSource="@ChartDataModel"
+                                                         XName="AssetName"
+                                                         YName="Allocation"
+                                InnerRadius="40%">
+                                </AccumulationChartSeries>
+                                <AccumulationChartTooltipSettings Enable="true">
+
+                                </AccumulationChartTooltipSettings>
+                            </AccumulationChartSeriesCollection>
+                        </SfAccumulationChart>
+
+                    </div>
                 </article>
 
                 <button class="btn btn-primary" @onclick="OnDeleteActivePortfolio">Delete Portfolio</button>

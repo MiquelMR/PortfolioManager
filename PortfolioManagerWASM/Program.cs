@@ -1,9 +1,7 @@
 using Blazored.LocalStorage;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.DependencyInjection;
 using PortfolioManagerWASM;
 using PortfolioManagerWASM.Helpers;
 using PortfolioManagerWASM.Mappers;
@@ -11,8 +9,6 @@ using PortfolioManagerWASM.Services;
 using PortfolioManagerWASM.Services.IService;
 using PortfolioManagerWASM.ViewModels;
 using Syncfusion.Blazor;
-using System.IO;
-using static System.Net.WebRequestMethods;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

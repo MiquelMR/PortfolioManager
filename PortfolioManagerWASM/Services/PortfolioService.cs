@@ -32,7 +32,16 @@ namespace PortfolioManagerWASM.Services
             var content = await response.Content.ReadAsStringAsync();
             var responseAPI = JsonConvert.DeserializeObject<ResponseAPI<PortfolioDto>>(content);
             var portfolioDto = responseAPI.Data;
+
             var portfolio = _mapper.Map<Portfolio>(portfolioDto);
+
+            List<PortfolioAsset> portfolioAssets = [];
+            foreach (PortfolioAssetDto portfolioAssetDto in portfolioDto.PortfolioAssetsDto)
+            {
+                var portfolioAsset = _mapper.Map<PortfolioAsset>(portfolioAssetDto);
+                portfolioAssets.Add(portfolioAsset);
+            }
+            portfolio.PortfolioAssets = portfolioAssets;
 
             return portfolio;
         }
