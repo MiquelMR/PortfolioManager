@@ -46,6 +46,9 @@
                 <UsersComp Users="@Users"
                            OnDeleteUserDelegate="@OnDeleteUserDelegate" />
                 break;
+            case AdminView.Portfolios:
+                <PortfolioManagerWASM.Components.PortfolioList PortfoliosBasicInfo="@PortfoliosBasicInfo" />
+                break;
             default:
                 <p>Server is currently under maintenance</p>
                 break;

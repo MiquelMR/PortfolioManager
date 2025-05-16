@@ -20,6 +20,7 @@ namespace PortfolioManagerWASM.Pages
         // Properties
         public List<FinancialAsset> FinancialAssets { get; set; } = [];
         public List<User> Users { get; set; }
+        public List<Portfolio> PortfoliosBasicInfo { get; set; }
 
         // Private fields
         private AdminView _adminView = AdminView.Overview;
@@ -30,6 +31,7 @@ namespace PortfolioManagerWASM.Pages
 
             FinancialAssets = AdminViewModel.FinancialAssets;
             Users = AdminViewModel.Users;
+            PortfoliosBasicInfo = AdminViewModel.PortfoliosBasicInfo;
             OnUpdateFinancialAssetDelegate = OnUpdateFinancialAsset;
             OnCreateFinancialAssetDelegate = OnCreateFinancialAsset;
             OnDeleteFinancialAssetDelegate = OnDeleteFinancialAsset;
@@ -65,7 +67,7 @@ namespace PortfolioManagerWASM.Pages
     {
         Overview,
         FinancialAssets,
-        Portfolio,
+        Portfolios,
         Users
     }
 }
