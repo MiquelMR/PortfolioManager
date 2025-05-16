@@ -23,6 +23,20 @@ namespace PortfolioManagerAPI.Repository
             }
         }
 
+        public async Task<List<Portfolio>> GetPortfoliosAsync()
+        {
+            try
+            {
+                return await _db.Portfolios
+                    .OrderBy(portfolio => portfolio.PortfolioId)
+                    .ToListAsync();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         public async Task<List<Portfolio>> GetPortfoliosByUserEmailAsync(string userEmail)
         {
             var userId = await _db.Users

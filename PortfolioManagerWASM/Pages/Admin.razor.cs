@@ -65,6 +65,7 @@ namespace PortfolioManagerWASM.Pages
     {
         Overview,
         FinancialAssets,
+        Portfolio,
         Users
     }
 }

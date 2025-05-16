@@ -1,8 +1,5 @@
 using Microsoft.AspNetCore.Components;
-using PortfolioManagerWASM.Helpers;
 using PortfolioManagerWASM.Models;
-using PortfolioManagerWASM.Pages;
-using PortfolioManagerWASM.ViewModels;
 
 namespace PortfolioManagerWASM.Components.Home
 {
