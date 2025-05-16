@@ -15,9 +15,12 @@ namespace PortfolioManagerWASM.Services
 {
     public class UserService(HttpClient httpClient, ILocalStorageService localStorage, AuthenticationStateProvider authenticationStateProvider) : IUserService
     {
+        // Dependencies
         private readonly HttpClient _httpClient = httpClient;
         private readonly ILocalStorageService _localStorage = localStorage;
         private readonly AuthenticationStateProvider _authenticationStateProvider = authenticationStateProvider;
+
+        // Properties
         public User ActiveUser { get; set; } = new();
 
         public async Task InitializeAsync()
@@ -25,9 +28,22 @@ namespace PortfolioManagerWASM.Services
             ActiveUser = await GetActiveUserAsync();
         }
 
-        public async Task<User> GetUserByEmail(string Email)
+        // Public methods
+        private async Task<User> GetActiveUserAsync()
         {
-            var response = await _httpClient.GetAsync($"{Initialize.UrlBaseApi}api/users/by-email/{Email}");
+            var activeUserEmail = await _localStorage.GetItemAsync<string>(Initialize.User_Local_Data);
+            if (activeUserEmail == null || activeUserEmail == string.Empty)
+            {
+                await _localStorage.RemoveItemAsync(Initialize.Token_Local);
+                await _localStorage.RemoveItemAsync(Initialize.User_Local_Data);
+                return null;
+            }
+            return await GetUserByEmailAsync(activeUserEmail);
+        }
+
+        public async Task<User> GetUserByEmailAsync(string email)
+        {
+            var response = await _httpClient.GetAsync($"{Initialize.UrlBaseApi}api/users/by-email/{email}");
             var contentTemp = await response.Content.ReadAsStringAsync();
             var responseAPI = JsonConvert.DeserializeObject<ResponseAPI<User>>(contentTemp);
             var user = responseAPI.Data;
@@ -40,10 +56,12 @@ namespace PortfolioManagerWASM.Services
             return null;
         }
 
-        public async Task<List<User>> GetUsers()
+        public async Task<List<User>> GetUsersAsync()
         {
             var authorized = ActiveUser.Email.Equals(AppConfig.GetAuthorizedEmail());
-            if (!authorized || ActiveUser.Role != UserRoles.Admin) { return null; }
+            if (!authorized || ActiveUser.Role != UserRoles.Admin)
+                return null;
+
             var response = await _httpClient.GetAsync($"{Initialize.UrlBaseApi}api/users");
             var contentTemp = await response.Content.ReadAsStringAsync();
             var responseAPI = JsonConvert.DeserializeObject<ResponseAPI<List<User>>>(contentTemp);
@@ -57,7 +75,7 @@ namespace PortfolioManagerWASM.Services
             return null;
         }
 
-        public async Task<AuthResponse> LoginUser(UserLoginDto userLoginDto)
+        public async Task<AuthResponse> LoginUserAsync(UserLoginDto userLoginDto)
         {
             var content = JsonConvert.SerializeObject(userLoginDto);
             var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
@@ -83,17 +101,9 @@ namespace PortfolioManagerWASM.Services
             }
         }
 
-        public async Task Logout()
+        public async Task<User> RegisterUserAsync(UserRegisterDto userRegisterDto)
         {
-            await _localStorage.RemoveItemAsync(Initialize.Token_Local);
-            await _localStorage.RemoveItemAsync(Initialize.User_Local_Data);
-            ((AuthStateProvider)_authenticationStateProvider).NotifyLoggedUser();
-            _httpClient.DefaultRequestHeaders.Authorization = null;
-        }
-
-        public async Task<User> RegisterUser(UserRegisterDto registerUserDto)
-        {
-            var body = JsonConvert.SerializeObject(registerUserDto);
+            var body = JsonConvert.SerializeObject(userRegisterDto);
             var bodyContent = new StringContent(body, Encoding.UTF8, "Application/json");
             var response = await _httpClient.PostAsync($"{Initialize.UrlBaseApi}api/users/register", bodyContent);
             var contentTemp = await response.Content.ReadAsStringAsync();
@@ -109,6 +119,28 @@ namespace PortfolioManagerWASM.Services
             {
                 Console.WriteLine(responseAPI.Message);
                 return user;
+            }
+        }
+
+        public async Task<User> UpdateUserAsync(UserUpdateDto userUpdateDto)
+        {
+            userUpdateDto = (UserUpdateDto)TypeHelper.EmptyStringPropertiesToNull(userUpdateDto);
+            var body = JsonConvert.SerializeObject(userUpdateDto);
+            var bodyContent = new StringContent(body, Encoding.UTF8, "Application/json");
+            var response = await _httpClient.PatchAsync($"{Initialize.UrlBaseApi}api/users", bodyContent);
+            var contentTemp = await response.Content.ReadAsStringAsync();
+            var responseAPI = JsonConvert.DeserializeObject<ResponseAPI<User>>(contentTemp);
+            var user = responseAPI.Data;
+
+            if (response.IsSuccessStatusCode)
+            {
+                await _localStorage.SetItemAsync(Initialize.User_Local_Data, responseAPI.Data.Email);
+                return user;
+            }
+            else
+            {
+                Console.WriteLine(responseAPI.Message);
+                return null;
             }
         }
 
@@ -131,49 +163,12 @@ namespace PortfolioManagerWASM.Services
                 return false;
             }
         }
-
-        public async Task<User> UpdatePublicProfile(UserUpdateDto userUpdateDto)
+        public async Task Logout()
         {
-            userUpdateDto.GetType().GetProperties()
-                .Where(p => p.PropertyType == typeof(string))
-                .ToList()
-                .ForEach(p =>
-                {
-                    var value = (string)p.GetValue(userUpdateDto);
-                    if (string.IsNullOrWhiteSpace(value))
-                    {
-                        p.SetValue(userUpdateDto, null);
-                    }
-                });
-            var body = JsonConvert.SerializeObject(userUpdateDto);
-            var bodyContent = new StringContent(body, Encoding.UTF8, "Application/json");
-            var response = await _httpClient.PatchAsync($"{Initialize.UrlBaseApi}api/users", bodyContent);
-            var contentTemp = await response.Content.ReadAsStringAsync();
-            var responseAPI = JsonConvert.DeserializeObject<ResponseAPI<User>>(contentTemp);
-            var user = responseAPI.Data;
-
-            if (response.IsSuccessStatusCode)
-            {
-                await _localStorage.SetItemAsync(Initialize.User_Local_Data, responseAPI.Data.Email);
-                return user;
-            }
-            else
-            {
-                Console.WriteLine(responseAPI.Message);
-                return null;
-            }
-        }
-
-        private async Task<User> GetActiveUserAsync()
-        {
-            var activeUserEmail = await _localStorage.GetItemAsync<string>(Initialize.User_Local_Data);
-            if (activeUserEmail == null || activeUserEmail == string.Empty)
-            {
-                await _localStorage.RemoveItemAsync(Initialize.Token_Local);
-                await _localStorage.RemoveItemAsync(Initialize.User_Local_Data);
-                return null;
-            }
-            return await GetUserByEmail(activeUserEmail);
+            await _localStorage.RemoveItemAsync(Initialize.Token_Local);
+            await _localStorage.RemoveItemAsync(Initialize.User_Local_Data);
+            ((AuthStateProvider)_authenticationStateProvider).NotifyLoggedUser();
+            _httpClient.DefaultRequestHeaders.Authorization = null;
         }
     }
 }

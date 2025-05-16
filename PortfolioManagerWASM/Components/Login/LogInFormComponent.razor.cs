@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using PortfolioManagerWASM.Models.UserDto;
 
-namespace PortfolioManagerWASM.Pages.Login
+namespace PortfolioManagerWASM.Components.Login
 {
     public partial class LogInFormComponent
     {

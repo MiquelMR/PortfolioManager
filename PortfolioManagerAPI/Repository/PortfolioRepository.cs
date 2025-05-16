@@ -48,16 +48,20 @@ namespace PortfolioManagerAPI.Repository
             }
         }
 
-        public async Task<bool> CreatePortfolioAsync(Portfolio newPortfolio)
+        public async Task<Portfolio> CreatePortfolioAsync(Portfolio newPortfolio)
         {
             try
             {
-                await _db.Portfolios.AddAsync(newPortfolio);
-                return await _db.SaveChangesAsync() > 0;
+                var portfolioCreated = await _db.Portfolios.AddAsync(newPortfolio);
+                var success = await _db.SaveChangesAsync() > 0;
+                if (success) return
+                        portfolioCreated.Entity;
+                else
+                    return null;
             }
             catch
             {
-                return false;
+                return null;
             }
         }
 
@@ -66,9 +70,11 @@ namespace PortfolioManagerAPI.Repository
             try
             {
                 var portfolio = await _db.Portfolios.FirstOrDefaultAsync(portfolio => portfolio.PortfolioId == portfolioId);
-                if (portfolio == null) return false;
+                if (portfolio == null)
+                    return false;
                 _db.Portfolios.Remove(portfolio);
-                return await _db.SaveChangesAsync() > 0;
+                var success = await _db.SaveChangesAsync() > 0;
+                return success;
             }
             catch (Exception)
             {

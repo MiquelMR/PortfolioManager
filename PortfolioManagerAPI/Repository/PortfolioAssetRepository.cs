@@ -20,22 +20,26 @@ namespace PortfolioManagerAPI.Repository
                     .Where(pa => pa.PortfolioId == portfolioId)
                     .ToListAsync();
             }
-            catch (Exception)
+            catch
             {
                 return null;
             }
         }
 
-        public async Task<bool> CreatePortfolioAssetAsync(PortfolioAsset newPortfolioAsset)
+        public async Task<PortfolioAsset> CreatePortfolioAssetAsync(PortfolioAsset newPortfolioAsset)
         {
             try
             {
-                await _db.PortfolioAssets.AddAsync(newPortfolioAsset);
-                return await _db.SaveChangesAsync() > 0;
+                var portfolioAssetCreated = await _db.PortfolioAssets.AddAsync(newPortfolioAsset);
+                var success = await _db.SaveChangesAsync() > 0;
+                if (success)
+                    return portfolioAssetCreated.Entity;
+                else
+                    return null;
             }
             catch
             {
-                return false;
+                return null;
             }
         }
     }

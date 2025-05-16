@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using PortfolioManagerWASM.Models;
 
-namespace PortfolioManagerWASM.Pages.UserProfile
+namespace PortfolioManagerWASM.Components.UserProfile
 {
     public partial class ProfileViewComponent
     {

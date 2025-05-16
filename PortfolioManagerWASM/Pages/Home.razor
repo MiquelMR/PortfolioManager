@@ -1,0 +1,33 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using PortfolioManagerWASM.Components
+@using PortfolioManagerWASM.Components.Home
+@using PortfolioManagerWASM.Helpers
+@using PortfolioManagerWASM.Models
+@using PortfolioManagerWASM.Services.IService
+@attribute [Authorize]
+
+@layout MainLayout
+@page "/"
+@page "/home"
+<PageTitle>Home</PageTitle>
+
+@switch (CurrentHomeView)
+{
+    case HomeView.CreatePortfolio:
+        <CreatePortfolioComponent FinancialAssets="@FinancialAssets"
+                                  OnPortfolioSubmitDelegate="@OnPortfolioSubmitDelegate" />
+        break;
+    case HomeView.Overview:
+        <OverviewPortfoliosComponent ActivePortfolio="@ActivePortfolio"
+                                     UserPortfoliosBasicInfo="@UserPortfoliosBasicInfo"
+                                     OnSelectPortfolioDelegate="@OnSelectPortfolioDelegate"
+                                     OnDeleteActivePortfolioDelegate="@OnDeleteActivePortfolio" />
+        break;
+    default:
+        break;
+}
+<!--Create new portfolio-->
+@if (CurrentHomeView != HomeView.CreatePortfolio)
+{
+    <button class="btn btn-primary" @onclick="() =>OnChangeCurrentHomeView(HomeView.CreatePortfolio)">Create Portfolio</button>
+}

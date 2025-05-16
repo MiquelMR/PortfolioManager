@@ -9,9 +9,9 @@ using System.Text;
 
 namespace PortfolioManagerWASM.Services
 {
-    public class AssetService(HttpClient httpClient, IMapper mapper) : IAssetService
+    public class FinancialAssetService(HttpClient httpClient, IMapper mapper) : IFinancialAssetService
     {
-        // Services
+        // Dependencies
         private readonly HttpClient _httpClient = httpClient;
         private readonly IMapper _mapper = mapper;
 
@@ -27,7 +27,6 @@ namespace PortfolioManagerWASM.Services
             return financialAssets;
         }
 
-        // TODO
         public async Task<FinancialAsset> CreateFinancialAssetAsync(FinancialAsset financialAsset)
         {
             var financialAssetDto = _mapper.Map<FinancialAssetDto>(financialAsset);
@@ -43,17 +42,7 @@ namespace PortfolioManagerWASM.Services
 
         public async Task<FinancialAsset> UpdateFinancialAssetAsync(FinancialAsset financialAsset)
         {
-            financialAsset.GetType().GetProperties()
-                .Where(p => p.PropertyType == typeof(string))
-                .ToList()
-                .ForEach(p =>
-                {
-                    var value = (string)p.GetValue(financialAsset);
-                    if (string.IsNullOrWhiteSpace(value))
-                    {
-                        p.SetValue(financialAsset, null);
-                    }
-                });
+            financialAsset = (FinancialAsset)TypeHelper.EmptyStringPropertiesToNull(financialAsset);
             var financialAssetDto = _mapper.Map<FinancialAssetDto>(financialAsset);
 
             var body = JsonConvert.SerializeObject(financialAssetDto);
@@ -62,9 +51,9 @@ namespace PortfolioManagerWASM.Services
             var response = await _httpClient.PatchAsync($"{Initialize.UrlBaseApi}api/assets", bodyContent);
             var contentTemp = await response.Content.ReadAsStringAsync();
             var responseAPI = JsonConvert.DeserializeObject<ResponseAPI<FinancialAsset>>(contentTemp);
-            var _asset = responseAPI.Data;
+            var financialAssetUpdated = responseAPI.Data;
 
-            return _mapper.Map<FinancialAsset>(financialAsset);
+            return _mapper.Map<FinancialAsset>(financialAssetUpdated);
         }
 
         // TODO
@@ -72,9 +61,11 @@ namespace PortfolioManagerWASM.Services
         {
             var response = await _httpClient.DeleteAsync($"{Initialize.UrlBaseApi}api/assets/{financialAsset.AssetId}");
             var contentTemp = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<bool>(contentTemp);
+            var responseAPI = JsonConvert.DeserializeObject<ResponseAPI<FinancialAsset>>(contentTemp);
+            if (!response.IsSuccessStatusCode)
+                Console.WriteLine(responseAPI.Message);
 
-            return result;
+            return response.IsSuccessStatusCode;
         }
     }
 }

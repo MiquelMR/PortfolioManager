@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using PortfolioManagerWASM.Models.UserDto;
 
-namespace PortfolioManagerWASM.Pages.Login
+namespace PortfolioManagerWASM.Components.Login
 {
     public partial class SignInFormComponent
     {

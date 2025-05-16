@@ -19,13 +19,13 @@ namespace PortfolioManagerWASM.ViewModels
         }
         public async Task AuthenticateUser(UserLoginDto userLoginDTO)
         {
-            var result = await _userService.LoginUser(userLoginDTO);
+            var result = await _userService.LoginUserAsync(userLoginDTO);
             AuthResponse.IsSuccess = result.IsSuccess;
         }
 
         public async Task<User> RegisterUserAsync(UserRegisterDto userRegisterDto)
         {
-            return await _userService.RegisterUser(userRegisterDto);
+            return await _userService.RegisterUserAsync(userRegisterDto);
         }
     }
 }

@@ -46,29 +46,37 @@ namespace PortfolioManagerAPI.Repository
                 return null;
             }
         }
-        public async Task<bool> CreateUserAsync(User user)
+        public async Task<User> CreateUserAsync(User user)
         {
             try
             {
-                await _db.AddAsync(user);
-                return await _db.SaveChangesAsync() > 0;
+                var userCreated = await _db.AddAsync(user);
+                var success = await _db.SaveChangesAsync() > 0;
+                if (success)
+                    return userCreated.Entity;
+                else
+                    return null;
             }
             catch
             {
-                return false;
+                return null;
             }
         }
 
-        public async Task<bool> UpdateUserAsync(User user)
+        public async Task<User> UpdateUserAsync(User user)
         {
             try
             {
-                _db.Update(user);
-                return await _db.SaveChangesAsync() > 0;
+                var userUpdated = _db.Update(user);
+                var success = await _db.SaveChangesAsync() > 0;
+                if (success)
+                    return userUpdated.Entity;
+                else
+                    return null;
             }
             catch
             {
-                return false;
+                return null;
             }
         }
 
@@ -77,10 +85,12 @@ namespace PortfolioManagerAPI.Repository
             try
             {
                 var user = await _db.Users.FirstOrDefaultAsync(user => user.Email == email);
-                if (user == null) return false;
+                if (user == null)
+                    return false;
 
                 _db.Remove(user);
-                return await _db.SaveChangesAsync() > 0;
+                var success = await _db.SaveChangesAsync() > 0;
+                return success;
             }
             catch
             {
@@ -94,7 +104,7 @@ namespace PortfolioManagerAPI.Repository
             {
                 return await _db.Users.AnyAsync(u => u.Email == email);
             }
-            catch (Exception)
+            catch
             {
                 return false;
             }

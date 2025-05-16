@@ -20,13 +20,13 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 
 // Repositories
-builder.Services.AddScoped<IAssetRepository, AssetRepository>();
+builder.Services.AddScoped<IFinancialAssetRepository, FinancialAssetRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPortfolioRepository, PortfolioRepository>();
 builder.Services.AddScoped<IPortfolioAssetRepository, PortfolioAssetRepository>();
 
 // Services
-builder.Services.AddScoped<IAssetService, AssetService>();
+builder.Services.AddScoped<IFinancialAssetService, FinancialAssetService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IPortfolioService, PortfolioService>();
 

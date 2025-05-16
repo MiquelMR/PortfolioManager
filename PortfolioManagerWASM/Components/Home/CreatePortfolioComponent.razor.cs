@@ -1,22 +1,27 @@
 using Microsoft.AspNetCore.Components;
 using PortfolioManagerWASM.Models;
+using PortfolioManagerWASM.Pages;
 
-namespace PortfolioManagerWASM.Pages.Home
+namespace PortfolioManagerWASM.Components.Home
 {
     public partial class CreatePortfolioComponent
     {
-        [Parameter]
-        public List<FinancialAsset> FinancialAssets { get; set; } = [];
-        [Parameter]
-        public EventCallback<Portfolio> OnPortfolioSubmit { get; set; }
+        // Properties
+        [Parameter] public List<FinancialAsset> FinancialAssets { get; set; } = [];
+
+        // Delegates
+        [Parameter] public EventCallback<Portfolio> OnPortfolioSubmitDelegate { get; set; }
+
+        // Private fields
         private readonly Portfolio newPortfolio = new() { Name = "My new Portfolio" };
 
-        private void SubmitNewPortfolio()
+        // Events
+        private void OnSubmitNewPortfolio()
         {
-            OnPortfolioSubmit.InvokeAsync(newPortfolio);
+            OnPortfolioSubmitDelegate.InvokeAsync(newPortfolio);
         }
 
-        private void AddFinancialAsset(FinancialAsset financialAsset)
+        private void OnAddFinancialAsset(FinancialAsset financialAsset)
         {
             var portfolioAsset = new PortfolioAsset()
             {
@@ -29,9 +34,5 @@ namespace PortfolioManagerWASM.Pages.Home
         {
             newPortfolio.PortfolioAssets.Remove(portfolioAsset);
         }
-
-
-
-
     }
 }

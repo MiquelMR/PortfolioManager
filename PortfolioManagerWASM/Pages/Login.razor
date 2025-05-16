@@ -1,10 +1,11 @@
-﻿@using PortfolioManagerWASM.Services.IService
+﻿@using PortfolioManagerWASM.Components.Login
+@using PortfolioManagerWASM.Services.IService
 @using System.ComponentModel.DataAnnotations
 @inject IUserService UserService
 
 @layout LoginLayout
-@page "/login"
 
+@page "/login"
 <div class="container">
 
     @switch (LoginView)

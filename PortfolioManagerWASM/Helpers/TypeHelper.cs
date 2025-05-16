@@ -1,11 +1,22 @@
-﻿using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Buffers.Text;
-using System.Runtime.Intrinsics.Arm;
-
-namespace PortfolioManagerAPI.Helpers
+﻿namespace PortfolioManagerWASM.Helpers
 {
-    public static class TypeConverter
+    public class TypeHelper
     {
+        public static object EmptyStringPropertiesToNull(object obj)
+        {
+            obj.GetType().GetProperties()
+            .Where(p => p.PropertyType == typeof(string))
+            .ToList()
+            .ForEach(p =>
+            {
+                var value = (string)p.GetValue(obj);
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    p.SetValue(obj, null);
+                }
+            });
+            return obj;
+        }
         public static string GetBase64String(byte[] image)
         {
             string extension = "";

@@ -52,18 +52,7 @@ namespace PortfolioManagerAPI.Service
 
         public async Task<UserDto> UpdateUserAsync(UserUpdateDto userUpdateDto)
         {
-            userUpdateDto.GetType().GetProperties()
-                .Where(p => p.PropertyType == typeof(string))
-                .ToList()
-                .ForEach(p =>
-                {
-                    var value = (string)p.GetValue(userUpdateDto);
-                    if (string.IsNullOrWhiteSpace(value))
-                    {
-                        p.SetValue(userUpdateDto, null);
-                    }
-                });
-
+            userUpdateDto = (UserUpdateDto)TypeHelper.EmptyStringPropertiesToNull(userUpdateDto);
             var user = await _userRepository.GetUserByEmailAsync(userUpdateDto.Email);
             if (user == null) { return null; }
             string oldAvatarFilename = user.AvatarFilename;
@@ -85,8 +74,9 @@ namespace PortfolioManagerAPI.Service
                 }
                 user.AvatarFilename = avatarFilename;
 
-                var success = await _userRepository.UpdateUserAsync(user);
-                if (!success) { return null; }
+                var userUpdated = await _userRepository.UpdateUserAsync(user);
+                if (userUpdated == null)
+                    return null;
 
                 if (validAvatar)
                 {
@@ -110,12 +100,15 @@ namespace PortfolioManagerAPI.Service
         public async Task<bool> DeleteUserByEmailAsync(string email)
         {
             var user = await _userRepository.GetUserByEmailAsync(email);
-            if (user == null) { return false; }
+            if (user == null)
+                return false;
             var success = await _userRepository.DeleteUserByEmailAsync(email);
-            if (!success) { return false; }
+            if (!success)
+                return false;
 
             var avatarFullpath = resourcePath + user.AvatarFilename;
-            if (File.Exists(avatarFullpath)) { File.Delete(avatarFullpath); }
+            if (File.Exists(avatarFullpath))
+                File.Delete(avatarFullpath);
 
             return success;
         }
@@ -146,8 +139,9 @@ namespace PortfolioManagerAPI.Service
                 user.AvatarFilename = avatarFilename;
             }
 
-            var success = await _userRepository.CreateUserAsync(user);
-            if (!success) { return null; }
+            var userCreated = await _userRepository.CreateUserAsync(user);
+            if (userCreated == null)
+                return null;
 
             if (userRegisterDto.Avatar != null)
             {

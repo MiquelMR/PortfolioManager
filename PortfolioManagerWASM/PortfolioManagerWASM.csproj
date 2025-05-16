@@ -18,6 +18,7 @@
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.3" PrivateAssets="all" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="popper.js" Version="1.16.1" />
+		<PackageReference Include="Syncfusion.Blazor.Charts" Version="29.1.41" />
 		<PackageReference Include="Syncfusion.Blazor.SplitButtons" Version="29.1.39" />
 		<PackageReference Include="Syncfusion.Blazor.Themes" Version="29.1.39" />
 	</ItemGroup>

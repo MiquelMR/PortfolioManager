@@ -6,8 +6,8 @@ namespace PortfolioManagerAPI.Repository.IRepository
     {
         Task<User> GetUserByEmailAsync(string email);
         Task<List<User>> GetUsersAsync();
-        Task<bool> CreateUserAsync(User user);
-        Task<bool> UpdateUserAsync(User user);
+        Task<User> CreateUserAsync(User user);
+        Task<User> UpdateUserAsync(User user);
         Task<bool> DeleteUserByEmailAsync(string email);
         Task<int> GetUserIdByNameAsync(string name);
         Task<bool> ExistsByEmailAsync(string email);

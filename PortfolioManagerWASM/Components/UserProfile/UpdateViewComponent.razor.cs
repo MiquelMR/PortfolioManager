@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using PortfolioManagerWASM.Models.UserDto;
 
-namespace PortfolioManagerWASM.Pages.UserProfile
+namespace PortfolioManagerWASM.Components.UserProfile
 {
     public partial class UpdateViewComponent
     {

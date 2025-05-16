@@ -6,13 +6,13 @@ namespace PortfolioManagerWASM.Services.IService
     public interface IUserService
     {
         User ActiveUser { get; }
-        public Task<User> GetUserByEmail(string Email);
-        public Task<List<User>> GetUsers();
-        public Task<AuthResponse> LoginUser(UserLoginDto userLoginDto);
-        public Task Logout();
-        public Task<User> RegisterUser(UserRegisterDto registerUserDto);
-        public Task<User> UpdatePublicProfile(UserUpdateDto userUpdateDto);
-        public Task<bool> DeleteUserAsync(User user);
         public Task InitializeAsync();
+        public Task<User> GetUserByEmailAsync(string Email);
+        public Task<List<User>> GetUsersAsync();
+        public Task<AuthResponse> LoginUserAsync(UserLoginDto userLoginDto);
+        public Task<User> RegisterUserAsync(UserRegisterDto registerUserDto);
+        public Task<User> UpdateUserAsync(UserUpdateDto userUpdateDto);
+        public Task<bool> DeleteUserAsync(User user);
+        public Task Logout();
     }
 }
