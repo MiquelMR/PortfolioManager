@@ -17,7 +17,7 @@ namespace PortfolioManagerWASM.ViewModels
         // Properties
         public User ActiveUser { get; set; } = new();
         public Portfolio ActivePortfolio { get; set; } = new();
-        public List<Portfolio> PortfoliosBasicInfo { get; set; } = [];
+        public List<Portfolio> UserPortfoliosBasicInfo { get; set; } = [];
         public List<FinancialAsset> FinancialAssets { get; set; } = [];
 
         public async Task InitAsync()
@@ -27,22 +27,28 @@ namespace PortfolioManagerWASM.ViewModels
 
             await _userService.InitializeAsync();
             ActiveUser = _userService.ActiveUser;
-            PortfoliosBasicInfo = (await _portfolioService.GetPortfoliosBasicInfoByUserAsync(ActiveUser.Email));
-            ActivePortfolio = PortfoliosBasicInfo.Count > 0 ? await _portfolioService.GetPortfolioByIdAsync(PortfoliosBasicInfo[0].PortfolioId) : new();
+            UserPortfoliosBasicInfo = (await _portfolioService.GetPortfoliosBasicInfoByUserAsync(ActiveUser.Email));
+            ActivePortfolio = UserPortfoliosBasicInfo.Count > 0 ? await _portfolioService.GetPortfolioByIdAsync(UserPortfoliosBasicInfo[0].PortfolioId) : null;
             FinancialAssets = await _assetService.GetFinancialAssetsAsync();
         }
 
         // Events
         public async Task OnSelectPortfolioAsync(int index)
         {
-            var portfolioId = PortfoliosBasicInfo[index].PortfolioId;
+            var portfolioId = UserPortfoliosBasicInfo[index].PortfolioId;
             ActivePortfolio = await _portfolioService.GetPortfolioByIdAsync(portfolioId);
         }
 
         public async Task<Portfolio> RegisterPortfolioAsync(Portfolio newPortfolio)
         {
             newPortfolio.Author = ActiveUser.Name;
-            return await _portfolioService.CreatePortfolioAsync(newPortfolio);
+            var portfolioCreated = await _portfolioService.CreatePortfolioAsync(newPortfolio);
+            UserPortfoliosBasicInfo = new List<Portfolio>(UserPortfoliosBasicInfo)
+            {
+                portfolioCreated
+            };
+
+            return portfolioCreated;
         }
 
         public async Task DeleteActivePortfolioAsync()
@@ -54,7 +60,7 @@ namespace PortfolioManagerWASM.ViewModels
         {
             ActiveUser = new User();
             ActivePortfolio = new Portfolio();
-            PortfoliosBasicInfo.Clear();
+            UserPortfoliosBasicInfo.Clear();
         }
 
         public void ToLogin()

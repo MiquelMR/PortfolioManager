@@ -9,17 +9,16 @@ namespace PortfolioManagerWASM.Pages
     {
         // Dependencies
         [Inject] private HomeViewModel HomeViewModel { get; set; }
-        [CascadingParameter] private Task<AuthenticationState> authState { get; set; }
+        [CascadingParameter] private Task<AuthenticationState> AuthState { get; set; }
 
         // Delegates 
         public Func<int, Task> OnSelectPortfolioDelegate { get; set; }
         public Action<Portfolio> OnPortfolioSubmitDelegate { get; set; }
         public Action OnDeleteActivePortfolioDelegate { get; set; }
-        public Action<HomeView> OnBackToHomeOverviewDelegate { get; set; }
 
         // Properties
         public User ActiveUser { get; set; } = new();
-        public List<Portfolio> UserPortfolios { get; set; } = [];
+        public List<Portfolio> UserPortfoliosBasicInfo { get; set; } = [];
         public List<FinancialAsset> FinancialAssets { get; set; } = [];
         public Portfolio ActivePortfolio { get; set; }
 
@@ -29,18 +28,17 @@ namespace PortfolioManagerWASM.Pages
         protected override async Task OnInitializedAsync()
         {
             await HomeViewModel.InitAsync();
-            if (authState == null)
+            if (AuthState == null)
                 HomeViewModel.ToLogin();
 
             ActiveUser = HomeViewModel.ActiveUser;
 
-            UserPortfolios = HomeViewModel.PortfoliosBasicInfo;
+            UserPortfoliosBasicInfo = HomeViewModel.UserPortfoliosBasicInfo;
             FinancialAssets = HomeViewModel.FinancialAssets;
             ActivePortfolio = HomeViewModel.ActivePortfolio;
             OnSelectPortfolioDelegate = OnSelectPortfolio;
             OnPortfolioSubmitDelegate = OnPortfolioSubmit;
             OnDeleteActivePortfolioDelegate = OnDeleteActivePortfolio;
-            OnBackToHomeOverviewDelegate = OnChangeCurrentHomeView;
         }
 
         // Events
@@ -51,9 +49,13 @@ namespace PortfolioManagerWASM.Pages
             StateHasChanged();
         }
 
-        public async void OnPortfolioSubmit(Portfolio portfolio)
+        public async void OnPortfolioSubmit(Portfolio newPortfolio)
         {
-            await HomeViewModel.RegisterPortfolioAsync(portfolio);
+            var portfolioCreated = await HomeViewModel.RegisterPortfolioAsync(newPortfolio);
+            UserPortfoliosBasicInfo.Add(portfolioCreated);
+            ActivePortfolio = UserPortfoliosBasicInfo.Last();
+            OnChangeCurrentHomeView(HomeView.Overview);
+            StateHasChanged();
         }
 
         public async void OnDeleteActivePortfolio()

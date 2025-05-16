@@ -2,7 +2,7 @@
 @using PortfolioManagerWASM.Pages
 
 <div class="container">
-    @if (UserPortfolios.Count > 0)
+    @if (UserPortfoliosBasicInfo.Count > 0)
     {
         <div class="row">
 
@@ -10,11 +10,11 @@
             <aside class="col-3">
                 <h2>Portfolios</h2>
                 <div class="list-group">
-                    @for (int i = 0; i < UserPortfolios.Count; i++)
+                    @for (int i = 0; i < UserPortfoliosBasicInfo.Count; i++)
                     {
                         int index = i;
-                        Portfolio portfolio = UserPortfolios[index];
-                        <button @onclick="()=>OnSelectPortfolioActivePortfolio(index)" type="button" class="list-group-item list-group-item-action d-flex justify-content-between">
+                        Portfolio portfolio = UserPortfoliosBasicInfo[index];
+                        <button @onclick="()=>OnSelectPortfolio(index)" type="button" class="list-group-item list-group-item-action d-flex justify-content-between">
                             <div>
                                 <p class="mb-0">@portfolio.Name</p>
                                 <p class="mb-0"><small>@portfolio.Author</small></p>
@@ -38,31 +38,33 @@
 
             <!--Main Page-->
             <main class="col-9">
-
-                <h2>@ActivePortfolio.Name</h2>
-                <p>@ActivePortfolio.Author</p>
-                <div class="accordion accordion-flush" id="description">
-                    <div class="accordion-item" id="header-1">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button"
-                                    type="button"
-                                    data-bs-toggle="collapse"
-                                    data-bs-target="#element-1"
-                                    aria-expanded="true"
-                                    aria-controls="element-1">
-                                Description
-                            </button>
-                        </h2>
-                        <div id="element-1"
-                             class="accordion-collapse collapse"
-                             aria-labelledby="encabezado-1"
-                             data-bs-parent="#header-1">
-                            <div class="accordion-body">
-                                <p>@ActivePortfolio.Description</p>
+                @if (ActivePortfolio != null)
+                {
+                    <h2>@ActivePortfolio.Name</h2>
+                    <p>@ActivePortfolio.Author</p>
+                    <div class="accordion accordion-flush" id="description">
+                        <div class="accordion-item" id="header-1">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#element-1"
+                                        aria-expanded="true"
+                                        aria-controls="element-1">
+                                    Description
+                                </button>
+                            </h2>
+                            <div id="element-1"
+                                 class="accordion-collapse collapse"
+                                 aria-labelledby="encabezado-1"
+                                 data-bs-parent="#header-1">
+                                <div class="accordion-body">
+                                    <p>@ActivePortfolio.Description</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                }
 
                 <!--Portfolio charts-->
                 <article class="row" style="height:300px">

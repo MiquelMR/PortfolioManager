@@ -11,7 +11,6 @@ namespace PortfolioManagerWASM.Components.Home
 
         // Delegates
         [Parameter] public EventCallback<Portfolio> OnPortfolioSubmitDelegate { get; set; }
-        [Parameter] public EventCallback<HomeView> OnBackToHomeOverviewDelegate { get; set; }
 
         // Private fields
         private readonly Portfolio newPortfolio = new() { Name = "My new Portfolio" };
@@ -20,7 +19,6 @@ namespace PortfolioManagerWASM.Components.Home
         private void OnSubmitNewPortfolio()
         {
             OnPortfolioSubmitDelegate.InvokeAsync(newPortfolio);
-            OnBackToHomeOverviewDelegate.InvokeAsync(HomeView.Overview);
         }
 
         private void OnAddFinancialAsset(FinancialAsset financialAsset)
@@ -35,11 +33,6 @@ namespace PortfolioManagerWASM.Components.Home
         private void OnRemoveFinancialAsset(PortfolioAsset portfolioAsset)
         {
             newPortfolio.PortfolioAssets.Remove(portfolioAsset);
-        }
-
-        private void OnBackToHomeOverview(HomeView HomeView)
-        {
-            OnBackToHomeOverviewDelegate.InvokeAsync(HomeView);
         }
     }
 }

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using PortfolioManagerWASM.Helpers;
 using PortfolioManagerWASM.Models;
 using PortfolioManagerWASM.Pages;
+using PortfolioManagerWASM.ViewModels;
 
 namespace PortfolioManagerWASM.Components.Home
 {
@@ -14,7 +15,7 @@ namespace PortfolioManagerWASM.Components.Home
 
         // Properties
         [Parameter] public Portfolio ActivePortfolio { get; set; }
-        [Parameter] public List<Portfolio> UserPortfolios { get; set; }
+        [Parameter] public List<Portfolio> UserPortfoliosBasicInfo { get; set; }
 
         // Private fields
         private List<ChartDataModel> ChartDataModel { get; set; } = [];
@@ -23,13 +24,16 @@ namespace PortfolioManagerWASM.Components.Home
         private async Task OnDeleteActivePortfolio()
         {
             await OnDeleteActivePortfolioDelegate.InvokeAsync();
-            await OnSelectPortfolioActivePortfolio(0);
+            var portfolioDeleted = UserPortfoliosBasicInfo.FirstOrDefault(portfolio => portfolio.PortfolioId == ActivePortfolio.PortfolioId);
+            UserPortfoliosBasicInfo.Remove(portfolioDeleted);
+            if (UserPortfoliosBasicInfo.Count > 0) await OnSelectPortfolio(0);
         }
 
-        private async Task OnSelectPortfolioActivePortfolio(int index)
+        private async Task OnSelectPortfolio(int index)
         {
             await OnSelectPortfolioDelegate.Invoke(index);
             ChartDataModel = PortfolioAssetsChartData();
+            StateHasChanged();
         }
 
         private List<ChartDataModel> PortfolioAssetsChartData()

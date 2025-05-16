@@ -60,7 +60,6 @@ namespace PortfolioManagerAPI.Service
 
             foreach (var portfolioAssetDto in newPortfolioDto.PortfolioAssetsDto)
             {
-                //var portfolioAsset = _mapper.Map<PortfolioAsset>(portfolioAssetDto);
                 PortfolioAsset portfolioAsset = new()
                 {
                     AllocationPercentage = portfolioAssetDto.AllocationPercentage,
@@ -69,8 +68,8 @@ namespace PortfolioManagerAPI.Service
                 };
                 await _portfolioAssetRepository.CreatePortfolioAssetAsync(portfolioAsset);
             }
-
-            return _mapper.Map<PortfolioDto>(newPortfolioDto);
+            var test = _mapper.Map<PortfolioDto>(portfolioCreated);
+            return test;
         }
         public async Task<bool> DeletePortfolioByIdAsync(int portfolioId)
         {

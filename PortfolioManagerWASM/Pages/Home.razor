@@ -15,14 +15,13 @@
 {
     case HomeView.CreatePortfolio:
         <CreatePortfolioComponent FinancialAssets="@FinancialAssets"
-                                  OnPortfolioSubmitDelegate="@OnPortfolioSubmitDelegate"
-                                  OnBackToHomeOverviewDelegate="@OnBackToHomeOverviewDelegate"></CreatePortfolioComponent>
+                                  OnPortfolioSubmitDelegate="@OnPortfolioSubmitDelegate" />
         break;
     case HomeView.Overview:
         <OverviewPortfoliosComponent ActivePortfolio="@ActivePortfolio"
-                                 UserPortfolios="@UserPortfolios"
-                                 OnSelectPortfolioDelegate="@OnSelectPortfolioDelegate"
-                                 OnDeleteActivePortfolioDelegate="@OnDeleteActivePortfolio"></OverviewPortfoliosComponent>
+                                     UserPortfoliosBasicInfo="@UserPortfoliosBasicInfo"
+                                     OnSelectPortfolioDelegate="@OnSelectPortfolioDelegate"
+                                     OnDeleteActivePortfolioDelegate="@OnDeleteActivePortfolio" />
         break;
     default:
         break;

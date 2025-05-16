@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using PortfolioManagerWASM.Components.Home;
 using PortfolioManagerWASM.Models;
 using PortfolioManagerWASM.ViewModels;
 
