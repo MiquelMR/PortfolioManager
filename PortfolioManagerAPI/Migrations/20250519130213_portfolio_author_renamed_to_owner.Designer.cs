@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PortfolioManagerAPI.Data;
 
@@ -11,9 +12,11 @@ using PortfolioManagerAPI.Data;
 namespace PortfolioManagerAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250519130213_portfolio_author_renamed_to_owner")]
+    partial class portfolio_author_renamed_to_owner
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -58,10 +61,6 @@ namespace PortfolioManagerAPI.Migrations
                     b.Property<int>("Accessibility")
                         .HasColumnType("int");
 
-                    b.Property<string>("Author")
-                        .HasMaxLength(48)
-                        .HasColumnType("varchar(48)");
-
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
 
@@ -74,7 +73,8 @@ namespace PortfolioManagerAPI.Migrations
                         .HasColumnType("varchar(48)");
 
                     b.Property<string>("Owner")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(48)
+                        .HasColumnType("varchar(48)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");

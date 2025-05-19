@@ -71,9 +71,9 @@
         <div class="row mb-4">
             <label for="description">Description</label>
             <input id="description"
-                @bind-value="@newPortfolio.Description" 
-                @bind-value:event="oninput" 
-                maxlength="100" />
+                   @bind-value="@newPortfolio.Description"
+                   @bind-value:event="oninput"
+                   maxlength="100" />
             <div>@(newPortfolio.Description?.Length ?? 0)/100 characters</div>
         </div>
 
@@ -92,6 +92,14 @@
                 </li>
             }
         </ul>
+
+
+        <div class="row">
+            <div class="col-auto">
+                <label for="Accessibility-checkbox">Public</label>
+                <InputCheckbox id="Accessibility-checkbox" @bind-Value="isPublic" />
+            </div>
+        </div>
 
         <!--Finish and submit-->
         <div class="row">

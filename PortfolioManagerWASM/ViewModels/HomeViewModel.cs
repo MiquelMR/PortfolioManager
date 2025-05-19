@@ -41,6 +41,7 @@ namespace PortfolioManagerWASM.ViewModels
 
         public async Task<Portfolio> RegisterPortfolioAsync(Portfolio newPortfolio)
         {
+            newPortfolio.Owner = ActiveUser.Name;
             newPortfolio.Author = ActiveUser.Name;
             var portfolioCreated = await _portfolioService.CreatePortfolioAsync(newPortfolio);
             UserPortfoliosBasicInfo = new List<Portfolio>(UserPortfoliosBasicInfo)

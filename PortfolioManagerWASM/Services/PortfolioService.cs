@@ -25,6 +25,18 @@ namespace PortfolioManagerWASM.Services
 
             return portfolios;
         }
+
+        public async Task<List<Portfolio>> GetPublicPortfolios()
+        {
+            var response = await _httpClient.GetAsync($"{Initialize.UrlBaseApi}api/portfolios/publicPortfolios");
+            var content = await response.Content.ReadAsStringAsync();
+            var responseAPI = JsonConvert.DeserializeObject<ResponseAPI<List<PortfolioDto>>>(content);
+            var portfoliosDto = responseAPI.Data;
+            var portfolios = _mapper.Map<List<Portfolio>>(portfoliosDto);
+
+            return portfolios;
+        }
+
         public async Task<List<Portfolio>> GetPortfoliosBasicInfoByUserAsync(string userEmail)
         {
             var response = await _httpClient.GetAsync($"{Initialize.UrlBaseApi}api/portfolios/basicPortfolioInfoByUserEmail/{userEmail}");

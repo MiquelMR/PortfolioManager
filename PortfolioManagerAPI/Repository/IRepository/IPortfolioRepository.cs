@@ -6,6 +6,7 @@ namespace PortfolioManagerAPI.Repository.IRepository
     {
         Task<Portfolio> GetPortfolioByIdAsync(int portfolioId);
         Task<List<Portfolio>> GetPortfoliosAsync();
+        Task<List<Portfolio>> GetPortfoliosByAccessibility(Accessibility accessibility);
         Task<List<Portfolio>> GetPortfoliosByUserEmailAsync(string userEmail);
         Task<Portfolio> CreatePortfolioAsync(Portfolio newPortfolio);
         Task<bool> DeletePortfolioByIdAsync(int portfolioId);

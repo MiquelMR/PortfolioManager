@@ -35,12 +35,21 @@ namespace PortfolioManagerAPI.Service
 
             return portfolioDto;
         }
-
         public async Task<List<PortfolioDto>> GetPortfoliosBasicInfoAsync()
         {
             var portfolios = await _portfolioRepository.GetPortfoliosAsync() ?? [];
-            if (portfolios == null)  
-                return null; 
+            if (portfolios == null)
+                return null;
+
+            var portfoliosDto = _mapper.Map<List<PortfolioDto>>(portfolios);
+            return portfoliosDto;
+        }
+
+        public async Task<List<PortfolioDto>> GetPortfoliosBasicInfoByAccessibility(Accessibility accessibility)
+        {
+            var portfolios = await _portfolioRepository.GetPortfoliosByAccessibility(accessibility) ?? [];
+            if (portfolios == null)
+                return null;
 
             var portfoliosDto = _mapper.Map<List<PortfolioDto>>(portfolios);
             return portfoliosDto;
@@ -59,7 +68,7 @@ namespace PortfolioManagerAPI.Service
         public async Task<PortfolioDto> CreatePortfolioAsync(PortfolioDto newPortfolioDto)
         {
             var newPortfolio = _mapper.Map<Portfolio>(newPortfolioDto);
-            var userId = await _userRepository.GetUserIdByNameAsync(newPortfolio.Author);
+            var userId = await _userRepository.GetUserIdByNameAsync(newPortfolio.Owner);
             if (userId == 0)
                 return null;
             newPortfolio.UserId = userId;

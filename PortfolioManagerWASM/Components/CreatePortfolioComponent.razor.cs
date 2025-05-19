@@ -28,11 +28,18 @@ namespace PortfolioManagerWASM.Components
         [Parameter] public EventCallback<HomeView> OnClickBackButtonDelegate { get; set; }
 
         // Private fields
-        private Portfolio newPortfolio = new() { Name = "My new Portfolio", IconPath = AppConfig.GetResourcePath("PortfolioIcons") + "/default.svg" };
+        private Portfolio newPortfolio = new()
+        {
+            Name = "My new Portfolio",
+            IconPath = AppConfig.GetResourcePath("PortfolioIcons") + "/default.svg",
+            Accessibility = Accessibility.Private
+        };
+        private bool isPublic;
 
         // Events
         private void OnSubmitNewPortfolio()
         {
+            newPortfolio.Accessibility = isPublic ? Accessibility.Public : Accessibility.Private;
             OnPortfolioSubmitDelegate.InvokeAsync(newPortfolio);
         }
 
@@ -69,6 +76,11 @@ namespace PortfolioManagerWASM.Components
         private void OnSelectIcon(string iconPath)
         {
             newPortfolio.IconPath = iconPath;
+        }
+
+        private void OnAccessibilityCheck()
+        {
+
         }
     }
 }
