@@ -1,5 +1,6 @@
 ﻿using PortfolioManagerWASM.Models;
 using PortfolioManagerWASM.Services.IService;
+using System;
 
 namespace PortfolioManagerWASM.ViewModels
 {
@@ -13,19 +14,21 @@ namespace PortfolioManagerWASM.ViewModels
         // Properties
         public List<FinancialAsset> FinancialAssets { get; set; }
         public List<Portfolio> PortfoliosBasicInfo { get; set; }
-        public Portfolio PortfolioExpanded { get; set; }
+        public Portfolio ActivePortfolio { get; set; }
         public List<User> Users { get; set; }
 
         public async Task InitAsync()
         {
             FinancialAssets = (await _assetService.GetFinancialAssetsAsync()).ToList();
             PortfoliosBasicInfo = (await _portfolioService.GetPortfoliosBasicInfoAsync()).ToList();
+            ActivePortfolio = PortfoliosBasicInfo.Count > 0 ? await _portfolioService.GetPortfolioByIdAsync(PortfoliosBasicInfo[0].PortfolioId) : null;
             Users = (await _userService.GetUsersAsync());
         }
 
-        public async Task OnExpandPortfolioInformation(int portfolioId)
+        public async Task OnSelectPortfolioAsync(int index)
         {
-            PortfolioExpanded = await _portfolioService.GetPortfolioByIdAsync(portfolioId);
+            var portfolioId = PortfoliosBasicInfo[index].PortfolioId;
+            ActivePortfolio = await _portfolioService.GetPortfolioByIdAsync(portfolioId);
         }
 
         public async Task<FinancialAsset> CreateFinancialAssetAsync(FinancialAsset financialAsset)
@@ -46,6 +49,11 @@ namespace PortfolioManagerWASM.ViewModels
         public async Task<bool> DeleteUserAsync(User user)
         {
             return await _userService.DeleteUserAsync(user);
+        }
+
+        public async Task<bool> DeleteActivePortfolioAsync()
+        {
+            return await _portfolioService.DeletePortfolioAsync(ActivePortfolio.PortfolioId);
         }
     }
 }

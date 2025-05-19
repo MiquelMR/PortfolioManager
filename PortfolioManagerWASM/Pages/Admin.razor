@@ -35,7 +35,10 @@
         @switch (_adminView)
         {
             case AdminView.Overview:
-                <OverviewComp />
+                <OverviewPortfoliosComponent ActivePortfolio="@ActivePortfolio"
+                                             PortfoliosBasicInfo="@PortfoliosBasicInfo"
+                                             OnSelectPortfolioDelegate="@OnSelectPortfolioDelegate"
+                                             OnDeleteActivePortfolioDelegate="@OnDeletePortfolioDelegate" />
                 break;
             case AdminView.FinancialAssets:
                 <FinancialAssetsComp FinancialAssets="FinancialAssets"
@@ -49,8 +52,8 @@
                 break;
             case AdminView.Portfolios:
                 <PortfolioList PortfoliosBasicInfo="@PortfoliosBasicInfo"
-                               OnExpandPortfolioInformationDelegate="@OnExpandPortfolioInformationDelegate"
-                               PortfolioExpanded="@PortfolioExpanded" />
+                               OnExpandPortfolioInformationDelegate="@OnSelectPortfolio"
+                               PortfolioExpanded = "@ActivePortfolio" />
                 break;
             default:
                 <p>Server is currently under maintenance</p>
