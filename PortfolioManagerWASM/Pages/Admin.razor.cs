@@ -16,11 +16,13 @@ namespace PortfolioManagerWASM.Pages
         public Action<FinancialAsset> OnCreateFinancialAssetDelegate { get; set; }
         public Action<FinancialAsset> OnDeleteFinancialAssetDelegate { get; set; }
         public Action<User> OnDeleteUserDelegate { get; set; }
+        public Func<int, Task> OnExpandPortfolioInformationDelegate { get; set; }
 
         // Properties
         public List<FinancialAsset> FinancialAssets { get; set; } = [];
         public List<User> Users { get; set; }
         public List<Portfolio> PortfoliosBasicInfo { get; set; }
+        public Portfolio PortfolioExpanded { get; set; }
 
         // Private fields
         private AdminView _adminView = AdminView.Overview;
@@ -31,11 +33,19 @@ namespace PortfolioManagerWASM.Pages
 
             FinancialAssets = AdminViewModel.FinancialAssets;
             Users = AdminViewModel.Users;
+            PortfolioExpanded = AdminViewModel.PortfolioExpanded;
             PortfoliosBasicInfo = AdminViewModel.PortfoliosBasicInfo;
             OnUpdateFinancialAssetDelegate = OnUpdateFinancialAsset;
             OnCreateFinancialAssetDelegate = OnCreateFinancialAsset;
             OnDeleteFinancialAssetDelegate = OnDeleteFinancialAsset;
             OnDeleteUserDelegate = OnDeleteUser;
+            OnExpandPortfolioInformationDelegate = OnExpandPortfolioInformation;
+        }
+
+        public async Task OnExpandPortfolioInformation(int portfolioId)
+        {
+            await AdminViewModel.OnExpandPortfolioInformation(portfolioId);
+            StateHasChanged();
         }
 
         public async void OnCreateFinancialAsset(FinancialAsset financialAsset)

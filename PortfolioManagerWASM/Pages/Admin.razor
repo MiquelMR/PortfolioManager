@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Authorization
+@using PortfolioManagerWASM.Components
 @using PortfolioManagerWASM.Components.Admin
 @using PortfolioManagerWASM.Models
 @using PortfolioManagerWASM.Services.IService
@@ -47,7 +48,9 @@
                            OnDeleteUserDelegate="@OnDeleteUserDelegate" />
                 break;
             case AdminView.Portfolios:
-                <PortfolioManagerWASM.Components.PortfolioList PortfoliosBasicInfo="@PortfoliosBasicInfo" />
+                <PortfolioList PortfoliosBasicInfo="@PortfoliosBasicInfo"
+                               OnExpandPortfolioInformationDelegate="@OnExpandPortfolioInformationDelegate"
+                               PortfolioExpanded="@PortfolioExpanded" />
                 break;
             default:
                 <p>Server is currently under maintenance</p>

@@ -15,6 +15,7 @@ namespace PortfolioManagerWASM.Pages
         public Func<int, Task> OnSelectPortfolioDelegate { get; set; }
         public Action<Portfolio> OnPortfolioSubmitDelegate { get; set; }
         public Action OnDeleteActivePortfolioDelegate { get; set; }
+        public Action<HomeView> OnClickBackButtonDelegate { get; set; }
 
         // Properties
         public User ActiveUser { get; set; } = new();
@@ -39,6 +40,7 @@ namespace PortfolioManagerWASM.Pages
             OnSelectPortfolioDelegate = OnSelectPortfolio;
             OnPortfolioSubmitDelegate = OnPortfolioSubmit;
             OnDeleteActivePortfolioDelegate = OnDeleteActivePortfolio;
+            OnClickBackButtonDelegate = OnChangeCurrentHomeView;
         }
 
         // Events

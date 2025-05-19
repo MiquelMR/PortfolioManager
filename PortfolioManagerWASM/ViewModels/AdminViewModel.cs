@@ -13,6 +13,7 @@ namespace PortfolioManagerWASM.ViewModels
         // Properties
         public List<FinancialAsset> FinancialAssets { get; set; }
         public List<Portfolio> PortfoliosBasicInfo { get; set; }
+        public Portfolio PortfolioExpanded { get; set; }
         public List<User> Users { get; set; }
 
         public async Task InitAsync()
@@ -20,7 +21,11 @@ namespace PortfolioManagerWASM.ViewModels
             FinancialAssets = (await _assetService.GetFinancialAssetsAsync()).ToList();
             PortfoliosBasicInfo = (await _portfolioService.GetPortfoliosBasicInfoAsync()).ToList();
             Users = (await _userService.GetUsersAsync());
-            // Mira a ver si el vm coge las cabeceras
+        }
+
+        public async Task OnExpandPortfolioInformation(int portfolioId)
+        {
+            PortfolioExpanded = await _portfolioService.GetPortfolioByIdAsync(portfolioId);
         }
 
         public async Task<FinancialAsset> CreateFinancialAssetAsync(FinancialAsset financialAsset)

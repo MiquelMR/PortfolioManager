@@ -15,7 +15,8 @@
 {
     case HomeView.CreatePortfolio:
         <CreatePortfolioComponent FinancialAssets="@FinancialAssets"
-                                  OnPortfolioSubmitDelegate="@OnPortfolioSubmitDelegate" />
+                                  OnPortfolioSubmitDelegate="@OnPortfolioSubmitDelegate"
+                                  OnClickBackButtonDelegate="@OnClickBackButtonDelegate" />
         break;
     case HomeView.Overview:
         <OverviewPortfoliosComponent ActivePortfolio="@ActivePortfolio"

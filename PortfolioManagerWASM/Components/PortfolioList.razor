@@ -1,11 +1,10 @@
 ﻿@using PortfolioManagerWASM.Models
 <h2>Portfolios</h2>
 <div class="list-group">
-    @for (int i = 0; i < PortfoliosBasicInfo.Count; i++)
+    @foreach (Portfolio portfolio in PortfoliosBasicInfo)
     {
-        int index = i;
-        Portfolio portfolio = PortfoliosBasicInfo[index];
         <button class="btn justify-content-start collapsed"
+                @onclick="() => OnSelectPortfolio(portfolio.PortfolioId)"
                 type="button"
                 data-bs-toggle="collapse"
                 data-bs-target="#collapse-@portfolio.PortfolioId"
@@ -31,7 +30,55 @@
 
         <div class="collapse w-100" id="collapse-@portfolio.PortfolioId">
             <div class="accordion-body">
-                <p>mimimimimi</p>
+                <main class="col-9">
+                    @if (PortfolioExpanded != null)
+                    {
+
+                        <div class="accordion-body">
+                            <p>@PortfolioExpanded.Description</p>
+                        </div>
+
+                        <!--Portfolio charts-->
+                        <article class="row" style="height:300px">
+                            <ul class="col-auto">
+                                @foreach (PortfolioAsset portfolioAsset in PortfolioExpanded.PortfolioAssets)
+                                {
+                                    <li class="d-flex align-items-center mb-3">
+                                        <p class="m-2">@portfolioAsset.FinancialAsset.Name</p>
+                                        @if (portfolioAsset.FinancialAsset.IconPath != null && portfolioAsset.FinancialAsset.IconPath.Length > 0)
+                                        {
+                                            <img src="@(@portfolioAsset.FinancialAsset.IconPath)" alt="Icon" class="img-fluid asset-icon">
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-cash asset-icon"></i>
+                                        }
+                                        <p class="m-2">@portfolioAsset.AllocationPercentage</p>
+                                    </li>
+                                }
+                            </ul>
+                            <div class="col d-none d-md-flex">
+                                <SfAccumulationChart Title="Asset composition">
+                                    <AccumulationChartSeriesCollection>
+                                        <AccumulationChartSeries Type="AccumulationType.Pie"
+                                                                 DataSource="@ChartDataModel"
+                                                                 XName="AssetName"
+                                                                 YName="Allocation"
+                                                                 InnerRadius="40%">
+                                        </AccumulationChartSeries>
+                                        <AccumulationChartTooltipSettings Enable="true">
+
+                                        </AccumulationChartTooltipSettings>
+                                    </AccumulationChartSeriesCollection>
+                                </SfAccumulationChart>
+
+                            </div>
+                        </article>
+                    }
+                </main>
+
+
+
             </div>
         </div>
 
