@@ -30,7 +30,6 @@ namespace PortfolioManagerWASM.Components
         // Private fields
         private Portfolio newPortfolio = new()
         {
-            Name = "My new Portfolio",
             IconPath = AppConfig.GetResourcePath("PortfolioIcons") + "/default.svg",
             Accessibility = Accessibility.Private
         };
