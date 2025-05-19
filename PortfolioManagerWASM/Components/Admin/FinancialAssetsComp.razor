@@ -18,8 +18,9 @@
         {
             <tr>
                 <td>@financialAsset.Name</td>
+                <td>@financialAsset.ReferenceIndex</td>
                 <td><img class="rounded-icon" src="@financialAsset.IconPath" alt="Financial Asset Icon"></td>
-                <td>Description</td>
+                <td>@financialAsset.Description</td>
                 <td class="text-center">
                     <button class="btn collapsed btn-primary"
                             type="button"
@@ -45,6 +46,11 @@
                                 <!--Edit name-->
                                 <td>
                                     <InputText @bind-Value="financialAsset.Name" />
+                                </td>
+
+                                <!--Edit reference Index-->
+                                <td>
+                                    <InputText @bind-Value="financialAsset.ReferenceIndex" />
                                 </td>
 
                                 <!--Edit icon-->

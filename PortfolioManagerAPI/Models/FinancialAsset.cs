@@ -16,6 +16,7 @@ namespace PortfolioManagerAPI.Models
 
         [MaxLength(48)]
         public string IconFilename { get; set; }
+        public string ReferenceIndex { get; set; }
         public string Description { get; set; }
     }
 }

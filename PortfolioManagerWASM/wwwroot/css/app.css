@@ -83,11 +83,11 @@ a, .btn-link {
         transform: rotate(-90deg);
     }
 
-        .loading-progress circle:last-child {
-            stroke: #1b6ec2;
-            stroke-dasharray: calc(3.141 * var(--blazor-load-percentage, 0%) * 0.8), 500%;
-            transition: stroke-dasharray 0.05s ease-in-out;
-        }
+.loading-progress circle:last-child {
+    stroke: #1b6ec2;
+    stroke-dasharray: calc(3.141 * var(--blazor-load-percentage, 0%) * 0.8), 500%;
+    transition: stroke-dasharray 0.05s ease-in-out;
+}
 
 .loading-progress-text {
     position: absolute;
@@ -130,4 +130,71 @@ code {
     width: 20px;
     height: 20px;
     border-radius: 50%;
+}
+
+.portfolio-title {
+    font-size: 32px;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.portfolio-author {
+    margin-top: -4px;
+    margin-left:16px;
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--secondary-color);
+}
+
+.portfolio-side-name {
+    margin: 0;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.portfolio-side-author {
+    font-size: 12px;
+    margin-top: -4px;
+    margin-bottom: 0;
+}
+
+.portfolio-description{
+    background-color:var(--white-smoke);
+    padding:16px;
+}
+
+.sf-accumulation-chart {
+    width: auto;
+    margin-left: 0;
+    margin-right: 0; 
+}
+
+.scrollable-list {
+    max-height: 300px;
+    overflow-y: auto; /* Creates a vertical scrollbar */
+    padding: 0;
+    list-style: none; /* Optional: removes default list style */
+}
+
+.scrollable-list li {
+    padding: 10px;
+    border-bottom: 1px solid #ddd; /* Optional: adds a border between items */
+}
+
+.button-unstyled {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    color: inherit;
+}
+
+
+
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #393E46;
+    --white-smoke: #f5f5f5;
+    --font-size-small: 12px;
 }

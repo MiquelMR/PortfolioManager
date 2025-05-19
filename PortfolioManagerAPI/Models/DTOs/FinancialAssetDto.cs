@@ -9,6 +9,7 @@ namespace PortfolioManagerAPI.Models.DTOs
         [MaxLength(48)]
         public string Name { get; set; }
         public string IconFilename { get; set; }
+        public string ReferenceIndex { get; set; }
         public string Description { get; set; }
     }
 }
