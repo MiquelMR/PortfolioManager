@@ -3,20 +3,29 @@ using PortfolioManagerWASM.Services.IService;
 
 namespace PortfolioManagerWASM.ViewModels
 {
-    public class AdminViewModel(IFinancialAssetService assetService, IUserService userService)
+    public class AdminViewModel(IFinancialAssetService assetService, IUserService userService, IPortfolioService portfolioService)
     {
         // Dependencies
         private readonly IFinancialAssetService _assetService = assetService;
         private readonly IUserService _userService = userService;
+        private readonly IPortfolioService _portfolioService = portfolioService;
 
         // Properties
         public List<FinancialAsset> FinancialAssets { get; set; }
+        public List<Portfolio> PortfoliosBasicInfo { get; set; }
+        public Portfolio PortfolioExpanded { get; set; }
         public List<User> Users { get; set; }
 
         public async Task InitAsync()
         {
             FinancialAssets = (await _assetService.GetFinancialAssetsAsync()).ToList();
+            PortfoliosBasicInfo = (await _portfolioService.GetPortfoliosBasicInfoAsync()).ToList();
             Users = (await _userService.GetUsersAsync());
+        }
+
+        public async Task OnExpandPortfolioInformation(int portfolioId)
+        {
+            PortfolioExpanded = await _portfolioService.GetPortfolioByIdAsync(portfolioId);
         }
 
         public async Task<FinancialAsset> CreateFinancialAssetAsync(FinancialAsset financialAsset)

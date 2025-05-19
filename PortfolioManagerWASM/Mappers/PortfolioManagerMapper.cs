@@ -9,11 +9,12 @@ namespace PortfolioManagerWASM.Mappers
     {
         public PortfolioManagerMapper()
         {
-            var iconsDirectory = AppConfig.GetResourcePath("AssetIcons");
+            var assetIconsDirectory = AppConfig.GetResourcePath("AssetIcons");
+            var portfolioIconsDirectory = AppConfig.GetResourcePath("PortfolioIcons");
 
             // FinancialAssetDto -> FinancialAsset
             CreateMap<FinancialAssetDto, FinancialAsset>()
-                .ForMember(dest => dest.IconPath, opt => opt.MapFrom(src => Path.Combine(iconsDirectory, src.IconFilename)));
+                .ForMember(dest => dest.IconPath, opt => opt.MapFrom(src => Path.Combine(assetIconsDirectory, src.IconFilename)));
 
             // FinancialAsset -> FinancialAssetDto
             CreateMap<FinancialAsset, FinancialAssetDto>()
@@ -21,7 +22,7 @@ namespace PortfolioManagerWASM.Mappers
 
             // PortfolioDto -> Portfolio
             CreateMap<PortfolioDto, Portfolio>()
-                .ForMember(dest => dest.IconPath, opt => opt.MapFrom(src => Path.Combine(iconsDirectory, src.IconFilename)));
+                .ForMember(dest => dest.IconPath, opt => opt.MapFrom(src => Path.Combine(portfolioIconsDirectory, src.IconFilename)));
 
             // Portfolio -> PortfolioDto
             CreateMap<Portfolio, PortfolioDto>()

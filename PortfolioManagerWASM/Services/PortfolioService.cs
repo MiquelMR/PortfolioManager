@@ -15,6 +15,16 @@ namespace PortfolioManagerWASM.Services
         private readonly HttpClient _httpClient = httpClient;
         private readonly IMapper _mapper = mapper;
 
+        public async Task<List<Portfolio>> GetPortfoliosBasicInfoAsync()
+        {
+            var response = await _httpClient.GetAsync($"{Initialize.UrlBaseApi}api/portfolios/basicPortfolioInfo");
+            var content = await response.Content.ReadAsStringAsync();
+            var responseAPI = JsonConvert.DeserializeObject<ResponseAPI<List<PortfolioDto>>>(content);
+            var portfoliosDto = responseAPI.Data;
+            var portfolios = _mapper.Map<List<Portfolio>>(portfoliosDto);
+
+            return portfolios;
+        }
         public async Task<List<Portfolio>> GetPortfoliosBasicInfoByUserAsync(string userEmail)
         {
             var response = await _httpClient.GetAsync($"{Initialize.UrlBaseApi}api/portfolios/basicPortfolioInfoByUserEmail/{userEmail}");

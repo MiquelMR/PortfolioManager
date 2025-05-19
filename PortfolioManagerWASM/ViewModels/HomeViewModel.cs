@@ -47,7 +47,6 @@ namespace PortfolioManagerWASM.ViewModels
             {
                 portfolioCreated
             };
-
             return portfolioCreated;
         }
 

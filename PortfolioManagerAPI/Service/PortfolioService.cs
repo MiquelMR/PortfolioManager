@@ -36,6 +36,16 @@ namespace PortfolioManagerAPI.Service
             return portfolioDto;
         }
 
+        public async Task<List<PortfolioDto>> GetPortfoliosBasicInfoAsync()
+        {
+            var portfolios = await _portfolioRepository.GetPortfoliosAsync() ?? [];
+            if (portfolios == null)  
+                return null; 
+
+            var portfoliosDto = _mapper.Map<List<PortfolioDto>>(portfolios);
+            return portfoliosDto;
+        }
+
         public async Task<List<PortfolioDto>> GetPortfoliosBasicInfoByUserEmailAsync(string userEmail)
         {
 
