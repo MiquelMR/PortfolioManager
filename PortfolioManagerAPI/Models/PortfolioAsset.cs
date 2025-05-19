@@ -9,7 +9,7 @@ namespace PortfolioManagerAPI.Models
         public int AssetId { get; set; }
         [Required]
         [Range(1, 100)]
-        public float AllocationPercentage { get; set; }
+        public int AllocationPercentage { get; set; }
         [ForeignKey(nameof(PortfolioId))]
         public Portfolio Portfolio { get; set; }
 
