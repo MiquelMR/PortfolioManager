@@ -1,11 +1,16 @@
 using Microsoft.AspNetCore.Components;
+using PortfolioManagerWASM.Helpers;
 using PortfolioManagerWASM.Models;
 using PortfolioManagerWASM.Pages;
+using Syncfusion.Blazor.Data;
 
 namespace PortfolioManagerWASM.Components
 {
     public partial class CreatePortfolioComponent
     {
+        // Services
+        [Inject] HttpClient HttpClient { get; set; }
+
         // Properties
         [Parameter] public List<FinancialAsset> FinancialAssets { get; set; }
         private List<FinancialAsset> FilteredFinancialAssets
@@ -23,7 +28,7 @@ namespace PortfolioManagerWASM.Components
         [Parameter] public EventCallback<HomeView> OnClickBackButtonDelegate { get; set; }
 
         // Private fields
-        private Portfolio newPortfolio = new() { Name = "My new Portfolio" };
+        private Portfolio newPortfolio = new() { Name = "My new Portfolio", IconPath = AppConfig.GetResourcePath("PortfolioIcons") + "/default.svg" };
 
         // Events
         private void OnSubmitNewPortfolio()
@@ -48,6 +53,22 @@ namespace PortfolioManagerWASM.Components
         private void OnClickBackButton(HomeView HomeView)
         {
             OnClickBackButtonDelegate.InvokeAsync(HomeView);
+        }
+
+        private List<string> GetIconPaths()
+        {
+            var dir = HttpClient.GetStringAsync("icons/portfolios");
+            return new List<string>()
+            {
+                "default.svg"
+            }
+            .Select(item => Path.Combine(AppConfig.GetResourcePath("PortfolioIcons"), item))
+            .ToList();
+        }
+
+        private void OnSelectIcon(string iconPath)
+        {
+            newPortfolio.IconPath = iconPath;
         }
     }
 }

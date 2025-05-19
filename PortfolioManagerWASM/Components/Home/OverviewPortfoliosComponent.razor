@@ -21,14 +21,7 @@
                             </div>
                             <div class="d-flex align-items-center">
                                 <span class="badge bg-body-secondary">
-                                    @if (portfolio.IconPath != null && portfolio.IconPath.Length > 0)
-                                    {
-                                        <img src="@(portfolio.IconPath)" alt="Icon">
-                                    }
-                                    else
-                                    {
-                                        <i class="bi bi-pie-chart asset-icon"></i>
-                                    }
+                                    <img class="rounded-icon" src="@(portfolio.IconPath)" alt="Icon">
                                 </span>
                             </div>
                         </button>

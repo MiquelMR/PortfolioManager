@@ -77,6 +77,22 @@
             <div>@(newPortfolio.Description?.Length ?? 0)/100 characters</div>
         </div>
 
+        <!--Icon-->
+        <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            <img class="rounded-icon" src="@newPortfolio.IconPath" alt="Portfolio Icon">
+        </button>
+
+        <ul class="dropdown-menu">
+            @foreach (var icon in GetIconPaths())
+            {
+                <li class="icon-item" style="width:auto; display:inline-block; padding:0;margin:0">
+                    <button class="dropdown-item">
+                        <img src="@icon" class="rounded-icon" alt="Icon" @onclick="() => OnSelectIcon(icon)">
+                    </button>
+                </li>
+            }
+        </ul>
+
         <!--Finish and submit-->
         <div class="row">
             <div class="col-auto">
