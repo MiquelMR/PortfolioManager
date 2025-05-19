@@ -4,10 +4,9 @@ namespace PortfolioManagerWASM.Models
 {
     public class AllocationPercentageAttibute : ValidationAttribute
     {
-        private int _portfolioAssetsAggregateAllocation = 0;
-
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
+            int _portfolioAssetsAggregateAllocation = 0;
             if (value != null)
             {
                 var portfolioAssets = (List<PortfolioAsset>)value;
