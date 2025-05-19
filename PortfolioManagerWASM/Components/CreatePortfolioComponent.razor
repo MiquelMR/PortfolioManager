@@ -32,7 +32,20 @@
                                 {
                                     <i class="bi bi-cash asset-icon"></i>
                                 }
-                                <InputNumber @bind-Value="@portfolioAsset.AllocationPercentage" />
+
+                                <SfSlider Type="SliderType.Default"
+                                          Min="0"
+                                          Max="100"
+                                          Step="1"
+                                          @bind-Value="@portfolioAsset.AllocationPercentage"
+                                          ShowButtons="true">
+                                    <SliderTicks SmallStep="10"
+                                                 LargeStep="20"
+                                                 Placement="Placement.After"
+                                                 ShowSmallTicks="true" />
+                                    <SliderTooltip IsVisible="true" ShowOn="TooltipShowOn.Always"></SliderTooltip>
+                                </SfSlider>
+                                @* <InputNumber @bind-Value="@portfolioAsset.AllocationPercentage" /> *@
                                 <button class="btn btn-danger ms-1" @onclick="()=>OnRemoveFinancialAsset(portfolioAsset)">X</button>
                             </li>
                         }
