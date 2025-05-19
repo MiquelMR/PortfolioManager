@@ -7,7 +7,21 @@ namespace PortfolioManagerWASM.Components
     public partial class CreatePortfolioComponent
     {
         // Properties
-        [Parameter] public List<FinancialAsset> FinancialAssets { get; set; } = [];
+        [Parameter]
+        public List<FinancialAsset> FinancialAssets { get; set; }
+        private List<FinancialAsset> FilteredFinancialAssets
+        {
+            get
+            {
+                var financialAssetsFilteredByUniqueness = FinancialAssets;
+                newPortfolio.PortfolioAssets.ForEach(asset => financialAssetsFilteredByUniqueness.Remove(asset.FinancialAsset));
+                return financialAssetsFilteredByUniqueness;
+            }
+            set
+            {
+                _financialAssets = value;
+            }
+        }
 
         // Delegates
         [Parameter] public EventCallback<Portfolio> OnPortfolioSubmitDelegate { get; set; }
@@ -15,6 +29,7 @@ namespace PortfolioManagerWASM.Components
 
         // Private fields
         private readonly Portfolio newPortfolio = new() { Name = "My new Portfolio" };
+        private List<FinancialAsset> _financialAssets = [];
 
         // Events
         private void OnSubmitNewPortfolio()

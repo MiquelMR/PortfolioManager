@@ -52,6 +52,6 @@ namespace PortfolioManagerWASM.Components.Home
     public class ChartDataModel
     {
         public string AssetName { get; set; }
-        public float Allocation { get; set; }
+        public int Allocation { get; set; }
     }
 }
