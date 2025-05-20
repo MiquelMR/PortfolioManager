@@ -6,28 +6,32 @@
 @attribute [Authorize]
 
 @page "/community"
-<div class="container">
+
+<div class="container p-0">
     @if (PublicPortfoliosBasicInfo.Count > 0)
     {
         <div class="row">
 
-            <!--Side Portfolio List-->
+            <!--Sidenav Portfolio List-->
             <aside class="col-3">
-                <h2>Portfolios</h2>
                 <div class="list-group">
                     @for (int i = 0; i < PublicPortfoliosBasicInfo.Count; i++)
                     {
                         int index = i;
                         Portfolio portfolio = PublicPortfoliosBasicInfo[index];
-                        <button @onclick="()=>OnSelectPortfolio(index)" type="button" class="list-group-item list-group-item-action d-flex justify-content-between">
-                            <div>
-                                <p class="mb-0">@portfolio.Name</p>
-                                <p class="mb-0"><small>@portfolio.Author</small></p>
-                            </div>
-                            <div class="d-flex align-items-center">
-                                <span class="badge bg-body-secondary">
+
+                        <!--Portfolio List-->
+                        <button @onclick="()=>OnSelectPortfolio(index)" type="button" class="list-group-item list-group-item-action p-0">
+                            <div class="row">
+
+                                <div class="col-auto p-0 ms-4 d-flex align-items-center d-none d-xl-flex">
                                     <img class="rounded-icon" src="@(portfolio.IconPath)" alt="Icon">
-                                </span>
+                                </div>
+
+                                <div class="col-auto m-2">
+                                    <p class="portfolio-side-name">@portfolio.Name</p>
+                                    <p class="portfolio-side-author">@portfolio.Author</p>
+                                </div>
                             </div>
                         </button>
                     }
@@ -35,80 +39,80 @@
             </aside>
 
             <!--Main Page-->
-            <main class="col-9">
+            <div class="col-9">
                 @if (ActivePortfolio != null)
                 {
-                    <h2>@ActivePortfolio.Name</h2>
-                    <p>@ActivePortfolio.Author</p>
-                    <div class="accordion accordion-flush" id="description">
-                        <div class="accordion-item" id="header-1">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button"
-                                        type="button"
-                                        data-bs-toggle="collapse"
-                                        data-bs-target="#element-1"
-                                        aria-expanded="true"
-                                        aria-controls="element-1">
-                                    Description
-                                </button>
-                            </h2>
-                            <div id="element-1"
-                                 class="accordion-collapse collapse"
-                                 aria-labelledby="encabezado-1"
-                                 data-bs-parent="#header-1">
-                                <div class="accordion-body">
-                                    <p>@ActivePortfolio.Description</p>
-                                </div>
-                            </div>
-                        </div>
+                    <!--Name and author-->
+                    <div class="row mb-5">
+                        <div class="portfolio-title">@ActivePortfolio.Name</div>
+                        <div class="portfolio-author">@ActivePortfolio.Author</div>
+                    </div>
+
+                    <!--Description-->
+                    <div class="row portfolio-description mb-2">
+                        @ActivePortfolio.Description
                     </div>
                 }
 
                 <!--Portfolio charts-->
-                <article class="row" style="height:300px">
-                    <ul class="col-auto">
-                        @foreach (PortfolioAsset portfolioAsset in ActivePortfolio.PortfolioAssets)
-                        {
-                            <li class="d-flex align-items-center mb-3">
-                                <p class="m-2">@portfolioAsset.FinancialAsset.Name</p>
-                                @if (portfolioAsset.FinancialAsset.IconPath != null && portfolioAsset.FinancialAsset.IconPath.Length > 0)
-                                {
-                                    <img src="@(@portfolioAsset.FinancialAsset.IconPath)" alt="Icon" class="img-fluid asset-icon">
-                                }
-                                else
-                                {
-                                    <i class="bi bi-cash asset-icon"></i>
-                                }
-                                <p class="m-2">@portfolioAsset.AllocationPercentage</p>
-                            </li>
-                        }
-                    </ul>
-                    <div class="col d-none d-md-flex">
-                        <SfAccumulationChart Title="Asset composition">
+                <div class="row justify-content-start" style="height:300px">
+                    <div class="col-4 d-none d-lg-flex">
+                        <SfAccumulationChart>
+                            <AccumulationChartLegendSettings Visible="true"
+                                                             Alignment="Alignment.Center" />
+
                             <AccumulationChartSeriesCollection>
                                 <AccumulationChartSeries Type="AccumulationType.Pie"
+                                                         PointColorMapping="Color"
                                                          DataSource="@ChartDataModel"
                                                          XName="AssetName"
                                                          YName="Allocation"
-                                                         InnerRadius="40%">
+                                                         Name="AssetName"
+                                                         InnerRadius="20%">
                                 </AccumulationChartSeries>
-                                <AccumulationChartTooltipSettings Enable="true">
-
-                                </AccumulationChartTooltipSettings>
+                                <AccumulationChartTooltipSettings Enable="true" />
                             </AccumulationChartSeriesCollection>
                         </SfAccumulationChart>
-
                     </div>
-                </article>
+                    <div class="col">
+                        <ul class="scrollable-list">
+                            @foreach (PortfolioAsset pa in ActivePortfolio.PortfolioAssets)
+                            {
+                                <li>
+                                    <div class="accordion" id="accordion-assets">
+                                        <div class="accordion-item border-0">
+                                            <div class="accordion-header">
+                                                <button class="button-unstyled d-block w-75" type="button" data-bs-toggle="collapse" data-bs-target="#@pa.FinancialAsset.AssetId" aria-expanded="true" aria-controls="collapseOne">
+                                                    <div class="row justify-content-between">
+                                                        <div class="col-auto">
+                                                            <img class="asset-icon me-2" src="@pa.FinancialAsset.IconPath" /><span>@pa.FinancialAsset.Name</span>
+                                                        </div>
+                                                        <div class="col-auto">
+                                                            <span>@pa.FinancialAsset.ReferenceIndex</span>
+                                                        </div>
+                                                    </div>
+                                                </button>
+                                            </div>
+                                            <div id="@pa.FinancialAsset.AssetId" class="accordion-collapse collapse" data-bs-parent="accordion-assets">
+                                                <div class="accordion-body">
+                                                    @pa.FinancialAsset.Description
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
 
-            </main>
-
-        </div>
-
-        <div class="row">
-            <div class="col">
-                <button class="btn btn-primary" @onclick="OnAddPortfoliot">Add to my library</button>
+                <div class="row">
+                    <div class="col">
+                        <button class="btn btn-primary" @onclick="OnAddPortfoliot">Add to my library</button>
+                    </div>
+                </div>
             </div>
+
         </div>
     }
     else
