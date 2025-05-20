@@ -66,7 +66,29 @@ namespace PortfolioManagerWASM.Components
             var dir = HttpClient.GetStringAsync("icons/portfolios");
             return new List<string>()
             {
-                "default.svg"
+                    "default.svg",
+                    "balance-scale-left.svg",
+                    "briefcase.svg",
+                    "budget.svg",
+                    "business-value (1).svg",
+                    "business-value.svg",
+                    "chart-histogram.svg",
+                    "chart-pie-alt.svg",
+                    "chart-pyramid.svg",
+                    "cheap-dollar.svg",
+                    "deposit-alt.svg",
+                    "dollar.svg",
+                    "euro.svg",
+                    "plant-seed-invest.svg",
+                    "revenue.svg",
+                    "revenue-euro.svg",
+                    "shopping-basket.svg",
+                    "star-of-david.svg",
+                    "stats.svg",
+                    "tax-alt (1).svg",
+                    "tax-alt.svg",
+                    "usd-circles.svg",
+                    "wallet.svg"
             }
             .Select(item => Path.Combine(AppConfig.GetResourcePath("PortfolioIcons"), item))
             .ToList();
