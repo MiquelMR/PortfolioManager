@@ -139,6 +139,14 @@
                         <InputTextArea @bind-Value="newFinancialAsset.Description" />
                     </div>
                 </div>
+                <div>
+                    <div>
+                        <label>Reference index:</label>
+                    </div>
+                    <div>
+                        <InputTextArea @bind-Value="newFinancialAsset.ReferenceIndex" />
+                    </div>
+                </div>
 
                 <button class="btn btn-success mt-2" @onclick="() => OnSubmitFinancialAsset(newFinancialAsset)">Submit</button>
             </EditForm>
