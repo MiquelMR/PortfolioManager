@@ -83,11 +83,11 @@ a, .btn-link {
         transform: rotate(-90deg);
     }
 
-.loading-progress circle:last-child {
-    stroke: #1b6ec2;
-    stroke-dasharray: calc(3.141 * var(--blazor-load-percentage, 0%) * 0.8), 500%;
-    transition: stroke-dasharray 0.05s ease-in-out;
-}
+        .loading-progress circle:last-child {
+            stroke: #1b6ec2;
+            stroke-dasharray: calc(3.141 * var(--blazor-load-percentage, 0%) * 0.8), 500%;
+            transition: stroke-dasharray 0.05s ease-in-out;
+        }
 
 .loading-progress-text {
     position: absolute;
@@ -116,8 +116,50 @@ code {
 .rounded-icon {
     width: 32px;
     height: 32px;
-    border-radius: 10%;
+    border-radius: 20%;
     object-fit: cover;
+}
+
+.topbar-icon {    
+    padding: 4px;
+    width: 32px;
+    height: 32px;
+}
+
+.navbar {
+    border-block-end: 2px solid var(--secondary-color);
+}
+
+.nav-link {
+    margin: 0 4px 0 4px;
+}
+
+.nav-link:hover {
+    background-color: var(--primary-color);
+}
+
+.nav-link.active {
+    background-color: var(--primary-color) !important;
+}
+
+.brand-icon {
+    width: 60px;
+    height: 60px;
+}
+
+.brand-name {
+    font-size: 20px;
+    line-height: 1;
+    font-weight: bold;
+    color: var(--primary-color);
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.userAvatar-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
 }
 
 .userAvatar {
@@ -129,7 +171,7 @@ code {
 .asset-icon {
     width: 20px;
     height: 20px;
-    border-radius: 50%;
+    border-radius: 5%;
 }
 
 .portfolio-title {
@@ -140,14 +182,24 @@ code {
 
 .portfolio-author {
     margin-top: -4px;
-    margin-left:16px;
+    margin-left: 16px;
     font-size: 16px;
     font-weight: bold;
     color: var(--secondary-color);
 }
 
+.portfolio-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 5%;
+    object-fit: cover;
+}
+
 .portfolio-side-name {
+    white-space: nowrap;
     margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
     font-weight: bold;
     color: var(--primary-color);
 }
@@ -158,27 +210,27 @@ code {
     margin-bottom: 0;
 }
 
-.portfolio-description{
-    background-color:var(--white-smoke);
-    padding:16px;
+.portfolio-description {
+    background-color: var(--white-smoke);
+    padding: 16px;
 }
 
 .sf-accumulation-chart {
     width: auto;
     margin-left: 0;
-    margin-right: 0; 
+    margin-right: 0;
 }
 
 .scrollable-list {
     max-height: 300px;
-    overflow-y: auto; /* Creates a vertical scrollbar */
+    overflow-y: auto;
     padding: 0;
-    list-style: none; /* Optional: removes default list style */
+    list-style: none;
 }
 
 .scrollable-list li {
     padding: 10px;
-    border-bottom: 1px solid #ddd; /* Optional: adds a border between items */
+    border-bottom: 1px solid #ddd;
 }
 
 .button-unstyled {
@@ -190,7 +242,13 @@ code {
     color: inherit;
 }
 
+.fa-description {
+    color: var(--primary-color);
+}
 
+.strengh-and-weakness-row {
+    border: 2px solid;
+}
 
 :root {
     --primary-color: #3498db;

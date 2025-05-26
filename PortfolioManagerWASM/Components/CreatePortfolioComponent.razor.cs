@@ -70,7 +70,6 @@ namespace PortfolioManagerWASM.Components
                     "balance-scale-left.svg",
                     "briefcase.svg",
                     "budget.svg",
-                    "business-value (1).svg",
                     "business-value.svg",
                     "chart-histogram.svg",
                     "chart-pie-alt.svg",
@@ -85,9 +84,9 @@ namespace PortfolioManagerWASM.Components
                     "shopping-basket.svg",
                     "star-of-david.svg",
                     "stats.svg",
-                    "tax-alt (1).svg",
                     "tax-alt.svg",
-                    "usd-circles.svg",
+                    "usd-circle.svg",
+                    "house-chimney.svg",
                     "wallet.svg"
             }
             .Select(item => Path.Combine(AppConfig.GetResourcePath("PortfolioIcons"), item))

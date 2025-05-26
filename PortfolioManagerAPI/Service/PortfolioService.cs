@@ -18,11 +18,13 @@ namespace PortfolioManagerAPI.Service
         public async Task<PortfolioDto> GetPortfolioById(int portfolioId)
         {
             var portfolio = await _portfolioRepository.GetPortfolioByIdAsync(portfolioId);
-            if (portfolio == null) { return null; }
+            if (portfolio == null)
+                return null;
             var portfolioDto = _mapper.Map<PortfolioDto>(portfolio);
 
             var portfolioAssets = await _portfolioAssetRepository.GetPortfolioAssetsByPortfolioIdAsync(portfolioDto.PortfolioId) ?? [];
-            if (portfolioAssets == null) { return null; }
+            if (portfolioAssets == null)
+                return null;
 
             var portfolioAssetsDto = new List<PortfolioAssetDto>();
             portfolioAssetsDto = portfolioAssets.Select(portfolioAsset =>

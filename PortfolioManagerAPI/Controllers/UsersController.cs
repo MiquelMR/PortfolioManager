@@ -10,7 +10,7 @@ namespace PortfolioManagerAPI.Controllers
 {
     [Route("api/users")]
     [ApiController]
-    public class UsersController(IUserService userService) : ControllerBase
+    public class UsersController(IUserService userService, IConfiguration config) : ControllerBase
     {
         private readonly IUserService _userService = userService;
 
@@ -32,10 +32,11 @@ namespace PortfolioManagerAPI.Controllers
         }
 
         // [Authorize]
-        [HttpGet]
-        public async Task<IActionResult> GetUsers()
+        [HttpGet("{userEmail}")]
+        public async Task<IActionResult> GetUsers(string userEmail)
         {
-
+            if (userEmail == null || userEmail != config.GetValue<string>("EmailAutorizado"))
+                return StatusCode(401, new ResponseAPI<object>(401, "Unauthorized", null));
             var usersDto = await _userService.GetUsersAsync();
             if (usersDto == null)
                 return StatusCode(500, new ResponseAPI<object>(500, "Internal server error", null));

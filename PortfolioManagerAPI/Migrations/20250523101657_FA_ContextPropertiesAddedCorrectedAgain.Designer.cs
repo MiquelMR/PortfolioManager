@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PortfolioManagerAPI.Data;
 
@@ -11,9 +12,11 @@ using PortfolioManagerAPI.Data;
 namespace PortfolioManagerAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250523101657_FA_ContextPropertiesAddedCorrectedAgain")]
+    partial class FA_ContextPropertiesAddedCorrectedAgain
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,7 +39,13 @@ namespace PortfolioManagerAPI.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
 
+                    b.Property<int>("FavorsDeflation")
+                        .HasColumnType("int");
+
                     b.Property<int>("FavorsExpansion")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FavorsInflation")
                         .HasColumnType("int");
 
                     b.Property<int>("Growth")
@@ -49,9 +58,6 @@ namespace PortfolioManagerAPI.Migrations
                     b.Property<int>("Income")
                         .HasColumnType("int");
 
-                    b.Property<int>("InflationHedge")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(48)
@@ -62,6 +68,9 @@ namespace PortfolioManagerAPI.Migrations
 
                     b.Property<string>("ReferenceIndex")
                         .HasColumnType("longtext");
+
+                    b.Property<int>("Value")
+                        .HasColumnType("int");
 
                     b.Property<int>("Volatility")
                         .HasColumnType("int");

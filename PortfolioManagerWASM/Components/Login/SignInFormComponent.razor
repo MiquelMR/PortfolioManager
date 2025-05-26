@@ -1,29 +1,27 @@
 ﻿
-<h3>Sign in</h3>
 <div class="container">
+    <div class="portfolio-title">Sign in</div>
     <EditForm Model="@newUser" OnValidSubmit="@RegisterNewUserAsync">
         <DataAnnotationsValidator />
         <ValidationSummary />
 
-        <div>
+        <div class="form-group mb-4">
             <label for="name">Name:</label>
-            <InputText id="name" @bind-Value="newUser.Name" />
-        </div>
-        <div>
+            <InputText id="name" class="form-control" @bind-Value="newUser.Name" />
+
             <label for="password">Password:</label>
-            <InputText type="password" id="password" @bind-Value="newUser.Password" />
-        </div>
-        <div>
+            <InputText type="password" class="form-control" id="password" @bind-Value="newUser.Password" />
+
             <label for="email">Email:</label>
-            <InputText id="email" @bind-Value="newUser.Email" />
-        </div>
-        <div>
+            <InputText id="email" class="form-control" @bind-Value="newUser.Email" />
+
             <label for="avatar">Avatar:</label>
-            <InputFile id="avatar" OnChange="FileUploadAsync" />
+            <InputFile id="avatar" class="form-control" OnChange="FileUploadAsync" />
+            <small id="avatarHelp" class="form-text text-muted">Avatar is optional</small>
         </div>
 
 
-        <button type="submit">Sign In</button>
+        <button class="btn btn-primary mb-2" type="submit">Sign In</button>
     </EditForm>
 
 </div>

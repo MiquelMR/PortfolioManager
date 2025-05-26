@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PortfolioManagerAPI.Data;
 
@@ -11,9 +12,11 @@ using PortfolioManagerAPI.Data;
 namespace PortfolioManagerAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250522191413_FA_ContextPropertiesAddedCorrected")]
+    partial class FA_ContextPropertiesAddedCorrected
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,27 +33,21 @@ namespace PortfolioManagerAPI.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("AssetId"));
 
-                    b.Property<int>("Defensive")
-                        .HasColumnType("int");
-
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
 
-                    b.Property<int>("FavorsExpansion")
+                    b.Property<int>("FavorsGrowth")
                         .HasColumnType("int");
 
-                    b.Property<int>("Growth")
+                    b.Property<int>("FavorsInflation")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GrowthVsValue")
                         .HasColumnType("int");
 
                     b.Property<string>("IconFilename")
                         .HasMaxLength(48)
                         .HasColumnType("varchar(48)");
-
-                    b.Property<int>("Income")
-                        .HasColumnType("int");
-
-                    b.Property<int>("InflationHedge")
-                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -63,7 +60,7 @@ namespace PortfolioManagerAPI.Migrations
                     b.Property<string>("ReferenceIndex")
                         .HasColumnType("longtext");
 
-                    b.Property<int>("Volatility")
+                    b.Property<int>("VolatilyLevel")
                         .HasColumnType("int");
 
                     b.HasKey("AssetId");

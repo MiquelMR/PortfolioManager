@@ -8,6 +8,9 @@
     <thead>
         <tr>
             <th>Name</th>
+            <th>EntornoInflacion</th>
+            <th>EntornoCrecimiento</th>
+            <th>GrowthValue</th>
             <th>ReferenceIndex</th>
             <th>Icon</th>
             <th>Description</th>
@@ -19,6 +22,12 @@
         {
             <tr>
                 <td>@financialAsset.Name</td>
+                <td>@financialAsset.Income</td>
+                <td>@financialAsset.InflationHedge</td>
+                <td>@financialAsset.Volatility</td>
+                <td>@financialAsset.Defensive</td>
+                <td>@financialAsset.FavorsExpansion</td>
+                <td>@financialAsset.Growth</td>
                 <td>@financialAsset.ReferenceIndex</td>
                 <td><img class="rounded-icon" src="@financialAsset.IconPath" alt="Financial Asset Icon"></td>
                 <td>@financialAsset.Description</td>
@@ -75,6 +84,31 @@
                                 <!--Description-->
                                 <td>
                                     <InputText @bind-Value="financialAsset.Description" />
+                                </td>
+                                <!--Environments-->
+                                <td>
+                                    <label>FavorsGrowth</label>
+                                    <InputNumber @bind-Value="financialAsset.Income" />
+                                </td>
+                                <td>
+                                    <label>FavorsInflation</label>
+                                    <InputNumber @bind-Value="financialAsset.InflationHedge" />
+                                </td>
+                                <td>
+                                    <label>FavorsInflation</label>
+                                    <InputNumber @bind-Value="financialAsset.Volatility" />
+                                </td>
+                                <td>
+                                    <label>FavorsInflation</label>
+                                    <InputNumber @bind-Value="financialAsset.Defensive" />
+                                </td>
+                                <td>
+                                    <label>FavorsInflation</label>
+                                    <InputNumber @bind-Value="financialAsset.FavorsExpansion" />
+                                </td>
+                                <td>
+                                    <label>VolatilyLevel</label>
+                                    <InputNumber @bind-Value="financialAsset.Growth" />
                                 </td>
 
                                 <button class="btn btn-success mt-2" @onclick="() => OnUpdateFinancialAsset(financialAsset)">Save Changes</button>
@@ -146,10 +180,34 @@
                     <div>
                         <InputTextArea @bind-Value="newFinancialAsset.ReferenceIndex" />
                     </div>
-                </div>
-
-                <button class="btn btn-success mt-2" @onclick="() => OnSubmitFinancialAsset(newFinancialAsset)">Submit</button>
-            </EditForm>
+                <td>
+                    <label>FavorsGrowth</label>
+                    <InputNumber @bind-Value="newFinancialAsset.Income" />
+                </td>
+                <td>
+                    <label>FavorsInflation</label>
+                    <InputNumber @bind-Value="newFinancialAsset.InflationHedge" />
+                </td>
+                <td>
+                    <label>FavorsInflation</label>
+                    <InputNumber @bind-Value="newFinancialAsset.Volatility" />
+                </td>
+                <td>
+                    <label>FavorsInflation</label>
+                    <InputNumber @bind-Value="newFinancialAsset.Defensive" />
+                </td>
+                <td>
+                    <label>FavorsInflation</label>
+                    <InputNumber @bind-Value="newFinancialAsset.FavorsExpansion" />
+                </td>
+                <td>
+                    <label>VolatilyLevel</label>
+                    <InputNumber @bind-Value="newFinancialAsset.Growth" />
+                </td>
         </div>
+
+        <button class="btn btn-success mt-2" @onclick="() => OnSubmitFinancialAsset(newFinancialAsset)">Submit</button>
+        </EditForm>
     </div>
+</div>
 </div>

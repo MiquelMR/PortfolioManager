@@ -58,11 +58,11 @@ namespace PortfolioManagerWASM.Services
 
         public async Task<List<User>> GetUsersAsync()
         {
-            var authorized = ActiveUser.Email.Equals(AppConfig.GetAuthorizedEmail());
-            if (!authorized || ActiveUser.Role != UserRoles.Admin)
-                return null;
+            //var authorized = ActiveUser.Email.Equals(AppConfig.GetAuthorizedEmail());
+            //if (!authorized || ActiveUser.Role != UserRoles.Admin)
+            //    return null;
 
-            var response = await _httpClient.GetAsync($"{Initialize.UrlBaseApi}api/users");
+            var response = await _httpClient.GetAsync($"{Initialize.UrlBaseApi}api/users/{ActiveUser.Email}");
             var contentTemp = await response.Content.ReadAsStringAsync();
             var responseAPI = JsonConvert.DeserializeObject<ResponseAPI<List<User>>>(contentTemp);
             var user = responseAPI.Data;
