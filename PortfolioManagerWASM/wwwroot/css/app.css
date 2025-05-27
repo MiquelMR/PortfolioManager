@@ -120,7 +120,7 @@ code {
     object-fit: cover;
 }
 
-.topbar-icon {    
+.topbar-icon {
     padding: 4px;
     width: 32px;
     height: 32px;
@@ -134,12 +134,18 @@ code {
     margin: 0 4px 0 4px;
 }
 
-.nav-link:hover {
-    background-color: var(--primary-color);
-}
+    .nav-link:hover {
+        background-color: var(--primary-color);
+    }
 
-.nav-link.active {
-    background-color: var(--primary-color) !important;
+    .nav-link.active {
+        background-color: var(--primary-color) !important;
+    }
+
+.navbar-title {
+    font-weight: bold;
+    font-size: 20px;
+    color: var(--primary-color);
 }
 
 .brand-icon {
@@ -224,14 +230,15 @@ code {
 .scrollable-list {
     max-height: 300px;
     overflow-y: auto;
+    overflow-x:hidden;
     padding: 0;
     list-style: none;
 }
 
-.scrollable-list li {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-}
+    .scrollable-list li {
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+    }
 
 .button-unstyled {
     background: none;
@@ -243,11 +250,30 @@ code {
 }
 
 .fa-description {
-    color: var(--primary-color);
+    padding-bottom:4px;
 }
 
 .strengh-and-weakness-row {
     border: 2px solid;
+}
+
+.home-title {
+    color: var(--primary-color);
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom:8px;
+}
+
+.badge-custom {
+    background-color: var(--primary-color);
+}
+
+ul {
+    list-style: none;
+}
+
+.list-strengths-weakness{
+    margin-top:32px;
 }
 
 :root {
@@ -255,4 +281,9 @@ code {
     --secondary-color: #393E46;
     --white-smoke: #f5f5f5;
     --font-size-small: 12px;
+    --gold: #bc9404;
+    --softerGold: #e4c45c;
+    --blue: #1338be;
+    --softerBlue: #5ec5ff;
+    --gray: #353839;
 }

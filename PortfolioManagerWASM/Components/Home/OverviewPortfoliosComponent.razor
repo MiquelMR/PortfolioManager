@@ -2,13 +2,48 @@
 @using PortfolioManagerWASM.Pages
 @inject IJSRuntime JS
 
-<div class="container-fluid p-0">
+<div class="container-fluid p-0" style="font-size:14px">
     @if (UserPortfoliosBasicInfo.Count > 0)
     {
         <div class="row">
 
+            <!--Topbar Portfolio List-->
+            <nav class="navbar d-xl-none navbar-expand bg-body-tertiary">
+                <div class="container-fluid">
+                    <span class="navbar-title">Portfolios</span>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <button class="btn dropdown-toggle navbar-title" data-bs-toggle="dropdown" aria-expanded="false">
+                        </button>
+                        <ul class="dropdown-menu">
+                            @for (int i = 0; i < UserPortfoliosBasicInfo.Count; i++)
+                            {
+                                int index = i;
+                                Portfolio portfolio = UserPortfoliosBasicInfo[index];
+
+                                <!--Portfolio List-->
+                                <button @onclick="()=>OnSelectPortfolio(index)" type="button" class="list-group-item list-group-item-action p-0">
+                                    <div class="row">
+                                        <div class="col-auto p-0 ms-3 d-flex align-items-center d-none d-xl-flex">
+                                            <img class="portfolio-icon" src="@(portfolio.IconPath)" alt="Icon">
+                                        </div>
+
+                                        <div class="col m-1">
+                                            <p class="portfolio-side-name">@portfolio.Name</p>
+                                            <p class="portfolio-side-author">@portfolio.Author</p>
+                                        </div>
+                                    </div>
+                                </button>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
             <!--Sidenav Portfolio List-->
-            <aside class="col-3">
+            <aside class="col-3 d-none d-xl-flex">
                 <div class="list-group">
                     @for (int i = 0; i < UserPortfoliosBasicInfo.Count; i++)
                     {
@@ -48,29 +83,13 @@
                     </div>
                 }
 
-                <!--Portfolio charts-->
-                <div class="row justify-content-start" style="height:300px">
-                    <div class="col-4 d-none d-lg-flex">
-                        <SfAccumulationChart>
-                            <AccumulationChartLegendSettings Visible="true"
-                                                             Alignment="Alignment.Center" />
-
-                            <AccumulationChartSeriesCollection>
-                                <AccumulationChartSeries Type="AccumulationType.Pie"
-                                                         PointColorMapping="Color"
-                                                         DataSource="@AssetCompositionChartData"
-                                                         XName="AssetName"
-                                                         YName="Allocation"
-                                                         Name="AssetName"
-                                                         InnerRadius="20%">
-                                </AccumulationChartSeries>
-                                <AccumulationChartTooltipSettings EnableAnimation=true
-                                                                  Enable="true"
-                                                                  EnableMarker="true" />
-                            </AccumulationChartSeriesCollection>
-                        </SfAccumulationChart>
+                <!--Portfolio Asset composition-->
+                <div class="row justify-content-start mt-5">
+                    <div class="home-title">
+                        Asset composition
                     </div>
-                    <div class="col">
+
+                    <div class="col-12 col-xl-7">
                         <ul class="scrollable-list">
                             @foreach (PortfolioAsset pa in ActivePortfolio.PortfolioAssets)
                             {
@@ -78,13 +97,17 @@
                                     <div class="accordion" id="accordion-assets">
                                         <div class="accordion-item border-0">
                                             <div class="accordion-header">
-                                                <button class="button-unstyled d-block w-75" type="button" data-bs-toggle="collapse" data-bs-target="#@pa.FinancialAsset.AssetId" aria-expanded="true" aria-controls="collapseOne">
+                                                <button class="button-unstyled d-inline w-100" type="button" data-bs-toggle="collapse" data-bs-target="#@pa.FinancialAsset.AssetId" aria-expanded="true" aria-controls="collapseOne">
                                                     <div class="row justify-content-between">
                                                         <div class="col-auto">
-                                                            <img class="asset-icon me-2" src="@pa.FinancialAsset.IconPath" /><span>@pa.FinancialAsset.Name</span>
+                                                            <img class="asset-icon me-2" src="@pa.FinancialAsset.IconPath" />
+                                                            <span class="badge badge-custom">@pa.FinancialAsset.Name</span>
+                                                        </div>
+                                                        <div class="col d-none d-xl-flex">
+                                                            @pa.FinancialAsset.ReferenceIndex
                                                         </div>
                                                         <div class="col-auto">
-                                                            <span>@pa.FinancialAsset.ReferenceIndex</span>
+                                                            <span>@pa.AllocationPercentage %</span>
                                                         </div>
                                                     </div>
                                                 </button>
@@ -106,48 +129,41 @@
                                         </div>
                                     </div>
                                 </li>
+
                             }
                         </ul>
                     </div>
+
+                    <div class="col-12 col-xl-5" style="height:350px">
+                        <SfAccumulationChart>
+                            <AccumulationChartLegendSettings Visible="true"
+                                                             Position="LegendPosition.Bottom"
+                                                             Alignment="Alignment.Center" />
+
+                            <AccumulationChartSeriesCollection>
+                                <AccumulationChartSeries Type="AccumulationType.Pie"
+                                                         PointColorMapping="Color"
+                                                         DataSource="@AssetCompositionChartData"
+                                                         XName="AssetName"
+                                                         YName="Allocation"
+                                                         Name="AssetName"
+                                                         InnerRadius="20%">
+                                </AccumulationChartSeries>
+                                <AccumulationChartTooltipSettings EnableAnimation=true
+                                                                  Enable="true"
+                                                                  EnableMarker="true" />
+                            </AccumulationChartSeriesCollection>
+                        </SfAccumulationChart>
+                    </div>
                 </div>
 
-                <div class="row justify-content-end" style="height:300px">
-                    <div class="col">
-                        <table class="table-sm">
-                            <tbody>
-
-                                @foreach (PortfolioAsset pa in ActivePortfolio.PortfolioAssets)
-                                {
-                                    var fa = pa.FinancialAsset;
-                                    <tr class="strengh-and-weakness-row">
-                                        <td>
-                                            <span>@fa.Name</span>
-                                        </td>
-                                        <td class="border border-1">
-                                            <span style="@GetTraitStyle(fa.Income)" data-bs-toggle="tooltip" title="Provides consistent cash flows through dividends or coupons">Income</span>
-                                        </td>
-                                        <td class="border border-1">
-                                            <span style="@GetTraitStyle(fa.InflationHedge)" data-bs-toggle="tooltip" title="Offers strong protection against inflation">Inflation Hedge</span>
-                                        </td>
-                                        <td class="border border-1">
-                                            <span style="@GetTraitStyle(fa.Volatility)" data-bs-toggle="tooltip" title="Exhibits small price fluctuations">Volatility</span>
-                                        </td>
-                                        <td class="border border-1">
-                                            <span style="@GetTraitStyle(fa.Defensive)" data-bs-toggle="tooltip" title="Tends to perform well during economic downturns">Defensive</span>
-                                        </td>
-                                        <td class="border border-1">
-                                            <span style="@GetTraitStyle(fa.FavorsExpansion)" data-bs-toggle="tooltip" title="Performs well during periods of economic growth">Favors Expansion</span>
-                                        </td>
-                                        <td class="border border-1">
-                                            <span style="@GetTraitStyle(fa.Growth)" data-bs-toggle="tooltip" title="Returns are primarily driven by asset price appreciation.">Growth</span>
-                                        </td>
-                                    </tr>
-
-                                }
-                            </tbody>
-                        </table>
+                <!--Portfolio Strengths and weaknesses-->
+                <div class="row justify-content-end  mt-5">
+                    <div class="home-title">
+                        Portfolio Strengths and Weaknesses
                     </div>
-                    <div class="col-4 d-none d-xl-flex">
+
+                    <div class="col-4 d-none d-xl-flex" style="height:350px">
                         <SfChart>
                             <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category"
                                                LabelPlacement="LabelPlacement.OnTicks" />
@@ -165,6 +181,23 @@
                             <ChartTooltipSettings Enable="true" />
                         </SfChart>
                     </div>
+
+                    <div class="col list-strengths-weakness">
+                        <ul>
+                            @foreach (StrenghtsAndWeaknessChartDataModelPolar dataModelPolar in PortfolioStrenghAndWeaknessChartData)
+                            {
+                                <li>
+                                    <div class="badge" style="@dataModelPolar.Style">
+                                        @dataModelPolar.Environment
+                                    </div>
+                                    <div class="ms-3 mb-2">
+                                        @dataModelPolar.Description
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+
                 </div>
 
                 <button class="btn btn-primary" @onclick="OnDeleteActivePortfolio">Delete</button>
