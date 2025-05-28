@@ -230,7 +230,7 @@ code {
 .scrollable-list {
     max-height: 300px;
     overflow-y: auto;
-    overflow-x:hidden;
+    overflow-x: hidden;
     padding: 0;
     list-style: none;
 }
@@ -250,7 +250,7 @@ code {
 }
 
 .fa-description {
-    padding-bottom:4px;
+    padding-bottom: 4px;
 }
 
 .strengh-and-weakness-row {
@@ -261,19 +261,37 @@ code {
     color: var(--primary-color);
     font-weight: bold;
     font-size: 16px;
-    margin-bottom:8px;
+    margin-bottom: 8px;
 }
 
 .badge-custom {
     background-color: var(--primary-color);
 }
 
+.etf-reference {
+    font-size: 12px;
+    color: var(--secondary-color);
+}
+
+.etf-link-icon {
+    margin-left: 4px;
+    width: 12px;
+}
+
 ul {
     list-style: none;
 }
 
-.list-strengths-weakness{
-    margin-top:32px;
+.list-strengths-weakness {
+    margin-top: 32px;
+}
+
+.btn-custom{
+    background-color:var(--primary-color);
+    color:white;
+    font-weight:bold;
+    font-size:14px;
+    border-radius:4%;
 }
 
 :root {

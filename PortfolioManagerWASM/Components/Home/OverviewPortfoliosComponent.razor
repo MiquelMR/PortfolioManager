@@ -102,9 +102,10 @@
                                                         <div class="col-auto">
                                                             <img class="asset-icon me-2" src="@pa.FinancialAsset.IconPath" />
                                                             <span class="badge badge-custom">@pa.FinancialAsset.Name</span>
-                                                        </div>
-                                                        <div class="col d-none d-xl-flex">
-                                                            @pa.FinancialAsset.ReferenceIndex
+                                                            <span class="etf-reference">@pa.FinancialAsset.ReferenceIndex</span>
+                                                            <a target="_blank" rel="noopener noreferrer" href="@pa.FinancialAsset.ReferenceETFSite">
+                                                                <img class="etf-link-icon" src="/icons/link.svg" alt="reference index link" />
+                                                            </a>
                                                         </div>
                                                         <div class="col-auto">
                                                             <span>@pa.AllocationPercentage %</span>
@@ -117,11 +118,6 @@
                                                     <div class="row justify-content-between">
                                                         <div class="col-auto">
                                                             @pa.FinancialAsset.Description
-                                                        </div>
-                                                        <div class="col">
-                                                            <a target="_blank" rel="noopener noreferrer" href="@pa.FinancialAsset.ReferenceETFSite">
-                                                                <img class="asset-icon" src="/icons/link.svg" alt="reference index link" />
-                                                            </a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -198,6 +194,13 @@
                         </ul>
                     </div>
 
+                </div>
+
+                <!--Portfolio Risk analysis-->
+                <div class="row justify-content-start mt-5">
+                    <div class="home-title">
+                        Risk Analysis
+                    </div>
                 </div>
 
                 <button class="btn btn-primary" @onclick="OnDeleteActivePortfolio">Delete</button>

@@ -15,6 +15,7 @@ namespace PortfolioManagerWASM.Pages
         public User ActiveUser { get; set; } = new();
         public List<Portfolio> PublicPortfoliosBasicInfo { get; set; } = [];
         public Portfolio ActivePortfolio { get; set; }
+
         protected override async Task OnInitializedAsync()
         {
             await CommunityViewModel.InitAsync();
@@ -41,7 +42,7 @@ namespace PortfolioManagerWASM.Pages
             StateHasChanged();
         }
 
-        public async void OnAddPortfoliot()
+        private async Task OnAddPortfolio()
         {
             await CommunityViewModel.AddPortfolio(ActivePortfolio);
         }
@@ -49,17 +50,35 @@ namespace PortfolioManagerWASM.Pages
         private List<FinancialAssetsChartDataModel> PortfolioAssetsChartData()
         {
             List<FinancialAssetsChartDataModel> chartDataModel = [];
+            List<string> colors =
+                ["#3498db",
+                "#393E46",
+                "#F2C078",
+                "#f5f5f5",
+                "#8be04e",
+                "#0d88e6",
+                "#7c1158",
+                "#00b7c7",
+                "#5ad45a"];
+            int counter = 0;
+
             foreach (PortfolioAsset portfolioAsset in ActivePortfolio.PortfolioAssets)
             {
+                if (counter > colors.Count - 1)
+                    counter = 0;
+
                 var portfolioAssetData = new FinancialAssetsChartDataModel
                 {
                     AssetName = portfolioAsset.FinancialAsset.Name,
-                    Allocation = portfolioAsset.AllocationPercentage
+                    Allocation = portfolioAsset.AllocationPercentage,
+                    Color = colors[counter]
                 };
                 chartDataModel.Add(portfolioAssetData);
+                counter++;
             }
             return chartDataModel;
         }
+
         private List<StrenghtsAndWeaknessChartDataModelPolar> StrenghtsAndWeakness()
         {
             // Establish the characteristics of the portfolio
@@ -73,64 +92,100 @@ namespace PortfolioManagerWASM.Pages
             {
                 // Provides income
                 income +=
-                    portfolioAsset.FinancialAsset.Income * (portfolioAsset.AllocationPercentage / 100f) * 20f;
+                    (portfolioAsset.FinancialAsset.Income - 1) * (portfolioAsset.AllocationPercentage / 100f) * 25;
 
                 // Inflation hedge
                 inflationHedge +=
-                    portfolioAsset.FinancialAsset.InflationHedge * (portfolioAsset.AllocationPercentage / 100f) * 20f;
+                    (portfolioAsset.FinancialAsset.InflationHedge - 1) * (portfolioAsset.AllocationPercentage / 100f) * 25;
 
                 // Volatility
                 volatility +=
-                    portfolioAsset.FinancialAsset.Volatility * (portfolioAsset.AllocationPercentage / 100f) * 20f;
+                    (portfolioAsset.FinancialAsset.Volatility - 1) * (portfolioAsset.AllocationPercentage / 100f) * 25;
 
                 // Defensive
                 defensive +=
-                    portfolioAsset.FinancialAsset.Defensive * (portfolioAsset.AllocationPercentage / 100f) * 20f;
+                    (portfolioAsset.FinancialAsset.Defensive - 1) * (portfolioAsset.AllocationPercentage / 100f) * 25;
 
                 // Expansión
                 expansion +=
-                    portfolioAsset.FinancialAsset.FavorsExpansion * (portfolioAsset.AllocationPercentage / 100f) * 20f;
+                    (portfolioAsset.FinancialAsset.FavorsExpansion - 1) * (portfolioAsset.AllocationPercentage / 100f) * 25;
 
                 // Returns by Growth
                 growth +=
-                    portfolioAsset.FinancialAsset.Growth * (portfolioAsset.AllocationPercentage / 100f) * 20f;
+                    (portfolioAsset.FinancialAsset.Growth - 1) * (portfolioAsset.AllocationPercentage / 100f) * 25;
             }
             List<StrenghtsAndWeaknessChartDataModelPolar> data =
                 [
-                    new StrenghtsAndWeaknessChartDataModelPolar() { Environment = "Growth", Intensity= growth},
-                    new StrenghtsAndWeaknessChartDataModelPolar() { Environment = "Expansion" , Intensity= expansion},
-                    new StrenghtsAndWeaknessChartDataModelPolar() { Environment = "Inflation", Intensity= inflationHedge},
-                    new StrenghtsAndWeaknessChartDataModelPolar() { Environment = "Income", Intensity= income},
-                    new StrenghtsAndWeaknessChartDataModelPolar() { Environment = "Defensive", Intensity= defensive},
-                    new StrenghtsAndWeaknessChartDataModelPolar() { Environment = "Volatiliy", Intensity= volatility},
+                    new StrenghtsAndWeaknessChartDataModelPolar() { Environment = "Growth", Intensity= growth, Style=GetTraitStyle(growth), Description = GetDescription("Growth")},
+                    new StrenghtsAndWeaknessChartDataModelPolar() { Environment = "Expansion" , Intensity= expansion, Style=GetTraitStyle(expansion), Description = GetDescription("Expansion")},
+                    new StrenghtsAndWeaknessChartDataModelPolar() { Environment = "Inflation", Intensity= inflationHedge, Style=GetTraitStyle(inflationHedge), Description = GetDescription("Inflation")},
+                    new StrenghtsAndWeaknessChartDataModelPolar() { Environment = "Income", Intensity = income, Style = GetTraitStyle(income), Description = GetDescription("Income")},
+                    new StrenghtsAndWeaknessChartDataModelPolar() { Environment = "Defensive", Intensity = defensive ,Style = GetTraitStyle(defensive), Description = GetDescription("Defensive")},
+                    new StrenghtsAndWeaknessChartDataModelPolar() { Environment = "Volatiliy", Intensity = volatility, Style = GetTraitStyle(volatility), Description = GetDescription("Volatiliy")},
                  ];
             return data;
         }
 
-        private static string GetTraitStyle(int trait)
+        private static string GetTraitStyle(float intensity)
         {
-            string style = "";
-            style = trait switch
-            {
-                1 => "font-weight:Bold; color: #3c6cbc",
-                2 => "color: #3c7cdc",
-                3 => "color: #e4c45c",
-                4 => "font-weight:Bold; color: #e4c45c",
-                5 => "font-weight:Bold; color: #bc9404",
-                _ => "",
-            };
+            string style;
+            if (intensity < 30)
+                style = "color:white; font-weight:bold; background-color:var(--blue);";
+            else if (intensity < 45)
+                style = "color:white; background-color:var(--softerBlue);";
+            else if (intensity < 60)
+                style = "color:white; background-color:var(--gray);";
+            else if (intensity < 70)
+                style = "color:white; background-color:var(--softerGold);";
+            else
+                style = "color:white; font-weight:bold; background-color:var(--gold);";
             return style;
         }
-    }
 
-    public class FinancialAssetsChartDataModel
-    {
-        public string AssetName { get; set; }
-        public int Allocation { get; set; }
+        private static string GetDescription(string trait)
+        {
+            string description;
+            switch (trait)
+            {
+                case "Growth":
+                    description = "Potential for capital appreciation through reinvestment of earnings";
+                    break;
+                case "Expansion":
+                    description = "Tendency to perform in line with periods of economic growth and expansion";
+                    break;
+                case "Inflation":
+                    description = "Ability to protect purchasing power by appreciating during inflationary periods";
+                    break;
+                case "Income":
+                    description = "Capability to provide returns in the form of dividends or coupon payments";
+                    break;
+                case "Defensive":
+                    description = "Ability to maintain value or stability during economic downturns";
+                    break;
+                case "Volatiliy":
+                    description = "Susceptibility to frequent or significant price fluctuations";
+                    break;
+                default:
+                    Console.WriteLine("Error providing description");
+                    description = "Internal Error";
+                    break;
+            }
+            return description;
+        }
+
+        public class FinancialAssetsChartDataModel
+        {
+            public string AssetName { get; set; }
+            public int Allocation { get; set; }
+            public string Color { get; set; }
+        };
+
+        public class StrenghtsAndWeaknessChartDataModelPolar
+        {
+            public string Environment { get; set; }
+            public float Intensity { get; set; }
+            public string Style { get; set; }
+            public string Description { get; set; }
+        };
     }
-    public class StrenghtsAndWeaknessChartDataModelPolar
-    {
-        public string Environment { get; set; }
-        public float Intensity { get; set; }
-    };
 }

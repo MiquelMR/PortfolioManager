@@ -117,43 +117,13 @@
                     </div>
                 </div>
 
-                <div class="row justify-content-end" style="height:300px">
-                    <div class="col">
-                        <table class="table-sm">
-                            <tbody>
-
-                                @foreach (PortfolioAsset pa in ActivePortfolio.PortfolioAssets)
-                                {
-                                    var fa = pa.FinancialAsset;
-                                    <tr>
-                                        <td class="border border-1">
-                                            <span>@fa.Name</span>
-                                        </td>
-                                        <td class="border border-1">
-                                            <span style="@GetTraitStyle(fa.Income)" data-bs-toggle="tooltip" title="Provides consistent cash flows through dividends or coupons">Income</span>
-                                        </td>
-                                        <td class="border border-1">
-                                            <span style="@GetTraitStyle(fa.InflationHedge)" data-bs-toggle="tooltip" title="Offers strong protection against inflation">Inflation Hedge</span>
-                                        </td>
-                                        <td class="border border-1">
-                                            <span style="@GetTraitStyle(fa.Volatility)" data-bs-toggle="tooltip" title="Exhibits small price fluctuations">Volatility</span>
-                                        </td>
-                                        <td class="border border-1">
-                                            <span style="@GetTraitStyle(fa.Defensive)" data-bs-toggle="tooltip" title="Tends to perform well during economic downturns">Defensive</span>
-                                        </td>
-                                        <td class="border border-1">
-                                            <span style="@GetTraitStyle(fa.FavorsExpansion)" data-bs-toggle="tooltip" title="Performs well during periods of economic growth">Favors Expansion</span>
-                                        </td>
-                                        <td class="border border-1">
-                                            <span style="@GetTraitStyle(fa.Growth)" data-bs-toggle="tooltip" title="Returns are primarily driven by asset price appreciation.">Growth</span>
-                                        </td>
-                                    </tr>
-
-                                }
-                            </tbody>
-                        </table>
+                <!--Portfolio Strengths and weaknesses-->
+                <div class="row justify-content-end  mt-5">
+                    <div class="home-title">
+                        Portfolio Strengths and Weaknesses
                     </div>
-                    <div class="col-4 d-none d-lg-flex">
+
+                    <div class="col-4 d-none d-xl-flex" style="height:350px">
                         <SfChart>
                             <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category"
                                                LabelPlacement="LabelPlacement.OnTicks" />
@@ -171,7 +141,27 @@
                             <ChartTooltipSettings Enable="true" />
                         </SfChart>
                     </div>
+
+                    <div class="col list-strengths-weakness">
+                        <ul>
+                            @foreach (StrenghtsAndWeaknessChartDataModelPolar dataModelPolar in StrenghtsAndWeaknessChartData)
+                            {
+                                <li>
+                                    <div class="badge" style="@dataModelPolar.Style">
+                                        @dataModelPolar.Environment
+                                    </div>
+                                    <div class="ms-3 mb-2">
+                                        @dataModelPolar.Description
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+
                 </div>
+
+                <!--Add portfolio-->
+                <button class="btn btn-custom" @onclick="OnAddPortfolio">Add portfolio</button>
             </div>
 
         </div>

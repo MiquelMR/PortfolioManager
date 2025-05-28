@@ -1,0 +1,40 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using PortfolioManagerWASM.Models
+@using PortfolioManagerWASM.Services.IService
+@inject IUserService userService
+@inject IFinancialAssetService assetService
+@attribute [Authorize]
+
+@page "/feeCalculation"
+<PageTitle>Fee Calculation</PageTitle>
+
+
+<!--New Portfolio form-->
+<EditForm Model="@feeStructure" OnValidSubmit="OnCalculateFees">
+
+    <label>Quantity</label>
+    <InputNumber @bind-Value="feeStructure.quantityBought" />
+    <label>Times a year</label>
+    <InputNumber @bind-Value="feeStructure.yearlyPurchases" />
+    <label>Years investing</label>
+    <InputNumber @bind-Value="feeStructure.yearsInvesting" />
+
+    <label>Buy Comission</label>
+    <InputNumber @bind-Value="feeStructure.purcharseComission" />
+    <label>Brokerage Fees</label>
+    <InputNumber @bind-Value="feeStructure.brokerageFee" />
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+
+    <div>
+        Total returns: @feeStructure.totalReturns;
+        Total invested:  @feeStructure.totalInvested;
+        Final capital:  @feeStructure.totalCapital;
+        Purcharse comission:  @feeStructure.purcharseComission;
+        Brokerage Fees :  @feeStructure.totalBrokerageFees;
+        Dividend Taxes :  @feeStructure.dividendTaxes;
+        Earning Taxes :  @feeStructure.earningTaxes;
+    </div>
+
+</EditForm>
+
