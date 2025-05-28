@@ -6,31 +6,28 @@
 <nav class="navbar justify-content-around">
 
     <div class="row">
-        <div class="col align-content-center m-0 p-0">
-            <button type="button" class="btn btn-primary rounded-circle" title="Branding">
-                <img src="icons/bar-chart-line.svg" alt="BrandIcon">
-            </button>
+        <div class="col-auto p-0">
+            <img class="brand-icon" src="icons/PM-icon.png" alt="BrandIcon">
         </div>
-        <div class="col ms-2 p-0">
-            <p class="m-0 p-0">Portfolio</p>
-            <p class="m-0 p-0">Manager</p>
+        <div class="col p-0">
+            <div class="brand-name">Portfolio<br />Manager</div>
         </div>
     </div>
 
     <ul class="nav nav-pills justify-content-center">
         <li class="nav-item">
             <NavLink class="nav-link" href="home" Match="NavLinkMatch.All">
-                <img src="icons/house.svg" alt="HomeIcon">
+                <img class="topbar-icon" src="icons/house.svg" alt="HomeIcon">
             </NavLink>
         </li>
         <li class="nav-item">
-            <NavLink class="nav-link" href="graphs" Match="NavLinkMatch.Prefix">
-                <img src="icons/graph-up.svg" alt="GraphsIcon">
+            <NavLink class="nav-link" href="feeCalculation" Match="NavLinkMatch.Prefix">
+                <img class="topbar-icon"  src="icons/graph-up.svg" alt="GraphsIcon">
             </NavLink>
         </li>
         <li class="nav-item">
             <NavLink class="nav-link" href="community" Match="NavLinkMatch.Prefix">
-                <img src="icons/people.svg" alt="CommunityIcon">
+                <img class="topbar-icon" src="icons/people.svg" alt="CommunityIcon">
             </NavLink>
         </li>
     </ul>
@@ -38,7 +35,7 @@
     <div class="row">
         <div class="dropdown">
             <button class="btn rounded-circle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <img class="rounded-icon" src="@(ActiveUser.Avatar == null
+                <img class="userAvatar-icon" src="@(ActiveUser.Avatar == null
                 ? $"https://avatar.iran.liara.run/public"
                 : $"{@TypeHelper.GetBase64String(ActiveUser.Avatar)}")" alt="avatar" />
             </button>

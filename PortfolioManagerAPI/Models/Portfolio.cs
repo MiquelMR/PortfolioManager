@@ -17,7 +17,9 @@ namespace PortfolioManagerAPI.Models
         public int UserId { get; set; }
         [MaxLength(48)]
         public string Author{ get; set; }
+        public string Owner{ get; set; }
         public string Description { get; set; }
         public string IconFilename { get; set; }
+        public Accessibility Accessibility { get; set; }
     }
 }

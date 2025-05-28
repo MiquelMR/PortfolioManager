@@ -36,6 +36,20 @@ namespace PortfolioManagerAPI.Repository
                 return null;
             }
         }
+        public async Task<List<Portfolio>> GetPortfoliosByAccessibility(Accessibility accessibility)
+        {
+            try
+            {
+                return await _db.Portfolios
+                    .Where(portfolio => portfolio.Accessibility == accessibility)
+                    .OrderBy(portfolio => portfolio.PortfolioId)
+                    .ToListAsync();
+            }
+            catch
+            {
+                return null;
+            }
+        }
 
         public async Task<List<Portfolio>> GetPortfoliosByUserEmailAsync(string userEmail)
         {

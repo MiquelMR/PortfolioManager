@@ -30,17 +30,41 @@ namespace PortfolioManagerAPI.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("AssetId"));
 
+                    b.Property<int>("Defensive")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
+
+                    b.Property<int>("FavorsExpansion")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Growth")
+                        .HasColumnType("int");
 
                     b.Property<string>("IconFilename")
                         .HasMaxLength(48)
                         .HasColumnType("varchar(48)");
 
+                    b.Property<int>("Income")
+                        .HasColumnType("int");
+
+                    b.Property<int>("InflationHedge")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(48)
                         .HasColumnType("varchar(48)");
+
+                    b.Property<string>("ReferenceETFSite")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ReferenceIndex")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("Volatility")
+                        .HasColumnType("int");
 
                     b.HasKey("AssetId");
 
@@ -54,6 +78,9 @@ namespace PortfolioManagerAPI.Migrations
                         .HasColumnType("int");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("PortfolioId"));
+
+                    b.Property<int>("Accessibility")
+                        .HasColumnType("int");
 
                     b.Property<string>("Author")
                         .HasMaxLength(48)
@@ -69,6 +96,9 @@ namespace PortfolioManagerAPI.Migrations
                         .IsRequired()
                         .HasMaxLength(48)
                         .HasColumnType("varchar(48)");
+
+                    b.Property<string>("Owner")
+                        .HasColumnType("longtext");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");

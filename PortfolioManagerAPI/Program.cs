@@ -33,6 +33,7 @@ builder.Services.AddScoped<IPortfolioService, PortfolioService>();
 // Auto-Mapper
 builder.Services.AddAutoMapper(typeof(PortfolioManagerMapper));
 
+// Keys
 var key = builder.Configuration.GetValue<string>("ApiSettings:Secret");
 
 // Authentication

@@ -40,6 +40,7 @@ builder.Services.AddScoped<HomeViewModel>();
 builder.Services.AddScoped<NavbarViewModel>();
 builder.Services.AddScoped<UserProfileViewModel>();
 builder.Services.AddScoped<AdminViewModel>();
+builder.Services.AddScoped<CommunityViewModel>();
 
 // Local Storage
 builder.Services.AddBlazoredLocalStorage();

@@ -6,10 +6,168 @@
 @attribute [Authorize]
 
 @page "/community"
-<PageTitle>Community</PageTitle>
 
-Community
+<div class="container p-0">
+    @if (PublicPortfoliosBasicInfo.Count > 0)
+    {
+        <div class="row">
 
-@code {
+            <!--Sidenav Portfolio List-->
+            <aside class="col-3">
+                <div class="list-group">
+                    @for (int i = 0; i < PublicPortfoliosBasicInfo.Count; i++)
+                    {
+                        int index = i;
+                        Portfolio portfolio = PublicPortfoliosBasicInfo[index];
 
-}
+                        <!--Portfolio List-->
+                        <button @onclick="()=>OnSelectPortfolio(index)" type="button" class="list-group-item list-group-item-action p-0">
+                            <div class="row">
+
+                                <div class="col-auto p-0 ms-4 d-flex align-items-center d-none d-xl-flex">
+                                    <img class="portfolio-icon" src="@(portfolio.IconPath)" alt="Icon">
+                                </div>
+
+                                <div class="col-auto m-2">
+                                    <p class="portfolio-side-name">@portfolio.Name</p>
+                                    <p class="portfolio-side-author">@portfolio.Author</p>
+                                </div>
+                            </div>
+                        </button>
+                    }
+                </div>
+            </aside>
+
+            <!--Main Page-->
+            <div class="col-9">
+                @if (ActivePortfolio != null)
+                {
+                    <!--Name and author-->
+                    <div class="row mb-5">
+                        <div class="portfolio-title">@ActivePortfolio.Name</div>
+                        <div class="portfolio-author">@ActivePortfolio.Author</div>
+                    </div>
+
+                    <!--Description-->
+                    <div class="row portfolio-description mb-2">
+                        @ActivePortfolio.Description
+                    </div>
+                }
+
+                <!--Portfolio charts-->
+                <div class="row justify-content-start" style="height:300px">
+                    <div class="col-4 d-none d-lg-flex">
+                        <SfAccumulationChart>
+                            <AccumulationChartLegendSettings Visible="true"
+                                                             Alignment="Alignment.Center" />
+
+                            <AccumulationChartSeriesCollection>
+                                <AccumulationChartSeries Type="AccumulationType.Pie"
+                                                         PointColorMapping="Color"
+                                                         DataSource="@AssetCompositionChartData"
+                                                         XName="AssetName"
+                                                         YName="Allocation"
+                                                         Name="AssetName"
+                                                         InnerRadius="20%">
+                                </AccumulationChartSeries>
+                                <AccumulationChartTooltipSettings EnableAnimation=true
+                                                                  Enable="true"
+                                                                  EnableMarker="true" />
+                            </AccumulationChartSeriesCollection>
+                        </SfAccumulationChart>
+                    </div>
+                    <div class="col">
+                        <ul class="scrollable-list">
+                            @foreach (PortfolioAsset pa in ActivePortfolio.PortfolioAssets)
+                            {
+                                <li>
+                                    <div class="accordion" id="accordion-assets">
+                                        <div class="accordion-item border-0">
+                                            <div class="accordion-header">
+                                                <button class="button-unstyled d-block w-75" type="button" data-bs-toggle="collapse" data-bs-target="#@pa.FinancialAsset.AssetId" aria-expanded="true" aria-controls="collapseOne">
+                                                    <div class="row justify-content-between">
+                                                        <div class="col-auto">
+                                                            <img class="asset-icon me-2" src="@pa.FinancialAsset.IconPath" /><span>@pa.FinancialAsset.Name</span>
+                                                        </div>
+                                                        <div class="col-auto">
+                                                            <span>@pa.FinancialAsset.ReferenceIndex</span>
+                                                        </div>
+                                                    </div>
+                                                </button>
+                                            </div>
+                                            <div id="@pa.FinancialAsset.AssetId" class="accordion-collapse collapse" data-bs-parent="accordion-assets">
+                                                <div class="accordion-body fa-description">
+                                                    <div class="row justify-content-between">
+                                                        <div class="col-auto">
+                                                            @pa.FinancialAsset.Description
+                                                        </div>
+                                                        <div class="col">
+                                                            <a target="_blank" rel="noopener noreferrer" href="@pa.FinancialAsset.ReferenceETFSite">
+                                                                <img class="asset-icon" src="/icons/link.svg" alt="reference index link" />
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+
+                <!--Portfolio Strengths and weaknesses-->
+                <div class="row justify-content-end  mt-5">
+                    <div class="home-title">
+                        Portfolio Strengths and Weaknesses
+                    </div>
+
+                    <div class="col-4 d-none d-xl-flex" style="height:350px">
+                        <SfChart>
+                            <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category"
+                                               LabelPlacement="LabelPlacement.OnTicks" />
+                            <ChartPrimaryYAxis Interval="20"
+                                               Maximum="100"
+                                               Minimum="0"
+                                               LabelFormat="{value} %" />
+                            <ChartSeries Type="ChartSeriesType.Radar"
+                                         DrawType="ChartDrawType.Line"
+                                         DataSource="@StrenghtsAndWeaknessChartData"
+                                         XName="Environment"
+                                         YName="Intensity">
+                                <ChartMarker Visible="true" Height="7" Width="7" />
+                            </ChartSeries>
+                            <ChartTooltipSettings Enable="true" />
+                        </SfChart>
+                    </div>
+
+                    <div class="col list-strengths-weakness">
+                        <ul>
+                            @foreach (StrenghtsAndWeaknessChartDataModelPolar dataModelPolar in StrenghtsAndWeaknessChartData)
+                            {
+                                <li>
+                                    <div class="badge" style="@dataModelPolar.Style">
+                                        @dataModelPolar.Environment
+                                    </div>
+                                    <div class="ms-3 mb-2">
+                                        @dataModelPolar.Description
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+
+                </div>
+
+                <!--Add portfolio-->
+                <button class="btn btn-custom" @onclick="OnAddPortfolio">Add portfolio</button>
+            </div>
+
+        </div>
+    }
+    else
+    {
+        <p>Still no portfolio</p>
+    }
+</div>

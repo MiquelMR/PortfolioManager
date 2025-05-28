@@ -28,6 +28,16 @@ namespace PortfolioManagerAPI.Controllers
             return Ok(new ResponseAPI<PortfolioDto>(200, "Success", portfolioDto));
         }
 
+        [HttpGet("publicPortfolios")]
+        public async Task<IActionResult> GetPublicPortfolios()
+        {
+            var publicPortfoliosDto = await _portfolioService.GetPortfoliosBasicInfoByAccessibility(Accessibility.Public);
+            if (publicPortfoliosDto == null)
+                return StatusCode(500, new ResponseAPI<object>(500, "Internal server error", null));
+
+            return Ok(new ResponseAPI<List<PortfolioDto>>(200, "Success", publicPortfoliosDto));
+        }
+
         [HttpGet("basicPortfolioInfo")]
         public async Task<IActionResult> GetPortfoliosBasicInfo()
         {

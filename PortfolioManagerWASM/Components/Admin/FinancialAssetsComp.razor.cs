@@ -51,7 +51,33 @@ namespace PortfolioManagerWASM.Components.Admin
             return new List<string>()
             {
                 "default.svg",
-                "gold.svg"
+                "bank.svg",
+                "bonds.svg",
+                "cash.svg",
+                "cloud-1.svg",
+                "cloud-2.svg",
+                "consumer.svg",
+                "corporativebonds.svg",
+                "dividend.svg",
+                "domestic.svg",
+                "domestic-bonds.svg",
+                "energy.svg",
+                "gold.svg",
+                "growth.svg",
+                "health.svg",
+                "highyield.svg",
+                "long.svg",
+                "mortgage.svg",
+                "private.svg",
+                "real-estate-1.svg",
+                "real-estate-2.svg",
+                "short.svg",
+                "small.svg",
+                "tech.svg",
+                "wheat.svg",
+                "gem.svg",
+                "crane.svg",
+                "world.svg"
             }
             .Select(item => Path.Combine(AppConfig.GetResourcePath("AssetIcons"), item))
             .ToList();

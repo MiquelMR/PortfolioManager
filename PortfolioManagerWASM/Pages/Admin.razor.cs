@@ -16,13 +16,14 @@ namespace PortfolioManagerWASM.Pages
         public Action<FinancialAsset> OnCreateFinancialAssetDelegate { get; set; }
         public Action<FinancialAsset> OnDeleteFinancialAssetDelegate { get; set; }
         public Action<User> OnDeleteUserDelegate { get; set; }
-        public Func<int, Task> OnExpandPortfolioInformationDelegate { get; set; }
+        public Action OnDeletePortfolioDelegate { get; set; }
+        public Func<int, Task> OnSelectPortfolioDelegate { get; set; }
 
         // Properties
         public List<FinancialAsset> FinancialAssets { get; set; } = [];
         public List<User> Users { get; set; }
-        public List<Portfolio> PortfoliosBasicInfo { get; set; }
-        public Portfolio PortfolioExpanded { get; set; }
+        public List<Portfolio> PortfoliosBasicInfo { get; set; } = [];
+        public Portfolio ActivePortfolio { get; set; } = new();
 
         // Private fields
         private AdminView _adminView = AdminView.Overview;
@@ -33,18 +34,20 @@ namespace PortfolioManagerWASM.Pages
 
             FinancialAssets = AdminViewModel.FinancialAssets;
             Users = AdminViewModel.Users;
-            PortfolioExpanded = AdminViewModel.PortfolioExpanded;
+            ActivePortfolio = AdminViewModel.ActivePortfolio;
             PortfoliosBasicInfo = AdminViewModel.PortfoliosBasicInfo;
             OnUpdateFinancialAssetDelegate = OnUpdateFinancialAsset;
             OnCreateFinancialAssetDelegate = OnCreateFinancialAsset;
             OnDeleteFinancialAssetDelegate = OnDeleteFinancialAsset;
             OnDeleteUserDelegate = OnDeleteUser;
-            OnExpandPortfolioInformationDelegate = OnExpandPortfolioInformation;
+            OnSelectPortfolioDelegate = OnSelectPortfolio;
+            OnDeletePortfolioDelegate = OnDeletePortfolio;
         }
 
-        public async Task OnExpandPortfolioInformation(int portfolioId)
+        public async Task OnSelectPortfolio(int index)
         {
-            await AdminViewModel.OnExpandPortfolioInformation(portfolioId);
+            await AdminViewModel.OnSelectPortfolioAsync(index);
+            ActivePortfolio = AdminViewModel.ActivePortfolio;
             StateHasChanged();
         }
 
@@ -65,6 +68,10 @@ namespace PortfolioManagerWASM.Pages
         public async void OnDeleteUser(User user)
         {
             await AdminViewModel.DeleteUserAsync(user);
+        }
+        public async void OnDeletePortfolio()
+        {
+            await AdminViewModel.DeleteActivePortfolioAsync();
         }
 
         private void OnTabClick(AdminView adminView)

@@ -8,8 +8,28 @@
         <ValidationSummary />
 
         <!--Portfolio name-->
-        <div class="row">
-            <InputText class="h3" id="name" @bind-Value="newPortfolio.Name" />
+        <div class="row mb-4">
+            <div class="col-auto align-self-center">
+                <!--Icon-->
+                <button class="btn dropdown-toggle p-0" type="button" data-bs-toggle="dropdown">
+                    <img class="rounded-icon" src="@newPortfolio.IconPath" alt="Portfolio Icon">
+                </button>
+
+                <ul class="dropdown-menu">
+                    @foreach (var icon in GetIconPaths())
+                    {
+                        <li class="icon-item" style="width:auto; display:inline-block; padding:0;margin:0">
+                            <button class="dropdown-item">
+                                <img src="@icon" class="rounded-icon" alt="Icon" @onclick="() => OnSelectIcon(icon)">
+                            </button>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="col">
+                <small id="addFAHelp" class="form-text text-muted">Name your portfolio</small>
+                <InputText class="h3 form-control" id="name" @bind-Value="newPortfolio.Name" />
+            </div>
         </div>
 
         <!--Add Financial Asset Dropdown-->
@@ -17,37 +37,54 @@
             <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Financial Assets
             </button>
+            <small id="addFAHelp" class="form-text text-muted ms-2">Add financial assets to your portfolio</small>
 
             <ul class="dropdown-menu">
                 <!--Financial Asset List-->
                 @foreach (FinancialAsset financialAsset in FilteredFinancialAssets)
                 {
-                    <button @onclick="()=>OnAddFinancialAsset(financialAsset)" type="button" class="list-group-item list-group-item-action d-flex justify-content-between">@financialAsset.Name</button>
+                    <li>
+                        <button @onclick="()=>OnAddFinancialAsset(financialAsset)" type="button" class="list-group-item list-group-item-action d-flex justify-content-between">
+                            <p class="m-2">@financialAsset.Name</p>
+                            @if (financialAsset.IconPath != null && financialAsset.IconPath.Length > 0)
+                            {
+                                <img src="@financialAsset.IconPath" alt="Icon" class="img-fluid asset-icon m-2">
+                            }
+                            else
+                            {
+                                <i class="bi bi-cash asset-icon m-2"></i>
+                            }
+                        </button>
+                    </li>
                 }
             </ul>
         </div>
 
         <!--Portfolio composition-->
-        <div class="row row-portfolio-graph m-4">
+        <div class="row mt-2 mb-4">
 
             <!--Asset list-->
-            <div class="col-md-9">
+            <div class="col ms-4">
                 @if (newPortfolio.PortfolioAssets.Count > 0)
                 {
-                    <ul class="col-8">
-                        @foreach (PortfolioAsset portfolioAsset in newPortfolio.PortfolioAssets)
-                        {
-                            <li class="d-flex align-items-center mb-3">
-                                <p class="m-2">@portfolioAsset.FinancialAsset.Name</p>
-                                @if (portfolioAsset.FinancialAsset.IconPath != null && portfolioAsset.FinancialAsset.IconPath.Length > 0)
+                    @foreach (PortfolioAsset portfolioAsset in newPortfolio.PortfolioAssets)
+                    {
+                        <div class="row align-items-center">
+                            <!-- Name and icon -->
+                            <div class="col-auto d-flex align-items-center">
+                                <span class="me-2">@portfolioAsset.FinancialAsset.Name</span>
+                                @if (!string.IsNullOrEmpty(portfolioAsset.FinancialAsset.IconPath))
                                 {
-                                    <img src="@portfolioAsset.FinancialAsset.IconPath" alt="Icon" class="img-fluid asset-icon">
+                                    <img src="@portfolioAsset.FinancialAsset.IconPath" alt="Icon" class="img-fluid asset-icon" style="height: 24px; width: 24px;" />
                                 }
                                 else
                                 {
-                                    <i class="bi bi-cash asset-icon"></i>
+                                    <i class="bi bi-cash asset-icon" style="font-size: 1.2rem;"></i>
                                 }
+                            </div>
 
+                            <!-- Slider -->
+                            <div class="col">
                                 <SfSlider Type="SliderType.Default"
                                           Min="0"
                                           Max="100"
@@ -60,47 +97,45 @@
                                                  ShowSmallTicks="true" />
                                     <SliderTooltip IsVisible="true" ShowOn="TooltipShowOn.Always"></SliderTooltip>
                                 </SfSlider>
-                                <button class="btn btn-danger ms-1" @onclick="()=>OnRemoveFinancialAsset(portfolioAsset)">X</button>
-                            </li>
-                        }
-                    </ul>
+                            </div>
+
+                            <!-- Delete button -->
+                            <div class="col">
+                                <button class="btn btn-danger btn-sm" @onclick="()=>OnRemoveFinancialAsset(portfolioAsset)">x</button>
+                            </div>
+                        </div>
+
+                    }
                 }
             </div>
         </div>
 
-        <div class="row mb-4">
-            <label for="description">Description</label>
+        <div class="row mb-2">
+            <label for="description">
+                <small id="addFAHelp" class="form-text text-muted">Description</small>
+            </label>
             <input id="description"
-                @bind-value="@newPortfolio.Description" 
-                @bind-value:event="oninput" 
-                maxlength="100" />
-            <div>@(newPortfolio.Description?.Length ?? 0)/100 characters</div>
+                   @bind-value="@newPortfolio.Description"
+                   @bind-value:event="oninput"
+                   maxlength="140" />
+            <div>@(newPortfolio.Description?.Length ?? 0)/140 characters</div>
         </div>
 
-        <!--Icon-->
-        <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
-            <img class="rounded-icon" src="@newPortfolio.IconPath" alt="Portfolio Icon">
-        </button>
-
-        <ul class="dropdown-menu">
-            @foreach (var icon in GetIconPaths())
-            {
-                <li class="icon-item" style="width:auto; display:inline-block; padding:0;margin:0">
-                    <button class="dropdown-item">
-                        <img src="@icon" class="rounded-icon" alt="Icon" @onclick="() => OnSelectIcon(icon)">
-                    </button>
-                </li>
-            }
-        </ul>
-
-        <!--Finish and submit-->
         <div class="row">
             <div class="col-auto">
+                <label for="Accessibility-checkbox">Public</label>
+                <InputCheckbox id="Accessibility-checkbox" @bind-Value="isPublic" />
+            </div>
+        </div>
+
+        <!--Finish and submit-->
+        <div class="row mt-4">
+            <div class="col-auto">
                 <button type="submit" class="btn btn-primary">Submit</button>
+                <button class="btn btn-primary" @onclick="()=>OnClickBackButton(Pages.HomeView.Overview)">Back</button>
             </div>
         </div>
     </EditForm>
 
-    <button class="btn btn-primary" @onclick="()=>OnClickBackButton(Pages.HomeView.Overview)">Back</button>
 
 </div>
