@@ -5,36 +5,216 @@
 @inject IFinancialAssetService assetService
 @attribute [Authorize]
 
-@page "/feeCalculation"
-<PageTitle>Fee Calculation</PageTitle>
+@page "/calculation"
+<PageTitle>calculation</PageTitle>
 
 
-<!--New Portfolio form-->
-<EditForm Model="@feeStructure" OnValidSubmit="OnCalculateFees">
+<!-- New Portfolio Form -->
+<div class="row">
 
-    <label>Quantity</label>
-    <InputNumber @bind-Value="feeStructure.quantityBought" />
-    <label>Times a year</label>
-    <InputNumber @bind-Value="feeStructure.yearlyPurchases" />
-    <label>Years investing</label>
-    <InputNumber @bind-Value="feeStructure.yearsInvesting" />
+    <!-- Results -->
+    <div class="col-12 col-xl-6">
 
-    <label>Buy Comission</label>
-    <InputNumber @bind-Value="feeStructure.purcharseComission" />
-    <label>Brokerage Fees</label>
-    <InputNumber @bind-Value="feeStructure.brokerageFee" />
 
-    <button type="submit" class="btn btn-primary">Submit</button>
+        <EditForm Model="@feeStructure" OnValidSubmit="OnCalculateFees">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
 
-    <div>
-        Total returns: @feeStructure.totalReturns;
-        Total invested:  @feeStructure.totalInvested;
-        Final capital:  @feeStructure.totalCapital;
-        Purcharse comission:  @feeStructure.purcharseComission;
-        Brokerage Fees :  @feeStructure.totalBrokerageFees;
-        Dividend Taxes :  @feeStructure.dividendTaxes;
-        Earning Taxes :  @feeStructure.earningTaxes;
+            <!-- Investor Decisions -->
+            <fieldset class="border p-3 mb-4">
+                <legend class="w-auto px-2">Investor Decisions</legend>
+
+                <div class="row">
+                    <div class="col mb-3">
+                        <label for="purchasedAmount" class="form-label">Total Amount Purchased</label>
+                        <InputNumber id="purchasedAmount" @bind-Value="feeStructure.quantityBought" class="form-control" />
+                    </div>
+
+                    <div class="col mb-3">
+                        <label for="purchasesPerMonth" class="form-label">Purchases Per Year</label>
+                        <InputSelect id="purchasesPerMonth" @bind-Value="feeStructure.yearlyPurchases" class="form-select">
+                            <option value="">-- Select --</option>
+                            @foreach (var number in Enumerable.Range(1, 12))
+                            {
+                                <option value="@number">@number</option>
+                            }
+                        </InputSelect>
+                    </div>
+
+                    <div class="col mb-3">
+                        <label for="yearsInvesting" class="form-label">Years Investing</label>
+                        <InputNumber id="yearsInvesting" @bind-Value="feeStructure.yearsInvesting" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="row">
+
+
+                    <div class="col mb-3">
+                        <label for="dividendPercent" class="form-label">Dividends (% of Returns)</label>
+                        <SfSlider Type="SliderType.Default"
+                                  Min="0"
+                                  Max="100"
+                                  Step="1"
+                                  @bind-Value="@feeStructure.dividendsAsPercentageOfReturns"
+                                  ShowButtons="true">
+                            <SliderTicks SmallStep="10"
+                                         LargeStep="20"
+                                         Placement="Placement.After"
+                                         ShowSmallTicks="true" />
+                            <SliderTooltip IsVisible="true" ShowOn="TooltipShowOn.Always"></SliderTooltip>
+                        </SfSlider>
+                        <InputNumber id="dividendPercent" @bind-Value="feeStructure.dividendsAsPercentageOfReturns" class="form-control" />
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- Broker Fees -->
+            <fieldset class="border p-3 mb-4">
+                <legend class="w-auto px-2">Broker Fees</legend>
+
+                <div class="mb-3">
+                    <label class="form-label">Custody Commission</label>
+                    <InputNumber @bind-Value="feeStructure.custodyCommission" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Purchase Commission</label>
+                    <InputNumber @bind-Value="feeStructure.purcharseCommission" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Brokerage Fee</label>
+                    <InputNumber @bind-Value="feeStructure.brokerageFee" class="form-control" />
+                </div>
+            </fieldset>
+
+            <!-- Taxes -->
+            <fieldset class="border p-3 mb-4">
+                <legend class="w-auto px-2">Taxes</legend>
+
+                <div class="mb-3">
+                    <label class="form-label">Dividend Tax (%)</label>
+                    <InputNumber @bind-Value="feeStructure.dividendTax" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Earning Tax (%)</label>
+                    <InputNumber @bind-Value="feeStructure.earningTax" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Expected Annual Yield (%)</label>
+                    <InputNumber @bind-Value="feeStructure.expectedYield" class="form-control" />
+                </div>
+            </fieldset>
+
+            <button type="submit" class="btn btn-primary">Calculate</button>
+
+
+
+
+        </EditForm>
     </div>
 
-</EditForm>
+    <!--Investment summary-->
+    <div class="col-12 col-xl-6">
+        <div class="card shadow-sm rounded-3">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Investment Summary</h5>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="text-muted">Total Invested</div>
+                        <strong>@feeStructure.accumulatedInvestment</strong>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="text-muted">Return as Capital</div>
+                        <strong>@feeStructure.accumulatedReturnsAsCapital</strong>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="text-muted">Return as Dividends</div>
+                        <strong>@feeStructure.accumulatedReturnsAsDividends</strong>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="text-muted">Final Capital</div>
+                        <strong>@feeStructure.accumulatedCapital</strong>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="text-muted">Purchase Commissions</div>
+                        <strong>@feeStructure.accumulatedPurcharseComissions</strong>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="text-muted">Custody Commissions</div>
+                        <strong>@feeStructure.accumulatedCustodyComissions</strong>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="text-muted">Brokerage Fees</div>
+                        <strong>@feeStructure.accumulatedBrokerageFees</strong>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="text-muted">Taxes on Dividends</div>
+                        <strong>@feeStructure.accumulatedTaxesOnDividends</strong>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="text-muted">Taxes on Earnings</div>
+                        <strong>@feeStructure.accumulatedTaxesOnBenefit</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Chart -->
+    <div class="control-section mt-5" align="center">
+        <SfChart Title="Where does the capital go?">
+            <!-- X-Axis -->
+            <ChartPrimaryXAxis Minimum="0"
+                               Maximum="@feeStructure.yearsInvesting"
+                               Interval="1"
+                               ValueType="Syncfusion.Blazor.Charts.ValueType.Double"
+                               EdgeLabelPlacement="EdgeLabelPlacement.Shift"
+                               Title="Year" />
+
+            <!-- Y-Axis -->
+            <ChartPrimaryYAxis Minimum="0"
+                               Maximum="@feeStructure.accumulatedCapital"
+                               ValueType="Syncfusion.Blazor.Charts.ValueType.Double"
+                               LabelFormat="€{value}">
+                <ChartAxisMajorTickLines Width="0" />
+                <ChartAxisLineStyle Width="0" />
+            </ChartPrimaryYAxis>
+
+            <!-- Tooltips -->
+            <ChartTooltipSettings Enable="true" Format="${series.name}: ${point.y} in Year ${point.x}" />
+
+            <!-- Legend -->
+            <ChartLegendSettings Visible="true" Position="LegendPosition.Bottom" />
+
+            <!-- Series -->
+            <ChartSeriesCollection>
+                @foreach (var seriesData in new[] {
+                (feeStructure.purcharseComisionsDataChart, "Purchase Commissions"),
+                (feeStructure.custodyComisionsDataChart, "Custody Commissions"),
+                (feeStructure.brokerageFeesDataChart, "Brokerage Fees"),
+                (feeStructure.taxesOnDividendsDataChart, "Taxes on Dividends"),
+                (feeStructure.taxesOnBenefitsDataChart, "Taxes on Benefits"),
+                (feeStructure.dividendsDataChart, "Dividends"),
+                (feeStructure.benefitsDataChart, "Benefits")
+                })
+                {
+                    <ChartSeries DataSource="@seriesData.Item1"
+                                 XName="Year" YName="Amount"
+                                 Name="@seriesData.Item2"
+                                 Type="ChartSeriesType.StackingArea">
+                        <ChartMarker Visible="true">
+                            <ChartDataLabel Visible="true" />
+                        </ChartMarker>
+                    </ChartSeries>
+                }
+            </ChartSeriesCollection>
+        </SfChart>
+
+    </div>
+
+</div>
+
 
