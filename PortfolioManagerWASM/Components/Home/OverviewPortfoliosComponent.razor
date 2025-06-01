@@ -201,7 +201,29 @@
                     <div class="home-title">
                         Risk Analysis
                     </div>
+                    <div class="ms-1">
+                        Percentage of assets exposed to a specific type of risk
+                    </div>
+                    <div class="col" style="height:350px">
+                        <SfChart>
+                            <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category" />
+                            <ChartPrimaryYAxis Title="Risk Intensity" ValueType="Syncfusion.Blazor.Charts.ValueType.Double"
+                                               Minimum="0" Maximum="100" />
+
+                            <ChartSeriesCollection>
+                                <ChartSeries DataSource="@RiskChartData"
+                                             XName="Risk"
+                                             YName="Intensity"
+                                             Type="ChartSeriesType.Bar"
+                                             Name="Risk Levels">
+                                </ChartSeries>
+                            </ChartSeriesCollection>
+
+                            <ChartTooltipSettings Enable="true" />
+                        </SfChart>
+                    </div>
                 </div>
+
 
                 <button class="btn btn-primary" @onclick="OnDeleteActivePortfolio">Delete</button>
 

@@ -1,5 +1,9 @@
 using Microsoft.AspNetCore.Components;
+using PortfolioManagerWASM.Components.Admin;
 using PortfolioManagerWASM.Models;
+using Syncfusion.Blazor.Charts;
+using System.Diagnostics.Metrics;
+using System.Drawing;
 
 namespace PortfolioManagerWASM.Components.Home
 {
@@ -17,6 +21,7 @@ namespace PortfolioManagerWASM.Components.Home
         // Private fields
         private List<FinancialAssetsChartDataModel> AssetCompositionChartData { get; set; } = [];
         private List<StrenghtsAndWeaknessChartDataModelPolar> PortfolioStrenghAndWeaknessChartData { get; set; } = [];
+        private List<RiskChartDataModelPolar> RiskChartData { get; set; } = [];
 
         // Events
         private async Task OnDeleteActivePortfolio()
@@ -32,6 +37,7 @@ namespace PortfolioManagerWASM.Components.Home
             await OnSelectPortfolioDelegate.Invoke(index);
             AssetCompositionChartData = PortfolioAssetsChartData();
             PortfolioStrenghAndWeaknessChartData = StrenghtsAndWeakness();
+            RiskChartData = Risks();
             StateHasChanged();
         }
 
@@ -114,6 +120,53 @@ namespace PortfolioManagerWASM.Components.Home
             return data;
         }
 
+        private List<RiskChartDataModelPolar> Risks()
+        {
+            float politicalRiskIntensity = 0;
+            float currencyRiskIntensity = 0;
+            float sectorRiskIntensity = 0;
+            float ratetRiskIntensity = 0;
+            foreach (PortfolioAsset portfolioAsset in ActivePortfolio.PortfolioAssets)
+            {
+                politicalRiskIntensity += (portfolioAsset.FinancialAsset.PoliticalRisk * portfolioAsset.AllocationPercentage);
+                currencyRiskIntensity += (portfolioAsset.FinancialAsset.CurrencyRisk * portfolioAsset.AllocationPercentage);
+                sectorRiskIntensity += (portfolioAsset.FinancialAsset.SectorRisk * portfolioAsset.AllocationPercentage);
+                ratetRiskIntensity += (portfolioAsset.FinancialAsset.RateRisk * portfolioAsset.AllocationPercentage);
+            }
+
+            List<RiskChartDataModelPolar> riskChartData = [
+                new RiskChartDataModelPolar()
+                {
+                    Risk = "Political",
+                    Intensity = (int)politicalRiskIntensity,
+                    Description = "The potential for investment losses due to political instability or changes in government policy",
+                    Color = GetRiskColor((int)currencyRiskIntensity)
+                },
+                new RiskChartDataModelPolar()
+                {
+                    Risk="Currency",
+                    Intensity = (int)currencyRiskIntensity,
+                    Description = "The possibility of loss from fluctuations in exchange rates affecting foreign investments or revenues",
+                Color = GetRiskColor((int)currencyRiskIntensity)
+                },
+                new RiskChartDataModelPolar()
+                {
+                    Risk="Sector",
+                    Intensity = (int)sectorRiskIntensity,
+                    Description = "The exposure to adverse performance or conditions within a specific industry or sector",
+                    Color = GetRiskColor((int)currencyRiskIntensity)
+                },
+                new RiskChartDataModelPolar()
+                {
+                    Risk="Rates",
+                    Intensity = (int)ratetRiskIntensity,
+                    Description = "The risk of financial impact due to changes in interest rates affecting investment values",
+                    Color = GetRiskColor((int)currencyRiskIntensity)
+                }
+            ];
+            return riskChartData;
+        }
+
         private static string GetTraitStyle(float intensity)
         {
             string style;
@@ -128,6 +181,18 @@ namespace PortfolioManagerWASM.Components.Home
             else
                 style = "color:white; font-weight:bold; background-color:var(--gold);";
             return style;
+        }
+
+        private static string GetRiskColor(int intensity)
+        {
+            string color = "#e00c40";
+            if (intensity < 30)
+                color = "#3498db";
+            if (intensity < 60)
+                color = "#bdc10a";
+            if (intensity < 100)
+                color = "#e00c40";
+            return color;
         }
 
         private static string GetDescription(string trait)
@@ -174,6 +239,14 @@ namespace PortfolioManagerWASM.Components.Home
             public float Intensity { get; set; }
             public string Style { get; set; }
             public string Description { get; set; }
+        };
+
+        public class RiskChartDataModelPolar
+        {
+            public string Risk { get; set; }
+            public int Intensity { get; set; }
+            public string Description { get; set; }
+            public string Color { get; set; }
         };
     }
 }
