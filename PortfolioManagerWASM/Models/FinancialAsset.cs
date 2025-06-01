@@ -17,5 +17,10 @@ namespace PortfolioManagerWASM.Models
         public int InflationHedge { get; set; }
         public int Income { get; set; }
         public int Volatility { get; set; }
+        public int CurrencyRisk {  get; set; }
+        public int SectorRisk {  get; set; }
+        public int PoliticalRisk {  get; set; }
+        public int RateRisk {  get; set; }
+
     }
 }
