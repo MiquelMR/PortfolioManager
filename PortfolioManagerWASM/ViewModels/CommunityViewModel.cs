@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace PortfolioManagerWASM.ViewModels
 {
-    public class CommunityViewModel(IPortfolioService PortfolioService, IUserService UserService, IFinancialAssetService AssetService)
+    public class CommunityViewModel(IPortfolioService PortfolioService, IUserService UserService)
     {
         // Dependencies
         private readonly IPortfolioService _portfolioService = PortfolioService;
